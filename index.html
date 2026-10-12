@@ -112,10 +112,31 @@ th{background:#667eea;color:#fff;}
 .reading-choice .choice-opt.correct{background:#e8f9ee;color:#1e8449;font-weight:bold;}
 .reading-choice .choice-opt.wrong{background:#fdecea;color:#c0392b;font-weight:bold;}
 .reading-intro{background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
+.tense-card{background:#f8f9fb;border-radius:10px;padding:14px;margin-bottom:10px;border-left:4px solid #667eea;}
+.tense-en{font-weight:bold;color:#2c3e50;font-size:15px;}
+.tense-cn{color:#888;font-size:13px;margin-left:6px;}
+.tense-struct{color:#e74c3c;font-size:14px;margin-top:6px;font-family:monospace;}
+#eyeCareBanner{
+  position:fixed;
+  top:0;left:0;right:0;
+  padding:14px 20px;
+  text-align:center;
+  font-size:15px;
+  font-weight:bold;
+  z-index:99999;
+  transform:translateY(-100%);
+  transition:transform 0.4s ease-out;
+  box-shadow:0 3px 12px rgba(0,0,0,0.15);
+}
+#eyeCareBanner.show{transform:translateY(0);}
+#eyeCareBanner.green{background:#27ae60;color:#fff;}
+#eyeCareBanner.yellow{background:#f39c12;color:#fff;}
+#eyeCareBanner.red{background:#e74c3c;color:#fff;}
 </style>
 </head>
 <body oncontextmenu="return false;">
 
+<div id="eyeCareBanner"></div>
 <div id="timerBadge">⏱ 00:00</div>
 <div id="wordPopup"></div>
 
@@ -315,6 +336,37 @@ function showRoot(id){
   hideAllBox();
   document.getElementById(id).classList.add("show");
 }
+
+/* ============ 護眼提醒 ============ */
+(function eyeCareReminder(){
+  const banner = document.getElementById("eyeCareBanner");
+  let shown15 = false;
+  let shown30 = false;
+  let shown60 = false;
+  const startTime = Date.now();
+
+  function showBanner(text, colorClass){
+    banner.innerText = text;
+    banner.className = "show " + colorClass;
+    setTimeout(()=>{ banner.classList.remove("show"); }, 6000);
+  }
+
+  setInterval(function(){
+    const minutes = Math.floor((Date.now() - startTime) / 60000);
+    if(minutes >= 15 && !shown15){
+      shown15 = true;
+      showBanner("👀 已看 15 分鐘，勞逸結合，看看遠處放鬆一下眼睛吧～", "green");
+    }
+    if(minutes >= 30 && !shown30){
+      shown30 = true;
+      showBanner("🚶 已看 30 分鐘，建議站起來活動一下，讓眼睛休息 5 分鐘。", "yellow");
+    }
+    if(minutes >= 60 && !shown60){
+      shown60 = true;
+      showBanner("❤️ 已看 1 小時，該休息了！長時間看屏幕對眼睛不好，請先關掉頁面休息一下。", "red");
+    }
+  }, 30000);
+})();
 
 /* ============ 生詞池 ============ */
 function openVocabUnit(unit){
@@ -1870,7 +1922,5 @@ function startWrongChoice(){
   };
 }
 </script>
-<script data-goatcounter="https://你的账号名.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
