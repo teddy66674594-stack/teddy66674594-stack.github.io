@@ -73,17 +73,41 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         {q:"This helps ___ these special places for future generations.", a:"protect", hint:"保護"}
       ],
       vocab: {
-        "travelers":"旅客","hemisphere":"半球","lesser-known":"較不知名的","destinations":"目的地",
-        "distinct":"獨特的","charm":"魅力","driest":"最乾燥的","otherworldly":"超乎尋常的",
-        "typical":"典型的","salt":"鹽","flats":"平地","glow":"發光","sunrise":"日出",
-        "geysers":"間歇泉","spout":"噴出","steam":"蒸氣","dawn":"黎明","stargaze":"觀星",
-        "reserve":"保護區","soak":"浸泡","springs":"溫泉","indigenous":"原住民","greet":"問候",
-        "ancient":"古代的","survival":"生存","herbal":"草本的","glacial":"冰川的","turquoise":"藍綠色",
-        "shimmers":"閃爍","naked":"裸的","hiking":"遠足","lupin":"羽扇豆","blooming":"盛開",
-        "communities":"社區","generations":"世代","semi-arid":"半乾燥","haven":"避風港",
-        "succulent":"多肉的","rare":"稀有的","wildlife":"野生動物","descent":"後裔","biltong":"肉乾",
-        "windswept":"受風吹的","benefits":"好處","crowded":"擁擠的","hubs":"中心","cultures":"文化",
-        "purest":"最純淨的","businesses":"生意","protect":"保護","avoid":"避免","passage":"段落"
+        "most":"大多數","travelers":"旅客","think":"認為","beaches":"海灘","big":"大的","cities":"城市",
+        "planning":"計劃","hemisphere":"半球","trips":"旅行","lesser-known":"較不知名的","spots":"地點",
+        "offer":"提供","unique":"獨特的","experiences":"體驗","three":"三個","such":"這樣的",
+        "destinations":"目的地","chile":"智利","atacama":"阿塔卡馬","desert":"沙漠","new":"新的",
+        "zealand":"紐西蘭","lake":"湖","tekapo":"蒂卡波","south":"南方","africa":"非洲","karoo":"卡魯",
+        "stand":"站","out":"出","their":"他們的","distinct":"獨特的","charm":"魅力","often":"經常",
+        "called":"被稱為","driest":"最乾燥的","place":"地方","earth":"地球","surprises":"使驚訝",
+        "otherworldly":"超乎尋常的","beauty":"美","unlike":"不像","typical":"典型的","deserts":"沙漠",
+        "has":"有","salt":"鹽","flats":"平地","that":"那個","glow":"發光","pink":"粉紅色",
+        "sunrise":"日出","geysers":"間歇泉","spout":"噴出","steam":"蒸氣","dawn":"黎明",
+        "visitors":"訪客","can":"能","stargaze":"觀星","top":"頂級","dark-sky":"暗天","reserve":"保護區",
+        "soak":"浸泡","hot":"熱","springs":"溫泉","locals":"當地人","mostly":"大多","indigenous":"原住民",
+        "people":"人們","greet":"問候","warmly":"熱情地","sharing":"分享","stories":"故事","ancient":"古代的",
+        "survival":"生存","skills":"技能","over":"在……上","cups":"杯","herbal":"草本的","tea":"茶",
+        "glacial":"冰川的","island":"島","famous":"著名的","its":"它的","bright":"明亮的",
+        "turquoise":"藍綠色","water":"水","small":"小的","church":"教堂","good":"好的",
+        "shepherd":"牧羊人","also":"也","unesco":"聯合國教科文組織","sky":"天空","clear":"晴朗的",
+        "nights":"夜晚","milky":"乳白的","way":"道路","shimmers":"閃爍","so":"如此","brightly":"明亮地",
+        "you":"你","see":"看見","it":"它","with":"用","naked":"裸的","eye":"眼睛",
+        "hiking":"遠足","around":"周圍","visiting":"參觀","nearby":"附近的","lupin":"羽扇豆","fields":"田地",
+        "blooming":"盛開","summer":"夏天","are":"是","popular":"受歡迎的","including":"包括",
+        "māori":"毛利人","communities":"社區","lead":"帶領","tours":"旅行","explaining":"解釋",
+        "traditional":"傳統的","star":"星星","passed":"傳","down":"下","generations":"世代",
+        "vast":"廣闊的","semi-arid":"半乾燥","region":"地區","hidden":"隱藏的","haven":"避風港",
+        "nature":"大自然","lovers":"愛好者","home":"家","succulent":"多肉的","plants":"植物",
+        "rare":"稀有的","animals":"動物","like":"像","korhaan":"鴇","bird":"鳥","go":"去",
+        "guided":"有導遊的","wildlife":"野生動物","drives":"駕車","stay":"停留","family-run":"家庭經營的",
+        "farms":"農場","many":"許多","boer":"布爾人","descent":"後裔","welcome":"歡迎","guests":"客人",
+        "homemade":"自製的","biltong":"肉乾","dried":"乾的","meat":"肉","share":"分享","tales":"故事",
+        "life":"生活","quiet":"安靜的","windswept":"受風吹的","land":"土地","these":"這些","unusual":"不尋常的",
+        "benefits":"好處","let":"讓","avoid":"避免","crowded":"擁擠的","tourist":"遊客",
+        "hubs":"中心","connect":"連接","deeply":"深深地","local":"當地的","cultures":"文化",
+        "experience":"體驗","purest":"最純淨的","form":"形式","them":"它們","supports":"支持",
+        "businesses":"生意","from":"從","indigenous-led":"原住民帶領的","helping":"幫助","protect":"保護",
+        "special":"特別的","places":"地方","future":"未來"
       }
     },
     "語境完形填空": {
@@ -91,9 +115,9 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
       page: "P.9",
       intro: "💡 長按任意英文單詞，可查看中文意思。",
       paragraphs: [
-        {text:"Joyce: Noah, can you do me a (1. ___), please? Noah: Of course, what can I do for you?"},
-        {text:"Joyce: Would you please take care (2. ___) my dog for me? I'm visiting my grandparents this weekend to celebrate my grandma's birthday. Noah: I'd be (3. ___) to do so. I love dogs. Joyce: Thank you so much! Really appreciate your help!"},
-        {text:"A notice: Flats for Students — Are you a student looking for a (4. ___) to live? A retired couple have two fully equipped flats available for rent in a quiet and safe area. The flats are located in Susses Street and are within walking distance of the campus. They are also situated conveniently close to bus routes. (5. ___) flats have two bedrooms and a kitchen. (6. ___) parties please contact me at mmsoo@gmail.com.uk"}
+        {text:"Joyce: Noah, can you do me a (1. ___), please? Noah: Of course, what can I do for you? Joyce: Would you please take care (2. ___) my dog for me? I'm visiting my grandparents this weekend to celebrate my grandma's birthday. Noah: I'd be (3. ___) to do so. I love dogs. Joyce: Thank you so much! Really appreciate your help!"},
+        {text:"A notice: Flats for Students — Are you a student looking for a (4. ___) to live? A retired couple have two fully equipped flats available for rent in a quiet and safe area. The flats are located in Susses Street and are within walking distance of the campus. They are also situated conveniently close to bus routes. (5. ___) flats have two bedrooms and a kitchen. (6. ___) parties please contact me at mmsoo@gmail.com.uk"},
+        {text:"An email: To: chriswong@gmail.com; From: pattam@hotmail.com; Subject: Karen's birthday. Dear Chris, As you know, Karen's birthday is next month and so I would like to hold a surprise party for her. (7. ___) you are her best friend, could you give me some ideas on what we should plan for the party, like (8. ___) we should invite and what presents to get, etc.? Also, please let me know if you have (9. ___) suggestions. Pat"}
       ],
       items: [
         {no:1, q:"(1) can you do me a ___", opts:["flavor","favor","favoring","flavoring"], ans:"B", exp:"do sb a favor 是固定搭配，意為「幫某人一個忙」。"},
@@ -107,9 +131,26 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         {no:9, q:"(9) if you have ___ suggestions", opts:["another","others","the other","any other"], ans:"D", exp:"any other 意為「任何其他的」，用於疑問句/否定句。"}
       ],
       vocab: {
-        "favor":"幫忙","appreciate":"感激","notice":"公告","flats":"公寓","equipped":"配備齊全的",
-        "available":"可用的","rent":"出租","campus":"校園","conveniently":"方便地","routes":"路線",
-        "parties":"當事人","suggestions":"建議","surprise":"驚喜","celebrate":"慶祝"
+        "joyce":"喬伊斯","noah":"諾亞","can":"能","you":"你","do":"做","me":"我","favor":"幫忙",
+        "please":"請","of":"的","course":"當然","what":"什麼","for":"為了","would":"會","take":"拿",
+        "care":"照顧","my":"我的","dog":"狗","i'm":"我是","visiting":"拜訪","grandparents":"祖父母",
+        "this":"這個","weekend":"週末","celebrate":"慶祝","grandma":"奶奶","birthday":"生日",
+        "i'd":"我會","be":"是","delighted":"高興的","to":"到","so":"如此","love":"愛","dogs":"狗",
+        "thank":"感謝","much":"非常","really":"真的","appreciate":"感激","your":"你的","help":"幫助",
+        "notice":"公告","flats":"公寓","students":"學生","are":"是","student":"學生","looking":"尋找",
+        "place":"地方","live":"住","retired":"退休的","couple":"夫妻","have":"有","two":"二",
+        "fully":"完全","equipped":"配備","available":"可用的","rent":"出租","quiet":"安靜的","safe":"安全的",
+        "area":"區域","located":"位於","susses":"薩塞克斯","street":"街","within":"在……內","walking":"走路",
+        "distance":"距離","campus":"校園","they":"他們","also":"也","situated":"位於","conveniently":"方便地",
+        "close":"靠近","bus":"公車","routes":"路線","both":"兩者","bedrooms":"臥室","kitchen":"廚房",
+        "interested":"有興趣的","parties":"當事人","contact":"聯絡","at":"在","gmail":"Gmail","com":"商業",
+        "uk":"英國","an":"一個","email":"電子郵件","from":"從","hotmail":"Hotmail","subject":"主題",
+        "karen":"凱倫","dear":"親愛的","chris":"克里斯","as":"如同","know":"知道","next":"下一個",
+        "month":"月","and":"和","like":"喜歡","hold":"舉辦","surprise":"驚喜","party":"派對",
+        "her":"她","since":"既然","best":"最好的","friend":"朋友","could":"可以","give":"給",
+        "some":"一些","ideas":"主意","on":"在……上","we":"我們","should":"應該","plan":"計劃",
+        "who":"誰","invite":"邀請","presents":"禮物","get":"得到","etc":"等等","let":"讓",
+        "if":"如果","any":"任何","other":"其他","suggestions":"建議","pat":"帕特"
       }
     }
   }
