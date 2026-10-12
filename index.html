@@ -7,12 +7,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;-webkit-touch-callout:none;}
-#humanVerifyOverlay{position:fixed;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;}
-.human-box{background:#fff;color:#222;padding:28px;border-radius:12px;max-width:400px;width:90%;text-align:center;}
-.human-box input{width:100%;padding:10px;margin:12px 0;font-size:16px;}
-.human-box button{padding:9px 20px;border:none;background:#667eea;color:white;border-radius:6px;cursor:pointer;}
-.human-error{color:red;margin-top:8px;display:none;}
-.browser-tip{background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:12px;border-radius:8px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.5;}
 h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;line-height:1.5;}
 .warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
@@ -22,13 +16,6 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .box-wrap.show{display:block;}
 .unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:8px;background:#dde2fc;color:#2c3e50;font-size:15px;cursor:pointer;}
 .sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:6px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
-#passwordOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;}
-.pass-box{background:#fff;padding:28px;border-radius:12px;text-align:center;width:90%;max-width:360px;}
-.pass-box h3{margin-bottom:12px;}
-.pass-box input{padding:8px;width:100%;font-size:16px;margin-bottom:12px;border:1px solid #bbb;border-radius:6px;}
-.pass-box button{padding:8px 16px;border:none;background:#667eea;color:white;border-radius:6px;cursor:pointer;}
-.pass-error{color:#e74c3c;font-weight:bold;font-size:15px;margin:10px 0;display:none;}
-.daily-pwd-tip{background:#eef4ff;padding:10px;border-radius:8px;margin-bottom:14px;font-size:14px;color:#2c3e50;}
 #disclaimerModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
 .disc-box{background:#fff;padding:24px;border-radius:12px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
 .disc-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
@@ -55,9 +42,6 @@ th{background:#667eea;color:#fff;}
 .btn{padding:8px 14px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer;font-size:15px;}
 .btn-finish{background:#27ae60;}
 .btn-clear-wrong{background:#e74c3c;}
-.btn-sm{padding:5px 10px;font-size:13px;}
-.btn-danger{background:#e74c3c;}
-.btn-gray{background:#999;}
 .exercise-item{margin:16px 0;}
 .q-num{font-weight:bold;margin-right:4px;}
 .q-syn-info{font-size:14px;color:#444;margin-bottom:10px;}
@@ -114,34 +98,7 @@ th{background:#667eea;color:#fff;}
 </head>
 <body oncontextmenu="return false;">
 
-<div id="humanVerifyOverlay">
-  <div class="human-box">
-    <h3>🔒 人類身份驗證</h3>
-    <p>請回答簡單算術題解鎖本練習系統</p>
-    <p style="margin:8px 0;" id="humanQText">問題：</p>
-    <input id="humanAnsInput" placeholder="輸入計算結果數字">
-    <div class="human-error" id="humanErr">答案錯誤，請重新輸入</div>
-    <br>
-    <button id="humanCheckBtn">確認解鎖</button>
-  </div>
-</div>
-
 <div id="timerBadge">⏱ 00:00</div>
-
-<div class="browser-tip" style="display:none;">
-💡 建議使用瀏覽器（Chrome、Edge、Safari）打開，體驗更佳！
-</div>
-
-<div id="passwordOverlay" style="display:none;">
-  <div class="pass-box">
-    <h3>🔐 輸入密碼</h3>
-    <div class="daily-pwd-tip">📅 今日密碼提示：<span id="dailyPasswordText"></span></div>
-    <input id="passInput" type="password" placeholder="請輸入密碼">
-    <div id="passErrorMsg" class="pass-error">❌ 密碼錯誤，請重新輸入！</div>
-    <br>
-    <button id="passBtn">確認</button>
-  </div>
-</div>
 
 <div id="disclaimerModal" style="display:none;">
   <div class="disc-box">
@@ -152,7 +109,6 @@ th{background:#667eea;color:#fff;}
     </div>
     <label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意以上條款</label>
     <div class="disc-buttons">
-      <button id="discCancel" style="background:#888">取消</button>
       <button id="discOk">同意並進入系統</button>
     </div>
   </div>
@@ -252,55 +208,10 @@ th{background:#667eea;color:#fff;}
 </div>
 </div>
 
-<script src="config.js"></script>
 <script src="words.js"></script>
 <script src="cloze.js"></script>
 <script src="grammar.js"></script>
 <script>
-/* ================== 人類驗證 ================== */
-let humanAnswer = 0;
-const humanQDom = document.getElementById("humanQText");
-const humanOverlay = document.getElementById("humanVerifyOverlay");
-const humanErrDom = document.getElementById("humanErr");
-const humanInput = document.getElementById("humanAnsInput");
-const humanCheckBtn = document.getElementById("humanCheckBtn");
-
-function generateHumanQuiz(){
-  const a = Math.floor(Math.random()*6)+1;
-  const b = Math.floor(Math.random()*6)+1;
-  humanAnswer = a + b;
-  humanQDom.innerText = `問題：${a} + ${b}，請輸入計算結果`;
-  humanInput.value = "";
-  humanErrDom.style.display="none";
-}
-generateHumanQuiz();
-setInterval(generateHumanQuiz,600000);
-
-humanCheckBtn.onclick = function(){
-  humanErrDom.style.display="none";
-  const val = humanInput.value.trim();
-  if(val === String(humanAnswer)){
-    humanOverlay.style.display="none";
-    document.querySelector(".browser-tip").style.display="block";
-    document.getElementById("passwordOverlay").style.display="flex";
-  }else{
-    humanErrDom.style.display="block";
-  }
-};
-humanInput.addEventListener("keydown",e=>{if(e.key==="Enter") humanCheckBtn.click();});
-
-/* ================== 訪客統計 ================== */
-(function countVisitor(){
-  if(!localStorage.getItem("hasVisited")){
-    let visitNum = Number(localStorage.getItem("totalVisit")||0);
-    visitNum++;
-    localStorage.setItem("totalVisit",visitNum);
-    localStorage.setItem("hasVisited","true");
-  }
-})();
-
-let userPwd = PWD_USER;
-let dailyPasswordTip = DAILY_TIP || "";
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList = [];
@@ -310,11 +221,9 @@ let currentWrongRecordIndex = -1;
 let speakToken = 0;
 let currentUnitName = "第三單元";
 
-/* 目前使用哪個單元的詞庫/完形（將來切換單元時改這裡） */
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
 
-/* ================== 計時器 + 導航鎖 ================== */
 let isPracticing = false;
 let timerInterval = null;
 let timerStartTime = 0;
@@ -348,44 +257,9 @@ function guardNavigation(){
   return false;
 }
 
-/* ================== 內容載入 ================== */
-function loadContent(key, defaultVal){
-  try{
-    const raw = localStorage.getItem(key);
-    if(!raw){
-      localStorage.setItem(key, JSON.stringify(defaultVal));
-      return JSON.parse(JSON.stringify(defaultVal));
-    }
-    const arr = JSON.parse(raw);
-    if(!Array.isArray(arr)) throw new Error("not array");
-    return arr;
-  }catch(e){
-    localStorage.setItem(key, JSON.stringify(defaultVal));
-    return JSON.parse(JSON.stringify(defaultVal));
-  }
-}
-function saveContent(key, arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+/* 開場直接顯示免責聲明 */
+document.getElementById("disclaimerModal").style.display = "flex";
 
-/* ================== 密碼頁 ================== */
-document.getElementById("dailyPasswordText").innerText = dailyPasswordTip||"（無今日密碼提示）";
-
-document.getElementById("passBtn").onclick = function(){
-  const inputVal = document.getElementById("passInput").value.trim();
-  const errMsg = document.getElementById("passErrorMsg");
-  errMsg.style.display="none";
-  if(inputVal === userPwd){
-    document.getElementById("passwordOverlay").style.display="none";
-    document.getElementById("disclaimerModal").style.display="flex";
-  }else{
-    errMsg.style.display="block";
-  }
-};
-document.getElementById("passInput").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("passBtn").click();});
-
-document.getElementById("discCancel").onclick = function(){
-  document.getElementById("disclaimerModal").style.display="none";
-  document.getElementById("passwordOverlay").style.display="flex";
-};
 document.getElementById("discOk").onclick = function(){
   if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}
   document.getElementById("disclaimerModal").style.display="none";
@@ -394,7 +268,6 @@ document.getElementById("discOk").onclick = function(){
   renderRecordList();
 };
 
-/* ================== 導航 ================== */
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
   if(!guardNavigation()) return;
@@ -467,7 +340,6 @@ function openExerciseUnit(unit){
   });
 }
 
-/* ================== 三檔判分 ================== */
 function normalizeWord(w){
   let x = w.toLowerCase();
   const suffixes = ["ing","ied","ed","es","s","d"];
