@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第三單元｜英語單詞綜合練習系統</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;-webkit-touch-callout:none;}
+#humanVerifyOverlay{position:fixed;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;}
+.human-box{background:#fff;color:#222;padding:28px;border-radius:12px;max-width:400px;width:90%;text-align:center;}
+.human-box input{width:100%;padding:10px;margin:12px 0;font-size:16px;}
+.human-box button{padding:9px 20px;border:none;background:#667eea;color:white;border-radius:6px;cursor:pointer;}
+.human-error{color:red;margin-top:8px;display:none;}
+.browser-tip{background:#fff3cd;color:#856404;border:1px solid #ffeeba;padding:12px;border-radius:8px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.5;}
+h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
+.sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;line-height:1.5;}
+.warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
+.top-nav{max-width:900px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.top-btn{padding:11px 20px;border:none;border-radius:10px;background:#667eea;color:#fff;font-size:15px;cursor:pointer;}
+.box-wrap{max-width:900px;margin:0 auto 18px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);display:none;}
+.box-wrap.show{display:block;}
+.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:8px;background:#dde2fc;color:#2c3e50;font-size:15px;cursor:pointer;}
+.sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:6px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
+#passwordOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.pass-box{background:#fff;padding:28px;border-radius:12px;text-align:center;width:90%;max-width:360px;}
+.pass-box h3{margin-bottom:12px;}
+.pass-box input{padding:8px;width:100%;font-size:16px;margin-bottom:12px;border:1px solid #bbb;border-radius:6px;}
+.pass-box button{padding:8px 16px;border:none;background:#667eea;color:white;border-radius:6px;cursor:pointer;}
+.pass-error{color:#e74c3c;font-weight:bold;font-size:15px;margin:10px 0;display:none;}
+.daily-pwd-tip{background:#eef4ff;padding:10px;border-radius:8px;margin-bottom:14px;font-size:14px;color:#2c3e50;}
+#disclaimerModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
+.disc-box{background:#fff;padding:24px;border-radius:12px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
+.disc-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
+.disc-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
+.word-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #667eea;}
+.word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;}
+.word-num{width:24px;height:24px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.word-en{font-weight:bold;font-size:17px;color:#2c3e50;}
+.speaker{cursor:pointer;color:#667eea;margin-left:4px;}
+.word-pos{font-size:12px;color:#777;font-style:italic;}
+.word-cn{color:#e74c3c;font-weight:bold;margin:8px 0;font-size:15px;}
+.label{color:#667eea;font-weight:bold;}
+.syn{background:#f0f4ff;padding:3px 6px;border-radius:4px;color:#4a69bd;}
+.tip{color:#27ae60;margin-top:6px;font-size:14px;}
+.table-container{margin-top:16px;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;}
+th,td{border:1px solid #ddd;padding:8px 6px;font-size:13px;word-break:break-word;overflow-wrap:break-word;vertical-align:middle;}
+th{background:#667eea;color:#fff;}
+.range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.check-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;}
+.mode-select-group{margin:12px 0;padding:14px;background:#f4f7ff;border-radius:8px;font-size:14px;}
+.percent-row{margin:8px 0;}
+.btn{padding:8px 14px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer;font-size:15px;}
+.btn-finish{background:#27ae60;}
+.btn-clear-wrong{background:#e74c3c;}
+.btn-sm{padding:5px 10px;font-size:13px;}
+.btn-danger{background:#e74c3c;}
+.btn-gray{background:#999;}
+.exercise-item{margin:16px 0;}
+.q-num{font-weight:bold;margin-right:4px;}
+.q-syn-info{font-size:14px;color:#444;margin-bottom:10px;}
+.user-display{width:100%;padding:10px;border:1px solid #bbb;border-radius:6px;font-size:16px;min-height:44px;background:#fafafa;margin-bottom:10px;user-select:text;}
+.feedback{margin-top:8px;font-size:15px;}
+.ok{color:#27ae60;}
+.half{color:#f39c12;font-weight:bold;}
+.err{color:#e74c3c;}
+.result-page{margin-top:20px;padding:20px;background:#f0f8ff;border-radius:10px;display:none;}
+.result-item{padding:10px;margin:8px 0;border-radius:6px;background:#fff;font-size:14px;}
+.score-text{font-size:20px;font-weight:bold;text-align:center;margin:14px 0;white-space:pre-line;line-height:1.6;}
+.record-list{margin-bottom:18px;}
+.finish-area{margin:16px 0;text-align:center;}
+.lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:8px;margin-bottom:14px;font-weight:bold;font-size:14px;}
+#creatorPanel{display:none;max-width:900px;margin:30px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 10px #0002;}
+#creatorPanel h2{margin-bottom:18px;color:#2c3e50;}
+.back-btn{background:#999;margin-top:14px;}
+.tip-text{color:#e74c3c;font-size:14px;margin:10px 0;}
+.stat-block{background:#f4f7ff;padding:14px;border-radius:8px;margin:14px 0;}
+.creator-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #eef4ff;padding-bottom:2px;}
+.creator-tab{padding:9px 18px;border:none;background:#f4f7ff;color:#2c3e50;font-size:15px;cursor:pointer;border-radius:8px 8px 0 0;font-weight:bold;}
+.creator-tab.active{background:#667eea;color:#fff;}
+.creator-tab-content{display:none;}
+.creator-tab-content.active{display:block;}
+.admin-form{background:#f8f9fb;padding:14px;border-radius:10px;margin-bottom:16px;border:1px solid #e0e6f0;}
+.admin-form h4{margin-bottom:10px;color:#2c3e50;font-size:15px;}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+.form-row label{font-size:13px;color:#555;min-width:80px;}
+.form-row input,.form-row textarea{flex:1;min-width:120px;padding:7px 10px;border:1px solid #bbb;border-radius:6px;font-size:14px;font-family:inherit;}
+.form-row textarea{min-height:60px;resize:vertical;}
+.form-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.admin-list{max-height:420px;overflow-y:auto;border:1px solid #e0e6f0;border-radius:8px;}
+.admin-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 12px;border-bottom:1px solid #f0f0f0;gap:10px;font-size:13px;}
+.admin-item:last-child{border-bottom:none;}
+.admin-item:hover{background:#f8f9fb;}
+.admin-item-main{flex:1;min-width:0;line-height:1.5;word-break:break-word;}
+.admin-item-en{font-weight:bold;color:#2c3e50;}
+.admin-item-sub{color:#888;font-size:12px;margin-top:2px;}
+.admin-item-actions{display:flex;gap:4px;flex-shrink:0;}
+.import-area{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:1px;z-index:9998;display:none;box-shadow:0 3px 10px rgba(231,76,60,0.4);}
+.record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.15s,box-shadow 0.15s;}
+.record-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(102,126,234,0.28);}
+.record-card-left{flex:1;min-width:0;}
+.record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
+.record-meta{font-size:13px;color:#666;margin:3px 0;word-break:break-word;}
+.record-card-right{text-align:center;min-width:110px;padding-left:14px;border-left:1px dashed #ddd;flex-shrink:0;}
+.record-percent{font-size:26px;font-weight:bold;line-height:1.1;}
+.record-percent-label{font-size:12px;color:#999;margin-top:2px;}
+.record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
+.cloze-sentence-trigger{cursor:pointer;padding:10px 12px;background:#f8f9fb;border-radius:8px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;transition:background 0.15s;user-select:none;}
+.cloze-sentence-trigger:hover{background:#eef4ff;}
+.cloze-sentence{flex:1;font-weight:bold;line-height:1.55;color:#2c3e50;font-size:15px;}
+.cloze-toggle-icon{color:#667eea;font-size:12px;transition:transform 0.2s;margin-top:5px;}
+.cloze-item.expanded .cloze-toggle-icon{transform:rotate(180deg);}
+.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:3px solid #f39c12;border-radius:6px;margin-bottom:10px;animation:slideDown 0.2s ease-out;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:14px;font-size:13px;cursor:pointer;user-select:none;transition:border-color 0.15s,background 0.15s;}
+.cloze-chip:hover{border-color:#667eea;background:#f4f7ff;}
+.cloze-speaker{background:#667eea;color:#fff;border:none;padding:5px 14px;border-radius:14px;font-size:13px;cursor:pointer;transition:background 0.15s;}
+.cloze-speaker:hover{background:#5567d5;}
+.key-cn{color:#555;font-size:14px;}
+.cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:6px;font-size:14px;color:#444;line-height:1.65;border:1px dashed #e0e0e0;}
+.drag-bank{background:#f4f7ff;padding:14px;border-radius:10px;margin-bottom:18px;border:1px dashed #a9b7e8;}
+.bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:10px;}
+.bank-words{display:flex;flex-wrap:wrap;gap:8px;}
+.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;user-select:none;transition:all 0.15s;}
+.drag-word:hover{background:#eef4ff;}
+.drag-word.selected{background:#667eea;color:#fff;}
+.drag-word.used{opacity:0.3;cursor:not-allowed;border-style:dashed;}
+.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;vertical-align:middle;transition:all 0.15s;margin:0 4px;}
+.drop-zone:hover,.drop-zone.over{background:#eef4ff;border-color:#667eea;}
+.drop-zone.filled{background:#e8f0ff;border-style:solid;border-color:#667eea;color:#2c3e50;font-weight:bold;}
+.zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;color:#1e8449 !important;}
+.zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;color:#b9770e !important;}
+.zone-err{border-color:#e74c3c !important;background:#fdecea !important;color:#c0392b !important;}
+.drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div id="humanVerifyOverlay">
+  <div class="human-box">
+    <h3>🔒 人類身份驗證</h3>
+    <p>請回答簡單算術題解鎖本練習系統</p>
+    <p style="margin:8px 0;" id="humanQText">問題：</p>
+    <input id="humanAnsInput" placeholder="輸入計算結果數字">
+    <div class="human-error" id="humanErr">答案錯誤，請重新輸入</div>
+    <br>
+    <button id="humanCheckBtn">確認解鎖</button>
+  </div>
+</div>
+
+<div id="timerBadge">⏱ 00:00</div>
+
+<div class="browser-tip" style="display:none;">
+💡 建議使用瀏覽器（Chrome、Edge、Safari）打開，體驗更佳！語音朗讀、本地儲存成績、錯題本功能都可以正常使用。
+</div>
+
+<div id="passwordOverlay" style="display:none;">
+  <div class="pass-box">
+    <h3>🔐 輸入密碼</h3>
+    <div class="daily-pwd-tip">📅 今日密碼提示：<span id="dailyPasswordText"></span></div>
+    <input id="passInput" type="password" placeholder="請輸入密碼">
+    <div id="passErrorMsg" class="pass-error">❌ 密碼錯誤，請重新輸入！</div>
+    <br>
+    <button id="passBtn">確認</button>
+  </div>
+</div>
+
+<div id="disclaimerModal" style="display:none;">
+  <div class="disc-box">
+    <h3 style="text-align:center">公告｜免責聲明</h3>
+    <div class="disc-text">
+本英語單詞練習系統為純公益非商用學習工具，完全免費，不收取任何費用，僅可供個人英語自學練習使用，嚴禁商用轉載、二次售賣。<br>
+網站所有學習內容僅作教學參考，不承擔使用本系統所衍生的任何責任。使用本網站即代表您已閱讀並同意本聲明。
+    </div>
+    <label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意以上條款</label>
+    <div class="disc-buttons">
+      <button id="discCancel" style="background:#888">取消</button>
+      <button id="discOk">同意並進入系統</button>
+    </div>
+  </div>
+</div>
+
+<div id="creatorPanel">
+  <h2>👑 創作者管理後台</h2>
+  <div class="creator-tabs">
+    <button class="creator-tab active" data-tab="stats">📊 統計</button>
+    <button class="creator-tab" data-tab="words">📚 生詞管理</button>
+    <button class="creator-tab" data-tab="cloze">📝 完形管理</button>
+    <button class="creator-tab" data-tab="settings">⚙️ 設定與密碼</button>
+  </div>
+
+  <div class="creator-tab-content active" id="tab-stats">
+    <div class="stat-block">
+      <h3>📊 系統統計</h3>
+      <p>累計瀏覽人數：<span id="visitCount">0</span></p>
+      <p>總作答次數：<span id="totalAttempt">0</span></p>
+      <p>整體平均正確率：<span id="avgAcc">0</span>%</p>
+      <div id="statList"></div>
+      <br>
+      <button class="btn btn-danger" id="clearStat">清空統計數據</button>
+    </div>
+  </div>
+
+  <div class="creator-tab-content" id="tab-words">
+    <div class="stat-block">
+      <h3>📚 生詞管理</h3>
+      <p style="font-size:13px;color:#666;">當前共 <strong id="wordCount">0</strong> 個生詞。修改後立即套用到生詞池、默寫、完形、拖拽選擇。</p>
+    </div>
+    <div class="admin-form">
+      <h4 id="wordFormTitle">➕ 新增生詞</h4>
+      <div class="form-row"><label>英文</label><input id="w_en" placeholder="例如：example"></div>
+      <div class="form-row"><label>詞性</label><input id="w_pos" placeholder="例如：n. / v. / adj. / phr. v."></div>
+      <div class="form-row"><label>同義詞</label><input id="w_syn" placeholder="例如：instance"></div>
+      <div class="form-row"><label>同義詞中文</label><input id="w_synCn" placeholder="例如：例子"></div>
+      <div class="form-row"><label>中文</label><input id="w_cn" placeholder="例如：例子"></div>
+      <div class="form-row"><label>備註</label><textarea id="w_memo" placeholder="可留空"></textarea></div>
+      <div class="form-actions">
+        <button class="btn" id="wordSaveBtn">保存</button>
+        <button class="btn btn-gray" id="wordCancelBtn" style="display:none;">取消編輯</button>
+      </div>
+    </div>
+    <div class="import-area">
+      <button class="btn btn-sm" id="wordExportBtn">📤 匯出 JSON</button>
+      <button class="btn btn-sm" id="wordImportBtn">📥 匯入 JSON（覆蓋）</button>
+      <button class="btn btn-sm btn-danger" id="wordResetBtn">🔄 重置為預設</button>
+      <input type="file" id="wordImportFile" accept=".json" style="display:none;">
+    </div>
+    <div class="admin-list" id="wordAdminList"></div>
+  </div>
+
+  <div class="creator-tab-content" id="tab-cloze">
+    <div class="stat-block">
+      <h3>📝 完形管理</h3>
+      <p style="font-size:13px;color:#666;">當前共 <strong id="clozeCount">0</strong> 個句子。修改後立即套用到完形填空、拖拽選擇。</p>
+      <p style="font-size:13px;color:#c0392b;">⚠️ 句子中必須用 <code>（______）</code>、<code>(______)</code> 或 <code>______</code> 標示空位。</p>
+    </div>
+    <div class="admin-form">
+      <h4 id="clozeFormTitle">➕ 新增完形句子</h4>
+      <div class="form-row"><label>句子</label><textarea id="c_sentence" placeholder="例如：I saw a （______） yesterday."></textarea></div>
+      <div class="form-row"><label>答案</label><input id="c_answer" placeholder="要填入的單詞"></div>
+      <div class="form-row"><label>同義詞</label><input id="c_syn" placeholder="提示用的同義詞"></div>
+      <div class="form-row"><label>關鍵詞中文</label><input id="c_cnKey" placeholder="關鍵詞的中文"></div>
+      <div class="form-row"><label>整句中文</label><textarea id="c_cnSentence" placeholder="整句翻譯（可留空）"></textarea></div>
+      <div class="form-actions">
+        <button class="btn" id="clozeSaveBtn">保存</button>
+        <button class="btn btn-gray" id="clozeCancelBtn" style="display:none;">取消編輯</button>
+      </div>
+    </div>
+    <div class="import-area">
+      <button class="btn btn-sm" id="clozeExportBtn">📤 匯出 JSON</button>
+      <button class="btn btn-sm" id="clozeImportBtn">📥 匯入 JSON（覆蓋）</button>
+      <button class="btn btn-sm btn-danger" id="clozeResetBtn">🔄 重置為預設</button>
+      <input type="file" id="clozeImportFile" accept=".json" style="display:none;">
+    </div>
+    <div class="admin-list" id="clozeAdminList"></div>
+  </div>
+
+  <div class="creator-tab-content" id="tab-settings">
+    <div class="stat-block">
+      <h3>📅 設定今日密碼提示</h3>
+      <p>提示文字會顯示在登入密碼頁面</p>
+      <input id="dailyPwdInput" placeholder="輸入今日密碼提示文字" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;margin-top:8px;">
+      <br><br>
+      <button class="btn" id="saveDailyPwd">儲存今日密碼提示</button>
+      <p class="tip-text">例如：今日密碼：apple；可留空白不顯示</p>
+    </div>
+    <div class="stat-block">
+      <h3>🔐 密碼設定</h3>
+      <p>創作者密碼：<span id="nowCreatorPwd">••••••</span> <button class="btn btn-sm btn-gray" id="showCreatorPwd">顯示</button></p>
+      <input id="newCreatorPwdInput" placeholder="輸入新的創作者密碼" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;">
+      <br><br>
+      <button class="btn" id="saveNewCreatorPwd">儲存新創作者密碼</button>
+      <hr style="margin:18px 0;">
+      <p>當前使用者密碼：<span id="nowUserPwd">••••••</span> <button class="btn btn-sm btn-gray" id="showUserPwd">顯示</button></p>
+      <input id="newPwdInput" placeholder="輸入新的使用者密碼" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;">
+      <br><br>
+      <button class="btn" id="saveNewPwd">儲存新使用者密碼</button>
+      <p class="tip-text">提醒：所有修改只在本瀏覽器生效，清除瀏覽器資料會重置！</p>
+    </div>
+    <button class="btn back-btn" id="goToMain">前往單詞練習系統</button>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+<h1>第三單元｜英語單詞綜合練習系統</h1>
+<div class="sub-desc">本單元包含生詞池、練習題、錯題本；全部內容取自本次生成詞彙訓練素材</div>
+<div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
+
+<div class="top-nav">
+  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池</button>
+  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題</button>
+  <button class="top-btn" onclick="openWrongBook()">📒 錯題本</button>
+</div>
+
+<div id="vocabPool" class="box-wrap show">
+  <h2>📚 生詞池</h2>
+  <p style="margin:10px 0;">請選擇單元：</p>
+  <button class="unit-btn" onclick="openVocabUnit3()">第三單元</button>
+</div>
+
+<div id="vocabUnit3" class="box-wrap">
+  <h2>第三單元｜生詞池</h2>
+  <p style="margin:10px 0;">選擇模塊：</p>
+  <button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button>
+  <button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button>
+  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回生詞池</button>
+  <div id="cardPanel" style="margin-top:18px;"></div>
+  <div id="tablePanel" style="margin-top:18px;"></div>
+</div>
+
+<div id="exerciseRoot" class="box-wrap">
+  <h2>📝 練習題</h2>
+  <p style="margin:10px 0;">請選擇單元：</p>
+  <button class="unit-btn" onclick="openExerciseUnit3()">第三單元</button>
+</div>
+
+<div id="exerciseUnit3" class="box-wrap">
+  <h2>第三單元｜練習題</h2>
+  <p style="margin:10px 0;">請選擇練習類型：</p>
+  <button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button>
+  <button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button>
+  <button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button>
+  <button class="sub-btn" onclick="showRoot('exerciseRoot')">← 返回練習題</button>
+  <div id="writePanel" style="margin-top:18px;display:none;"></div>
+  <div id="clozePanel" style="margin-top:18px;display:none;"></div>
+  <div id="choicePanel" style="margin-top:18px;display:none;"></div>
+</div>
+
+<div id="wrongBookPanel" class="box-wrap">
+  <h2>📒 錯題本複習</h2>
+  <p style="margin:8px 0;font-size:14px;">點擊下方紀錄進入對應錯題重做</p>
+  <div class="record-list" id="recordList"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button>
+  </div>
+  <button class="sub-btn" onclick="backToMainRoot()" style="margin-top:16px;">← 返回首頁分類</button>
+</div>
+
+<div id="wrongRedoPanel" class="box-wrap">
+  <h2>🔁 錯題重做</h2>
+  <div id="wrongRedoSetting"></div>
+  <div id="wrongRedoArea"></div>
+  <div class="finish-area">
+    <button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button>
+  </div>
+  <div class="result-page" id="wrongRedoResultPage"></div>
+  <button class="sub-btn" onclick="openWrongBook()" style="margin-top:16px;">← 返回錯題本列表</button>
+</div>
+</div>
+
+<script>
+let humanAnswer = 0;
+const humanQDom = document.getElementById("humanQText");
+const humanOverlay = document.getElementById("humanVerifyOverlay");
+const humanErrDom = document.getElementById("humanErr");
+const humanInput = document.getElementById("humanAnsInput");
+const humanCheckBtn = document.getElementById("humanCheckBtn");
+
+function generateHumanQuiz(){
+  const a = Math.floor(Math.random()*6)+1;
+  const b = Math.floor(Math.random()*6)+1;
+  humanAnswer = a + b;
+  humanQDom.innerText = `問題：${a} + ${b}，請輸入計算結果`;
+  humanInput.value = "";
+  humanErrDom.style.display="none";
+}
+generateHumanQuiz();
+setInterval(generateHumanQuiz,600000);
+
+humanCheckBtn.onclick = function(){
+  humanErrDom.style.display="none";
+  const val = humanInput.value.trim();
+  if(val === String(humanAnswer)){
+    humanOverlay.style.display="none";
+    document.querySelector(".browser-tip").style.display="block";
+    document.getElementById("passwordOverlay").style.display="flex";
+  }else{
+    humanErrDom.style.display="block";
+  }
+};
+humanInput.addEventListener("keydown",e=>{if(e.key==="Enter") humanCheckBtn.click();});
+
+(function countVisitor(){
+  if(!localStorage.getItem("hasVisited")){
+    let visitNum = Number(localStorage.getItem("totalVisit")||0);
+    visitNum++;
+    localStorage.setItem("totalVisit",visitNum);
+    localStorage.setItem("hasVisited","true");
+  }
+})();
+
+let CREATOR_PWD = localStorage.getItem("creatorPwd")||"teddy66674594";
+let userPwd = localStorage.getItem("userPwd")||"teddy666";
+let dailyPasswordTip = localStorage.getItem("dailyPasswordTip")||"";
+let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
+let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
+let currentQuizList =
