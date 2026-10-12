@@ -162,9 +162,7 @@ th{background:#667eea;color:#fff;}
 
 <div id="grammarRoot" class="box-wrap">
   <h2>📖 語法練習</h2>
-  <p style="margin:10px 0;font-size:14px;">選擇課次（可多選）：</p>
-  <div id="grammarUnitFilter" style="margin-bottom:12px;"></div>
-  <p style="margin:10px 0;font-size:14px;">選擇時態（可多選）：</p>
+  <p style="margin:10px 0;font-size:14px;">選擇要練的時態（可多選）：</p>
   <div id="grammarTopicFilter" style="margin-bottom:12px;"></div>
   <div class="range-input-area">
     <span>抽題數量：</span>
@@ -985,46 +983,41 @@ function openGrammarRoot(){
   document.getElementById("grammarPickCount").value = "";
 }
 function renderGrammarFilters(){
-  const unitWrap = document.getElementById("grammarUnitFilter");
-  const topicWrap = document.getElementById("grammarTopicFilter");
-  unitWrap.innerHTML = "";
-  topicWrap.innerHTML = "";
-  Object.keys(GRAMMAR_UNITS).forEach(u => {
-    const label = document.createElement("label");
-    label.style.marginRight = "14px";
-    label.style.display = "inline-block";
-    label.innerHTML = `<input type="checkbox" class="grammar-unit-cb" value="${u}" checked> ${u}`;
-    unitWrap.appendChild(label);
+  const wrap = document.getElementById("grammarTopicFilter");
+  wrap.innerHTML = "";
+  const topicSet = new Map();
+  GRAMMAR_BANK.forEach(item => {
+    if(!topicSet.has(item.topic)){
+      topicSet.set(item.topic, item.topicEn);
+    }
   });
-  const allTopics = new Set();
-  Object.values(GRAMMAR_UNITS).forEach(topics => Object.keys(topics).forEach(t => allTopics.add(t)));
-  allTopics.forEach(t => {
-    const label = document.createElement("label");
-    label.style.marginRight = "14px";
-    label.style.display = "inline-block";
-    label.innerHTML = `<input type="checkbox" class="grammar-topic-cb" value="${t}" checked> ${t}`;
-    topicWrap.appendChild(label);
+  topicSet.forEach((topicEn, topic) => {
+    const div = document.createElement("label");
+    div.style.display = "flex";
+    div.style.alignItems = "center";
+    div.style.padding = "12px 14px";
+    div.style.marginBottom = "8px";
+    div.style.background = "#f4f7ff";
+    div.style.borderRadius = "10px";
+    div.style.cursor = "pointer";
+    div.style.fontSize = "15px";
+    div.innerHTML = `
+      <input type="checkbox" class="grammar-topic-cb" value="${topic}" checked style="margin-right:10px;transform:scale(1.2);">
+      <span style="font-weight:bold;color:#2c3e50;">${topic}</span>
+      <span style="color:#888;font-size:13px;margin-left:8px;">（${topicEn}）</span>
+    `;
+    wrap.appendChild(div);
   });
 }
 function startGrammarQuiz(){
   startTimer();
-  const selUnits = Array.from(document.querySelectorAll(".grammar-unit-cb:checked")).map(cb => cb.value);
   const selTopics = Array.from(document.querySelectorAll(".grammar-topic-cb:checked")).map(cb => cb.value);
-  if(selUnits.length === 0 || selTopics.length === 0){
-    alert("請至少勾選一個課次和一個時態");
+  if(selTopics.length === 0){
+    alert("請至少勾選一個時態");
     stopTimer();
     return;
   }
-  const pool = [];
-  selUnits.forEach(u => {
-    Object.keys(GRAMMAR_UNITS[u]).forEach(t => {
-      if(selTopics.includes(t)){
-        GRAMMAR_UNITS[u][t].forEach(item => {
-          pool.push({...item, unit: u, topic: t});
-        });
-      }
-    });
-  });
+  const pool = GRAMMAR_BANK.filter(item => selTopics.includes(item.topic));
   if(pool.length === 0){
     alert("沒有符合條件的題目，請調整勾選");
     stopTimer();
@@ -1044,7 +1037,7 @@ function startGrammarQuiz(){
     const div = document.createElement("div");
     div.className = "exercise-item";
     div.innerHTML = `
-      <div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.unit}｜${item.topic}]</span> ${item.q}</div>
+      <div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.topic}]</span> ${item.q}</div>
       <div class="q-syn-info">提示：${item.hint}</div>
       <input class="user-display" data-ans="${item.a}" placeholder="填入正確形式">
       <div class="feedback"></div>
@@ -1104,16 +1097,7 @@ function saveGrammarRecord(){
 function startWrongGrammar(){
   startTimer();
   const rec = exerciseRecords[currentWrongRecordIndex];
-  const wrongQ = [];
-  Object.keys(GRAMMAR_UNITS).forEach(u => {
-    Object.keys(GRAMMAR_UNITS[u]).forEach(t => {
-      GRAMMAR_UNITS[u][t].forEach(item => {
-        if(rec.wrongQuestions && rec.wrongQuestions.includes(item.q)){
-          wrongQ.push({...item, unit: u, topic: t});
-        }
-      });
-    });
-  });
+  const wrongQ = GRAMMAR_BANK.filter(item => rec.wrongQuestions && rec.wrongQuestions.includes(item.q));
   const areaDom = document.getElementById("wrongRedoArea");
   const finishBtn = document.getElementById("wrongRedoFinishBtn");
   areaDom.innerHTML = "";
@@ -1125,7 +1109,7 @@ function startWrongGrammar(){
     const div = document.createElement("div");
     div.className = "exercise-item";
     div.innerHTML = `
-      <div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.unit}｜${item.topic}]</span> ${item.q}</div>
+      <div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.topic}]</span> ${item.q}</div>
       <div class="q-syn-info">提示：${item.hint}</div>
       <input class="user-display" data-ans="${item.a}" placeholder="填入正確形式">
       <div class="feedback"></div>
