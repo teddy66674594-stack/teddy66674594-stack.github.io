@@ -18,7 +18,6 @@ New Zealand's Lake Tekapo, a glacial lake in the South Island, is famous for its
 South Africa's Karoo Desert, a vast semi-arid region, is a hidden haven for nature lovers. It's home to unique succulent plants and rare animals like the Karoo korhaan bird. Travelers can go on guided wildlife drives or stay at family-run farms. Locals, many of Boer descent, welcome guests with homemade biltong (dried meat) and share tales of life in this quiet, windswept land.
 
 These unusual spots offer big benefits. They let travelers avoid crowded tourist hubs, connect deeply with local cultures, and experience nature in its purest form. Visiting them also supports small local businesses—from family farms to indigenous-led tours—helping protect these special places for future generations.`,
-      // 每次抽 5 道選擇題（共 20 道）
       choices: [
         {q:"What is the main purpose of the passage?", opts:["To compare three famous Southern Hemisphere cities.","To introduce three lesser-known travel destinations in the Southern Hemisphere.","To explain why deserts are the best travel destinations.","To criticize crowded tourist spots."], ans:"B", exp:"文章開頭即點明主題：介紹三個較不知名的南半球旅遊點。"},
         {q:"Why is Chile's Atacama Desert called the 'driest place on Earth'?", opts:["It never rains there.","It has very little rainfall.","It has no water at all.","It has only salt water."], ans:"B", exp:"Atacama 降雨極少，故稱最乾燥之地。"},
@@ -41,7 +40,6 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         {q:"Which of the following is NOT mentioned in the passage?", opts:["Hot springs in Atacama.","Milky Way at Lake Tekapo.","The Eiffel Tower in Paris.","Wildlife drives in the Karoo."], ans:"C", exp:"巴黎鐵塔與本文無關。"},
         {q:"What is the author's attitude towards these destinations?", opts:["Negative.","Indifferent.","Appreciative and encouraging.","Critical."], ans:"C", exp:"文章語氣正面、推薦。"}
       ],
-      // 每次抽 6 道填空題（共 30 道）
       blanks: [
         {q:"Most ___ think of beaches or big cities when planning trips.", a:"travelers", hint:"旅客"},
         {q:"Three such destinations stand out for their ___ charm.", a:"distinct", hint:"獨特的"},
@@ -74,7 +72,6 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         {q:"Visiting them supports small local ___.", a:"businesses", hint:"生意"},
         {q:"This helps ___ these special places for future generations.", a:"protect", hint:"保護"}
       ],
-      // 長按查詞詞庫（覆蓋文章主要詞彙）
       vocab: {
         "travelers":"旅客","hemisphere":"半球","lesser-known":"較不知名的","destinations":"目的地",
         "distinct":"獨特的","charm":"魅力","driest":"最乾燥的","otherworldly":"超乎尋常的",
@@ -86,20 +83,18 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         "communities":"社區","generations":"世代","semi-arid":"半乾燥","haven":"避風港",
         "succulent":"多肉的","rare":"稀有的","wildlife":"野生動物","descent":"後裔","biltong":"肉乾",
         "windswept":"受風吹的","benefits":"好處","crowded":"擁擠的","hubs":"中心","cultures":"文化",
-        "purest":"最純淨的","businesses":"生意","protect":"保護","generations":"世代","avoid":"避免"
+        "purest":"最純淨的","businesses":"生意","protect":"保護","avoid":"避免","passage":"段落"
       }
     },
     "語境完形填空": {
       title: "Context Cloze (P.9)",
       page: "P.9",
       intro: "💡 長按任意英文單詞，可查看中文意思。",
-      // 3 個段落，每段含填空位置
       paragraphs: [
         {text:"Joyce: Noah, can you do me a (1. ___), please? Noah: Of course, what can I do for you?"},
         {text:"Joyce: Would you please take care (2. ___) my dog for me? I'm visiting my grandparents this weekend to celebrate my grandma's birthday. Noah: I'd be (3. ___) to do so. I love dogs. Joyce: Thank you so much! Really appreciate your help!"},
         {text:"A notice: Flats for Students — Are you a student looking for a (4. ___) to live? A retired couple have two fully equipped flats available for rent in a quiet and safe area. The flats are located in Susses Street and are within walking distance of the campus. They are also situated conveniently close to bus routes. (5. ___) flats have two bedrooms and a kitchen. (6. ___) parties please contact me at mmsoo@gmail.com.uk"}
       ],
-      // 9 道題，答案 + 選項 + 解析
       items: [
         {no:1, q:"(1) can you do me a ___", opts:["flavor","favor","favoring","flavoring"], ans:"B", exp:"do sb a favor 是固定搭配，意為「幫某人一個忙」。"},
         {no:2, q:"(2) take care ___ my dog", opts:["on","after","of","for"], ans:"C", exp:"take care of 是固定搭配，意為「照顧」。"},
@@ -111,7 +106,6 @@ These unusual spots offer big benefits. They let travelers avoid crowded tourist
         {no:8, q:"(8) like ___ we should invite", opts:["who","to whom","whose","which"], ans:"A", exp:"who 作 invite 的賓語，意為「邀請誰」。"},
         {no:9, q:"(9) if you have ___ suggestions", opts:["another","others","the other","any other"], ans:"D", exp:"any other 意為「任何其他的」，用於疑問句/否定句。"}
       ],
-      // 語境完形的詞庫
       vocab: {
         "favor":"幫忙","appreciate":"感激","notice":"公告","flats":"公寓","equipped":"配備齊全的",
         "available":"可用的","rent":"出租","campus":"校園","conveniently":"方便地","routes":"路線",
