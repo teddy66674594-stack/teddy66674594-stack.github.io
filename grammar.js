@@ -1,10 +1,8 @@
 // ============================================
 // 語法題庫｜4 種時態 × 20 題 = 共 80 題
-// 以後加題目：往對應時態的陣列裡加即可
 // ============================================
 
 const GRAMMAR_BANK = [
-  // ===== 現在完成時 (Present Perfect) =====
   {topic:"現在完成時", topicEn:"Present Perfect", q:"My bike is OK again now. I ___ (repair) it.", a:"have repaired", hint:"動作已完成", exp:"強調修已完成，車能騎了。"},
   {topic:"現在完成時", topicEn:"Present Perfect", q:"Somebody ___ (eat) all the chocolates. The box is empty.", a:"has eaten", hint:"強調結果", exp:"強調吃已完成，盒子空了。"},
   {topic:"現在完成時", topicEn:"Present Perfect", q:"How many pages of that book ___ you ___ (read)?", a:"have read", hint:"問數量", exp:"問讀了多少頁，強調結果。"},
@@ -26,7 +24,6 @@ const GRAMMAR_BANK = [
   {topic:"現在完成時", topicEn:"Present Perfect", q:"I ___ (not / finish) reading the book yet.", a:"haven't finished", hint:"yet", exp:"yet 用於否定。"},
   {topic:"現在完成時", topicEn:"Present Perfect", q:"They ___ (know) each other since childhood.", a:"have known", hint:"狀態動詞", exp:"know 是狀態動詞。"},
 
-  // ===== 現在完成進行時 (Present Perfect Continuous) =====
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"How long ___ you ___ (read) that book?", a:"have you been reading", hint:"問多久", exp:"問讀了多久，強調持續。"},
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"It ___ (rain) for two hours.", a:"has been raining", hint:"for + 持續", exp:"強調從過去持續到現在。"},
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"I ___ (wait) for you since 8 o'clock.", a:"have been waiting", hint:"since", exp:"強調一直等到現在。"},
@@ -68,7 +65,6 @@ const GRAMMAR_BANK = [
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"We ___ (talk) on the phone for an hour.", a:"have been talking", hint:"for", exp:"強調聊了一小時。"},
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"She ___ (dream) of visiting Paris since childhood.", a:"has been dreaming", hint:"since", exp:"強調從小一直夢想。"},
 
-  // ===== 過去完成時 (Past Perfect) =====
   {topic:"過去完成時", topicEn:"Past Perfect", q:"Sarah and Paul went to the same party last week, but they ___ (not / see) each other before.", a:"hadn't seen", hint:"過去的過去", exp:"去派對是過去，之前沒見過是過去的過去。"},
   {topic:"過去完成時", topicEn:"Past Perfect", q:"When Sarah arrived at the party, Paul ___ already ___ (go) home.", a:"had gone", hint:"過去的過去", exp:"保羅回家在莎拉到達之前。"},
   {topic:"過去完成時", topicEn:"Past Perfect", q:"I ___ just ___ (finish) my homework when the phone rang.", a:"had finished", hint:"過去的過去", exp:"寫完作業在電話響之前。"},
@@ -90,7 +86,6 @@ const GRAMMAR_BANK = [
   {topic:"過去完成時", topicEn:"Past Perfect", q:"They ___ (live) in Paris before they moved to Rome.", a:"had lived", hint:"before", exp:"搬到羅馬之前住過巴黎。"},
   {topic:"過去完成時", topicEn:"Past Perfect", q:"By the end of last year, I ___ (read) 50 books.", a:"had read", hint:"By", exp:"到去年底已讀了 50 本。"},
 
-  // ===== 過去完成進行時 (Past Perfect Continuous) =====
   {topic:"過去完成進行時", topicEn:"Past Perfect Continuous", q:"I was very tired when I got home. I ___ (work) hard all day.", a:"had been working", hint:"強調持續", exp:"到家前一直努力工作。"},
   {topic:"過去完成進行時", topicEn:"Past Perfect Continuous", q:"The sun was shining, but the ground was wet. It ___ (rain).", a:"had been raining", hint:"強調持續", exp:"太陽出來前一直下雨。"},
   {topic:"過去完成進行時", topicEn:"Past Perfect Continuous", q:"She ___ (wait) for two hours when he finally arrived.", a:"had been waiting", hint:"for", exp:"等他之前已等了兩小時。"},
