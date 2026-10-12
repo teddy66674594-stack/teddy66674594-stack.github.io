@@ -72,32 +72,6 @@ th{background:#667eea;color:#fff;}
 .record-list{margin-bottom:18px;}
 .finish-area{margin:16px 0;text-align:center;}
 .lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:8px;margin-bottom:14px;font-weight:bold;font-size:14px;}
-#creatorPanel{display:none;max-width:900px;margin:30px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 10px #0002;}
-#creatorPanel h2{margin-bottom:18px;color:#2c3e50;}
-.back-btn{background:#999;margin-top:14px;}
-.tip-text{color:#e74c3c;font-size:14px;margin:10px 0;}
-.stat-block{background:#f4f7ff;padding:14px;border-radius:8px;margin:14px 0;}
-.creator-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #eef4ff;padding-bottom:2px;}
-.creator-tab{padding:9px 18px;border:none;background:#f4f7ff;color:#2c3e50;font-size:15px;cursor:pointer;border-radius:8px 8px 0 0;font-weight:bold;}
-.creator-tab.active{background:#667eea;color:#fff;}
-.creator-tab-content{display:none;}
-.creator-tab-content.active{display:block;}
-.admin-form{background:#f8f9fb;padding:14px;border-radius:10px;margin-bottom:16px;border:1px solid #e0e6f0;}
-.admin-form h4{margin-bottom:10px;color:#2c3e50;font-size:15px;}
-.form-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
-.form-row label{font-size:13px;color:#555;min-width:80px;}
-.form-row input,.form-row textarea{flex:1;min-width:120px;padding:7px 10px;border:1px solid #bbb;border-radius:6px;font-size:14px;font-family:inherit;}
-.form-row textarea{min-height:60px;resize:vertical;}
-.form-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
-.admin-list{max-height:420px;overflow-y:auto;border:1px solid #e0e6f0;border-radius:8px;}
-.admin-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 12px;border-bottom:1px solid #f0f0f0;gap:10px;font-size:13px;}
-.admin-item:last-child{border-bottom:none;}
-.admin-item:hover{background:#f8f9fb;}
-.admin-item-main{flex:1;min-width:0;line-height:1.5;word-break:break-word;}
-.admin-item-en{font-weight:bold;color:#2c3e50;}
-.admin-item-sub{color:#888;font-size:12px;margin-top:2px;}
-.admin-item-actions{display:flex;gap:4px;flex-shrink:0;}
-.import-area{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
 #timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:1px;z-index:9998;display:none;box-shadow:0 3px 10px rgba(231,76,60,0.4);}
 .record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.15s,box-shadow 0.15s;}
 .record-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(102,126,234,0.28);}
@@ -184,107 +158,6 @@ th{background:#667eea;color:#fff;}
   </div>
 </div>
 
-<div id="creatorPanel">
-  <h2>👑 創作者管理後台</h2>
-  <div class="creator-tabs">
-    <button class="creator-tab active" data-tab="stats">📊 統計</button>
-    <button class="creator-tab" data-tab="words">📚 生詞管理</button>
-    <button class="creator-tab" data-tab="cloze">📝 完形管理</button>
-    <button class="creator-tab" data-tab="settings">⚙️ 設定與密碼</button>
-  </div>
-
-  <div class="creator-tab-content active" id="tab-stats">
-    <div class="stat-block">
-      <h3>📊 系統統計</h3>
-      <p>累計瀏覽人數：<span id="visitCount">0</span></p>
-      <p>總作答次數：<span id="totalAttempt">0</span></p>
-      <p>整體平均正確率：<span id="avgAcc">0</span>%</p>
-      <div id="statList"></div>
-      <br>
-      <button class="btn btn-danger" id="clearStat">清空統計數據</button>
-    </div>
-  </div>
-
-  <div class="creator-tab-content" id="tab-words">
-    <div class="stat-block">
-      <h3>📚 生詞管理</h3>
-      <p style="font-size:13px;color:#666;">當前共 <strong id="wordCount">0</strong> 個生詞。修改後立即套用到生詞池、默寫、完形、拖拽選擇。</p>
-    </div>
-    <div class="admin-form">
-      <h4 id="wordFormTitle">➕ 新增生詞</h4>
-      <div class="form-row"><label>英文</label><input id="w_en" placeholder="例如：example"></div>
-      <div class="form-row"><label>詞性</label><input id="w_pos" placeholder="例如：n. / v. / adj. / phr. v."></div>
-      <div class="form-row"><label>同義詞</label><input id="w_syn" placeholder="例如：instance"></div>
-      <div class="form-row"><label>同義詞中文</label><input id="w_synCn" placeholder="例如：例子"></div>
-      <div class="form-row"><label>中文</label><input id="w_cn" placeholder="例如：例子"></div>
-      <div class="form-row"><label>備註</label><textarea id="w_memo" placeholder="可留空"></textarea></div>
-      <div class="form-actions">
-        <button class="btn" id="wordSaveBtn">保存</button>
-        <button class="btn btn-gray" id="wordCancelBtn" style="display:none;">取消編輯</button>
-      </div>
-    </div>
-    <div class="import-area">
-      <button class="btn btn-sm" id="wordExportBtn">📤 匯出 JSON</button>
-      <button class="btn btn-sm" id="wordImportBtn">📥 匯入 JSON（覆蓋）</button>
-      <button class="btn btn-sm btn-danger" id="wordResetBtn">🔄 重置為預設</button>
-      <input type="file" id="wordImportFile" accept=".json" style="display:none;">
-    </div>
-    <div class="admin-list" id="wordAdminList"></div>
-  </div>
-
-  <div class="creator-tab-content" id="tab-cloze">
-    <div class="stat-block">
-      <h3>📝 完形管理</h3>
-      <p style="font-size:13px;color:#666;">當前共 <strong id="clozeCount">0</strong> 個句子。修改後立即套用到完形填空、拖拽選擇。</p>
-      <p style="font-size:13px;color:#c0392b;">⚠️ 句子中必須用 <code>（______）</code>、<code>(______)</code> 或 <code>______</code> 標示空位。</p>
-    </div>
-    <div class="admin-form">
-      <h4 id="clozeFormTitle">➕ 新增完形句子</h4>
-      <div class="form-row"><label>句子</label><textarea id="c_sentence" placeholder="例如：I saw a （______） yesterday."></textarea></div>
-      <div class="form-row"><label>答案</label><input id="c_answer" placeholder="要填入的單詞"></div>
-      <div class="form-row"><label>同義詞</label><input id="c_syn" placeholder="提示用的同義詞"></div>
-      <div class="form-row"><label>關鍵詞中文</label><input id="c_cnKey" placeholder="關鍵詞的中文"></div>
-      <div class="form-row"><label>整句中文</label><textarea id="c_cnSentence" placeholder="整句翻譯（可留空）"></textarea></div>
-      <div class="form-actions">
-        <button class="btn" id="clozeSaveBtn">保存</button>
-        <button class="btn btn-gray" id="clozeCancelBtn" style="display:none;">取消編輯</button>
-      </div>
-    </div>
-    <div class="import-area">
-      <button class="btn btn-sm" id="clozeExportBtn">📤 匯出 JSON</button>
-      <button class="btn btn-sm" id="clozeImportBtn">📥 匯入 JSON（覆蓋）</button>
-      <button class="btn btn-sm btn-danger" id="clozeResetBtn">🔄 重置為預設</button>
-      <input type="file" id="clozeImportFile" accept=".json" style="display:none;">
-    </div>
-    <div class="admin-list" id="clozeAdminList"></div>
-  </div>
-
-  <div class="creator-tab-content" id="tab-settings">
-    <div class="stat-block">
-      <h3>📅 設定今日密碼提示</h3>
-      <p>提示文字會顯示在登入密碼頁面</p>
-      <input id="dailyPwdInput" placeholder="輸入今日密碼提示文字" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;margin-top:8px;">
-      <br><br>
-      <button class="btn" id="saveDailyPwd">儲存今日密碼提示</button>
-      <p class="tip-text">例如：今日密碼：apple；可留空白不顯示</p>
-    </div>
-    <div class="stat-block">
-      <h3>🔐 密碼設定</h3>
-      <p>創作者密碼：<span id="nowCreatorPwd">••••••</span> <button class="btn btn-sm btn-gray" id="showCreatorPwd">顯示</button></p>
-      <input id="newCreatorPwdInput" placeholder="輸入新的創作者密碼" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;">
-      <br><br>
-      <button class="btn" id="saveNewCreatorPwd">儲存新創作者密碼</button>
-      <hr style="margin:18px 0;">
-      <p>當前使用者密碼：<span id="nowUserPwd">••••••</span> <button class="btn btn-sm btn-gray" id="showUserPwd">顯示</button></p>
-      <input id="newPwdInput" placeholder="輸入新的使用者密碼" style="width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;">
-      <br><br>
-      <button class="btn" id="saveNewPwd">儲存新使用者密碼</button>
-      <p class="tip-text">提醒：所有修改只在本瀏覽器生效，清除瀏覽器資料會重置！</p>
-    </div>
-    <button class="btn back-btn" id="goToMain">前往單詞練習系統</button>
-  </div>
-</div>
-
 <div id="mainContent" style="display:none;">
 <h1>第三單元｜英語單詞綜合練習系統</h1>
 <div class="sub-desc">本單元包含生詞池、練習題、錯題本；全部內容取自本次生成詞彙訓練素材</div>
@@ -352,6 +225,7 @@ th{background:#667eea;color:#fff;}
 </div>
 </div>
 
+<script src="config.js"></script>
 <script>
 let humanAnswer = 0;
 const humanQDom = document.getElementById("humanQText");
@@ -393,9 +267,8 @@ humanInput.addEventListener("keydown",e=>{if(e.key==="Enter") humanCheckBtn.clic
   }
 })();
 
-let CREATOR_PWD = localStorage.getItem("creatorPwd")||"teddy66674594";
-let userPwd = localStorage.getItem("userPwd")||"teddy666";
-let dailyPasswordTip = localStorage.getItem("dailyPasswordTip")||"";
+let userPwd = PWD_USER;
+let dailyPasswordTip = DAILY_TIP || "";
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList = [];
@@ -524,14 +397,6 @@ let wordList = loadContent("customWordList", DEFAULT_WORD_LIST);
 let clozeBank = loadContent("customClozeBank", DEFAULT_CLOZE_BANK);
 
 document.getElementById("dailyPasswordText").innerText = dailyPasswordTip||"（無今日密碼提示）";
-document.getElementById("dailyPwdInput").value = dailyPasswordTip;
-document.getElementById("saveDailyPwd").onclick = function(){
-  let val = document.getElementById("dailyPwdInput").value.trim();
-  localStorage.setItem("dailyPasswordTip",val);
-  dailyPasswordTip=val;
-  document.getElementById("dailyPasswordText").innerText = val||"（無今日密碼提示）";
-  alert("今日密碼提示已儲存！");
-};
 
 document.getElementById("passBtn").onclick = function(){
   const inputVal = document.getElementById("passInput").value.trim();
@@ -540,10 +405,6 @@ document.getElementById("passBtn").onclick = function(){
   if(inputVal === userPwd){
     document.getElementById("passwordOverlay").style.display="none";
     document.getElementById("disclaimerModal").style.display="flex";
-  }else if(inputVal === CREATOR_PWD){
-    document.getElementById("passwordOverlay").style.display="none";
-    document.getElementById("creatorPanel").style.display="block";
-    renderCreatorPanel();
   }else{
     errMsg.style.display="block";
   }
@@ -676,6 +537,7 @@ function shuffleArray(arr){
   }
   return copy;
 }
+
 function showWriteExercise(){
   const p=document.getElementById("writePanel");
   document.getElementById("clozePanel").style.display="none";
@@ -992,6 +854,7 @@ function saveClozeRecord(){
   renderRecordList();
   alert("✅已保存練習紀錄，可前往錯題本查看");
 }
+
 function showChoiceExercise(){
   const p=document.getElementById("choicePanel");
   document.getElementById("writePanel").style.display="none";
@@ -1494,299 +1357,6 @@ function startWrongChoice(){
     stopTimer();
   };
 }
-
-let creatorPwdRevealed = false;
-let userPwdRevealed = false;
-
-function renderCreatorPanel(){
-  const cPwdEl = document.getElementById("nowCreatorPwd");
-  const uPwdEl = document.getElementById("nowUserPwd");
-  cPwdEl.innerText = creatorPwdRevealed ? CREATOR_PWD : "••••••";
-  uPwdEl.innerText = userPwdRevealed ? userPwd : "••••••";
-  document.getElementById("dailyPwdInput").value = dailyPasswordTip;
-  const visitNum = Number(localStorage.getItem("totalVisit")||0);
-  document.getElementById("visitCount").innerText = visitNum;
-  document.getElementById("totalAttempt").innerText = attemptStats.length;
-  let totalScore = 0, totalQ = 0;
-  attemptStats.forEach(s=>{ totalScore += s.score; totalQ += s.total; });
-  const avg = totalQ>0 ? Number((totalScore/totalQ*100).toFixed(2)) : 0;
-  document.getElementById("avgAcc").innerText = avg;
-  const statList = document.getElementById("statList");
-  statList.innerHTML = "";
-  if(attemptStats.length===0){
-    statList.innerHTML = "<p style='color:#888;font-size:14px;'>尚無作答數據</p>";
-  }else{
-    const recent = attemptStats.slice(-10).reverse();
-    recent.forEach((s,i)=>{
-      statList.innerHTML += `<p style="font-size:14px;margin:4px 0;">最近第${i+1}次：${s.score}/${s.total}（${Number((s.score/s.total*100).toFixed(2))}%）</p>`;
-    });
-  }
-  renderWordAdminList();
-  renderClozeAdminList();
-}
-document.getElementById("showCreatorPwd").onclick = function(){
-  creatorPwdRevealed = !creatorPwdRevealed;
-  this.innerText = creatorPwdRevealed ? "隱藏" : "顯示";
-  renderCreatorPanel();
-};
-document.getElementById("showUserPwd").onclick = function(){
-  userPwdRevealed = !userPwdRevealed;
-  this.innerText = userPwdRevealed ? "隱藏" : "顯示";
-  renderCreatorPanel();
-};
-document.querySelectorAll(".creator-tab").forEach(tab=>{
-  tab.onclick = function(){
-    document.querySelectorAll(".creator-tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".creator-tab-content").forEach(c=>c.classList.remove("active"));
-    this.classList.add("active");
-    document.getElementById("tab-" + this.dataset.tab).classList.add("active");
-  };
-});
-
-let editingWordNo = null;
-function renderWordAdminList(){
-  document.getElementById("wordCount").innerText = wordList.length;
-  const wrap = document.getElementById("wordAdminList");
-  wrap.innerHTML = "";
-  if(wordList.length===0){ wrap.innerHTML = "<p style='padding:14px;color:#888;'>尚無生詞</p>"; return; }
-  wordList.slice().sort((a,b)=>a.no-b.no).forEach(w=>{
-    const div = document.createElement("div");
-    div.className = "admin-item";
-    div.innerHTML = `
-      <div class="admin-item-main">
-        <span class="admin-item-en">#${w.no} ${w.en}</span>
-        <span style="color:#888;">（${w.pos||""}）</span>
-        <div class="admin-item-sub">同義：${w.syn||""}｜中文：${w.cn||""}｜備註：${w.memo||""}</div>
-      </div>
-      <div class="admin-item-actions">
-        <button class="btn btn-sm" data-edit="${w.no}">編輯</button>
-        <button class="btn btn-sm btn-danger" data-del="${w.no}">刪除</button>
-      </div>`;
-    wrap.appendChild(div);
-  });
-  wrap.querySelectorAll("[data-edit]").forEach(btn=>{ btn.onclick = ()=>editWord(Number(btn.dataset.edit)); });
-  wrap.querySelectorAll("[data-del]").forEach(btn=>{ btn.onclick = ()=>deleteWord(Number(btn.dataset.del)); });
-}
-function editWord(no){
-  const w = wordList.find(x=>x.no===no);
-  if(!w) return;
-  editingWordNo = no;
-  document.getElementById("w_en").value = w.en||"";
-  document.getElementById("w_pos").value = w.pos||"";
-  document.getElementById("w_syn").value = w.syn||"";
-  document.getElementById("w_synCn").value = w.synCn||"";
-  document.getElementById("w_cn").value = w.cn||"";
-  document.getElementById("w_memo").value = w.memo||"";
-  document.getElementById("wordFormTitle").innerText = `✏️ 編輯生詞 #${no}`;
-  document.getElementById("wordCancelBtn").style.display = "inline-block";
-  document.getElementById("tab-words").scrollIntoView({behavior:"smooth"});
-}
-function resetWordForm(){
-  editingWordNo = null;
-  ["w_en","w_pos","w_syn","w_synCn","w_cn","w_memo"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("wordFormTitle").innerText = "➕ 新增生詞";
-  document.getElementById("wordCancelBtn").style.display = "none";
-}
-document.getElementById("wordCancelBtn").onclick = resetWordForm;
-document.getElementById("wordSaveBtn").onclick = function(){
-  const en = document.getElementById("w_en").value.trim();
-  if(!en){ alert("英文不可為空"); return; }
-  const data = {
-    en: en, pos: document.getElementById("w_pos").value.trim(),
-    syn: document.getElementById("w_syn").value.trim(),
-    synCn: document.getElementById("w_synCn").value.trim(),
-    cn: document.getElementById("w_cn").value.trim(),
-    memo: document.getElementById("w_memo").value.trim()
-  };
-  if(editingWordNo !== null){
-    const idx = wordList.findIndex(x=>x.no===editingWordNo);
-    if(idx>=0){ wordList[idx] = {...wordList[idx], ...data}; }
-  }else{
-    const maxNo = wordList.length ? Math.max(...wordList.map(w=>w.no)) : 0;
-    wordList.push({no: maxNo+1, ...data});
-  }
-  saveContent("customWordList", wordList);
-  resetWordForm();
-  renderWordAdminList();
-  alert("✅ 保存成功");
-};
-function deleteWord(no){
-  if(!confirm(`確定刪除生詞 #${no}？`)) return;
-  wordList = wordList.filter(w=>w.no!==no);
-  saveContent("customWordList", wordList);
-  renderWordAdminList();
-}
-document.getElementById("wordExportBtn").onclick = function(){
-  const blob = new Blob([JSON.stringify(wordList, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "wordList_" + new Date().toISOString().slice(0,10) + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
-};
-document.getElementById("wordImportBtn").onclick = function(){ document.getElementById("wordImportFile").click(); };
-document.getElementById("wordImportFile").onchange = function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try{
-      const arr = JSON.parse(ev.target.result);
-      if(!Array.isArray(arr)) throw new Error("必須是 JSON 陣列");
-      arr.forEach((w,i)=>{ if(typeof w.en !== "string" || !w.en.trim()) throw new Error("第"+(i+1)+"筆缺少 en"); });
-      arr.forEach((w,i)=>{ w.no = i+1; });
-      if(!confirm(`即將用 ${arr.length} 筆資料覆蓋現有生詞，確定？`)) return;
-      wordList = arr;
-      saveContent("customWordList", wordList);
-      renderWordAdminList();
-      alert("✅ 導入成功");
-    }catch(err){ alert("導入失敗：" + err.message); }
-    e.target.value = "";
-  };
-  reader.readAsText(file);
-};
-document.getElementById("wordResetBtn").onclick = function(){
-  if(!confirm("確定恢復為預設 30 個生詞？")) return;
-  wordList = JSON.parse(JSON.stringify(DEFAULT_WORD_LIST));
-  saveContent("customWordList", wordList);
-  renderWordAdminList();
-  alert("已重置為預設");
-};
-
-let editingClozeIdx = null;
-function renderClozeAdminList(){
-  document.getElementById("clozeCount").innerText = clozeBank.length;
-  const wrap = document.getElementById("clozeAdminList");
-  wrap.innerHTML = "";
-  if(clozeBank.length===0){ wrap.innerHTML = "<p style='padding:14px;color:#888;'>尚無完形句子</p>"; return; }
-  clozeBank.forEach((c,idx)=>{
-    const div = document.createElement("div");
-    div.className = "admin-item";
-    div.innerHTML = `
-      <div class="admin-item-main">
-        <span class="admin-item-en">#${idx+1} 答案：${c.answer}</span>
-        <div class="admin-item-sub">${c.sentence}</div>
-        <div class="admin-item-sub">同義：${c.syn||""}｜關鍵詞中文：${c.cnKey||""}</div>
-      </div>
-      <div class="admin-item-actions">
-        <button class="btn btn-sm" data-edit="${idx}">編輯</button>
-        <button class="btn btn-sm btn-danger" data-del="${idx}">刪除</button>
-      </div>`;
-    wrap.appendChild(div);
-  });
-  wrap.querySelectorAll("[data-edit]").forEach(btn=>{ btn.onclick = ()=>editCloze(Number(btn.dataset.edit)); });
-  wrap.querySelectorAll("[data-del]").forEach(btn=>{ btn.onclick = ()=>deleteCloze(Number(btn.dataset.del)); });
-}
-function editCloze(idx){
-  const c = clozeBank[idx];
-  if(!c) return;
-  editingClozeIdx = idx;
-  document.getElementById("c_sentence").value = c.sentence||"";
-  document.getElementById("c_answer").value = c.answer||"";
-  document.getElementById("c_syn").value = c.syn||"";
-  document.getElementById("c_cnKey").value = c.cnKey||"";
-  document.getElementById("c_cnSentence").value = c.cnSentence||"";
-  document.getElementById("clozeFormTitle").innerText = `✏️ 編輯完形 #${idx+1}`;
-  document.getElementById("clozeCancelBtn").style.display = "inline-block";
-  document.getElementById("tab-cloze").scrollIntoView({behavior:"smooth"});
-}
-function resetClozeForm(){
-  editingClozeIdx = null;
-  ["c_sentence","c_answer","c_syn","c_cnKey","c_cnSentence"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("clozeFormTitle").innerText = "➕ 新增完形句子";
-  document.getElementById("clozeCancelBtn").style.display = "none";
-}
-document.getElementById("clozeCancelBtn").onclick = resetClozeForm;
-document.getElementById("clozeSaveBtn").onclick = function(){
-  const sentence = document.getElementById("c_sentence").value.trim();
-  const answer = document.getElementById("c_answer").value.trim();
-  if(!sentence || !answer){ alert("句子與答案不可為空"); return; }
-  if(!/（\s*_+\s*）|\(\s*_+\s*\)|_+/.test(sentence)){ alert("句子中必須包含空位標示：（______）、(______) 或 ______"); return; }
-  const data = {
-    sentence, answer,
-    syn: document.getElementById("c_syn").value.trim(),
-    cnKey: document.getElementById("c_cnKey").value.trim(),
-    cnSentence: document.getElementById("c_cnSentence").value.trim()
-  };
-  if(editingClozeIdx !== null) clozeBank[editingClozeIdx] = data;
-  else clozeBank.push(data);
-  saveContent("customClozeBank", clozeBank);
-  resetClozeForm();
-  renderClozeAdminList();
-  alert("✅ 保存成功");
-};
-function deleteCloze(idx){
-  if(!confirm(`確定刪除完形 #${idx+1}？`)) return;
-  clozeBank.splice(idx,1);
-  saveContent("customClozeBank", clozeBank);
-  renderClozeAdminList();
-}
-document.getElementById("clozeExportBtn").onclick = function(){
-  const blob = new Blob([JSON.stringify(clozeBank, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "clozeBank_" + new Date().toISOString().slice(0,10) + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
-};
-document.getElementById("clozeImportBtn").onclick = function(){ document.getElementById("clozeImportFile").click(); };
-document.getElementById("clozeImportFile").onchange = function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try{
-      const arr = JSON.parse(ev.target.result);
-      if(!Array.isArray(arr)) throw new Error("必須是 JSON 陣列");
-      arr.forEach((c,i)=>{
-        if(typeof c.sentence !== "string" || typeof c.answer !== "string")
-          throw new Error("第"+(i+1)+"筆缺少 sentence 或 answer");
-      });
-      if(!confirm(`即將用 ${arr.length} 筆資料覆蓋現有完形，確定？`)) return;
-      clozeBank = arr;
-      saveContent("customClozeBank", clozeBank);
-      renderClozeAdminList();
-      alert("✅ 導入成功");
-    }catch(err){ alert("導入失敗：" + err.message); }
-    e.target.value = "";
-  };
-  reader.readAsText(file);
-};
-document.getElementById("clozeResetBtn").onclick = function(){
-  if(!confirm("確定恢復為預設 30 個完形句子？")) return;
-  clozeBank = JSON.parse(JSON.stringify(DEFAULT_CLOZE_BANK));
-  saveContent("customClozeBank", clozeBank);
-  renderClozeAdminList();
-  alert("已重置為預設");
-};
-
-document.getElementById("saveNewCreatorPwd").onclick = function(){
-  const newPwd = document.getElementById("newCreatorPwdInput").value.trim();
-  if(!newPwd){alert("密碼不可空白");return;}
-  CREATOR_PWD = newPwd; localStorage.setItem("creatorPwd",newPwd); renderCreatorPanel(); alert("創作者密碼更新成功");
-};
-document.getElementById("saveNewPwd").onclick = function(){
-  const newPwd = document.getElementById("newPwdInput").value.trim();
-  if(!newPwd){alert("密碼不可空白");return;}
-  userPwd = newPwd; localStorage.setItem("userPwd",newPwd); renderCreatorPanel(); alert("使用者密碼更新成功");
-};
-document.getElementById("goToMain").onclick = function(){
-  document.getElementById("creatorPanel").style.display="none";
-  document.getElementById("mainContent").style.display="block";
-  showRoot("vocabPool");
-};
-document.getElementById("clearStat").onclick = function(){
-  if(confirm("確定要清空全部統計數據？")){
-    localStorage.removeItem("totalVisit");
-    localStorage.removeItem("hasVisited");
-    localStorage.removeItem("attemptStats");
-    attemptStats=[];
-    renderCreatorPanel();
-    alert("統計已清空");
-  }
-};
 </script>
 </body>
 </html>
