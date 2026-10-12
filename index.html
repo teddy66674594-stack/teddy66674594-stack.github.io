@@ -399,3 +399,1395 @@ let dailyPasswordTip = localStorage.getItem("dailyPasswordTip")||"";
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList =
+[];
+let quizType = "";
+let exerciseStartTime = 0;
+let currentWrongRecordIndex = -1;
+let speakToken = 0;
+
+let isPracticing = false;
+let timerInterval = null;
+let timerStartTime = 0;
+
+function startTimer(){
+  isPracticing = true;
+  timerStartTime = Date.now();
+  exerciseStartTime = timerStartTime;
+  const badge = document.getElementById("timerBadge");
+  badge.style.display = "block";
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimerDisplay, 1000);
+}
+function updateTimerDisplay(){
+  const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const s = String(elapsed % 60).padStart(2, "0");
+  document.getElementById("timerBadge").innerText = `⏱ ${m}:${s}`;
+}
+function stopTimer(){
+  isPracticing = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById("timerBadge").style.display = "none";
+}
+function guardNavigation(){
+  if(!isPracticing) return true;
+  const ok = confirm("⚠️ 練習進行中，離開將丟失本次進度。\n確定要離開嗎？");
+  if(ok){ stopTimer(); return true; }
+  return false;
+}
+
+const DEFAULT_WORD_LIST = [
+  {no:1, en:"conventional", pos:"adj.", syn:"traditional", synCn:"傳統的", cn:"传统的", memo:"形容風俗、習慣等合乎傳統"},
+  {no:2, en:"entice", pos:"v.", syn:"tempt", synCn:"引誘", cn:"引诱", memo:"entice somebody to do something引誘某人做某事"},
+  {no:3, en:"venture", pos:"v.", syn:"expedition", synCn:"冒險遠征", cn:"冒险", memo:"venture to do sth 冒險去做；過去式ventured"},
+  {no:4, en:"conjure up", pos:"phr. v.", syn:"evoke", synCn:"喚起", cn:"联想起", memo:"conjure up memories 喚起回憶"},
+  {no:5, en:"glacier", pos:"n.", syn:"a large mass of ice", synCn:"大塊冰體", cn:"冰川", memo:"複數形式glaciers"},
+  {no:6, en:"awe‑inspiring", pos:"adj.", syn:"breathtaking", synCn:"令人震撼的", cn:"壮丽的", memo:"多用來描寫風景壯麗震撼"},
+  {no:7, en:"solar", pos:"adj.", syn:"sun‑related", synCn:"與太陽有關", cn:"太阳的", memo:"solar energy太陽能"},
+  {no:8, en:"proximity", pos:"n.", syn:"nearness", synCn:"接近", cn:"邻近", memo:"in proximity to 靠近……"},
+  {no:9, en:"monarchy", pos:"n.", syn:"a system of having a king or queen", synCn:"君主制度", cn:"君主制", memo:"mon‑表示君主相關"},
+  {no:10, en:"delicacy", pos:"n.", syn:"gourmet item", synCn:"美食", cn:"美食佳肴", memo:"指特色珍貴食物"},
+  {no:11, en:"comprise", pos:"v.", syn:"consist of", synCn:"由…組成", cn:"包括", memo:"A comprises B  A由B組成"},
+  {no:12, en:"recommend", pos:"v.", syn:"suggest", synCn:"建議", cn:"推荐", memo:"recommend sth to somebody向某人推薦某物"},
+  {no:13, en:"phenomenon", pos:"n.", syn:"an unusual or interesting event", synCn:"奇異事件", cn:"现象", memo:"複數phenomena"},
+  {no:14, en:"visible", pos:"adj.", syn:"observable", synCn:"可觀察的", cn:"可见的", memo:"vis‑看；‑ible可……的"},
+  {no:15, en:"atmosphere", pos:"n.", syn:"a mixture of gases surrounding a planet", synCn:"行星周圍氣體", cn:"大气层", memo:"也可表示氣氛"},
+  {no:16, en:"engage in", pos:"phr. v.", syn:"take part in", synCn:"參加", cn:"参与", memo:"engage in activities參加各類活動"},
+  {no:17, en:"once‑in‑a‑lifetime", pos:"adj.", syn:"unique", synCn:"獨特的", cn:"千载难逢的", memo:"一生難得一次的經歷"},
+  {no:18, en:"cosmopolitan", pos:"adj.", syn:"international", synCn:"國際化的", cn:"国际化的", memo:"多用形容都市國際多元"},
+  {no:19, en:"cuisine", pos:"n.", syn:"culinary style", synCn:"烹飪風格", cn:"烹饪风格；菜肴", memo:"local cuisine當地菜餚風味"},
+  {no:20, en:"bound", pos:"adj.", syn:"almost certain", synCn:"幾乎必然", cn:"必然的", memo:"be bound to do 一定會做某事"},
+  {no:21, en:"destination", pos:"n.", syn:"place", synCn:"地點", cn:"目的地", memo:"tourist destination旅遊目的地"},
+  {no:22, en:"overlooked", pos:"adj.", syn:"underrated", synCn:"被低估的", cn:"被忽略的", memo:"來自動詞overlook忽視"},
+  {no:23, en:"region", pos:"n.", syn:"area", synCn:"區域", cn:"地区", memo:"rural region鄉村地區"},
+  {no:24, en:"several", pos:"adj.", syn:"many", synCn:"許多", cn:"数个", memo:"several +可數名詞複數"},
+  {no:25, en:"combine with", pos:"phr. v.", syn:"pair with", synCn:"與…配對", cn:"与……结合", memo:"combine A with B把A與B結合"},
+  {no:26, en:"wrap up", pos:"phr. v.", syn:"conclude", synCn:"結束", cn:"结束", memo:"wrap up a journey結束旅程"},
+  {no:27, en:"range", pos:"n.", syn:"variety", synCn:"多樣種類", cn:"范围", memo:"a wide range of各式各樣"},
+  {no:28, en:"check out", pos:"phr. v.", syn:"see", synCn:"查看", cn:"查看", memo:"check out something前去參觀、看一看"},
+  {no:29, en:"entirely", pos:"adv.", syn:"completely", synCn:"完全地", cn:"完全地", memo:"entire形容詞完整，‑ly副詞後綴"},
+  {no:30, en:"date back to", pos:"phr. v.", syn:"originate from", synCn:"起源於", cn:"追溯到", memo:"後接年代、歷史時期"}
+];
+
+const DEFAULT_CLOZE_BANK = [
+  {sentence:"Many people only visit （______） travel destinations like London or Bangkok.", answer:"conventional", syn:"traditional", cnKey:"传统的", cnSentence:"許多人只去傳統的旅遊目的地，比如倫敦或曼谷。"},
+  {sentence:"However, Norway is a country that can （______） travellers of all ages who want adventure.", answer:"entice", syn:"tempt", cnKey:"引诱", cnSentence:"然而，挪威是一個能吸引各個年齡段想要冒險的旅行者的國家。"},
+  {sentence:"Last summer, I （______） to this exotic city called Tromsø.", answer:"ventured", syn:"expedition", cnKey:"冒险（前往）", cnSentence:"去年夏天，我冒險前往這座充滿異國情調的城市——特羅姆瑟。"},
+  {sentence:"The scenery looked like it was （______） by Scandinavia: massive glaciers, thick ice and snow covering the mountains.", answer:"conjured up", syn:"evoke", cnKey:"唤起", cnSentence:"那景色彷彿是由斯堪的納維亞變出來的：巨大的冰川、厚厚的冰雪覆蓋著群山。"},
+  {sentence:"The scenery looked like it was conjured up by Scandinavia: massive （______）, thick ice and snow covering the mountains.", answer:"glaciers", syn:"a large mass of ice", cnKey:"冰川", cnSentence:"那景色彷彿是由斯堪的納維亞變出來的：巨大的冰川、厚厚的冰雪覆蓋著群山。"},
+  {sentence:"Seeing the Northern Lights was one of the most （______） sights I have ever seen.", answer:"awe‑inspiring", syn:"breathtaking", cnKey:"令人震撼的", cnSentence:"看到北極光是我見過的最令人震撼的景象之一。"},
+  {sentence:"The （______） winds painted the sky in bright greens and purples.", answer:"solar", syn:"sun‑related", cnKey:"太阳的", cnSentence:"太陽風把天空染成了明亮的綠色和紫色。"},
+  {sentence:"Because of the （______） of the Arctic Ocean, the weather was very cold.", answer:"proximity", syn:"nearness", cnKey:"邻近", cnSentence:"由於靠近北冰洋，天氣非常寒冷。"},
+  {sentence:"Norway still has a （______）, with a king and queen respected by the people.", answer:"monarchy", syn:"a system of having a king or queen", cnKey:"君主制", cnSentence:"挪威仍然有君主制，國王和王后受到人民的尊敬。"},
+  {sentence:"A famous （______） in Norway is reindeer meat, which I tried and enjoyed.", answer:"delicacy", syn:"gourmet item", cnKey:"美食", cnSentence:"挪威著名的美食是馴鹿肉，我嘗過並且很喜歡。"},
+  {sentence:"The country does not （______） many large cities; most towns are small and quiet.", answer:"comprise", syn:"consist of", cnKey:"包括/由…组成", cnSentence:"這個國家沒有很多大城市；大部分城鎮都很小很安靜。"},
+  {sentence:"I highly （______） that you visit Norway if you love nature and beautiful landscapes.", answer:"recommend", syn:"suggest", cnKey:"推荐", cnSentence:"我強烈推薦你去挪威，如果你熱愛自然和美麗的風景。"},
+  {sentence:"Visiting Iceland is truly a （______） experience.", answer:"once‑in‑a‑lifetime", syn:"unique", cnKey:"千载难逢的", cnSentence:"去冰島真是一次千載難逢的經歷。"},
+  {sentence:"Although Reykjavik offers modern （______） living with nice cafes and shops, the real magic lies in nature.", answer:"cosmopolitan", syn:"international", cnKey:"国际化的", cnSentence:"雖然雷克雅未克有現代化的國際都會生活，但真正的魅力在大自然中。"},
+  {sentence:"The Northern Lights are clearly （______） on clear winter nights.", answer:"visible", syn:"observable", cnKey:"可见的", cnSentence:"在晴朗的冬夜，北極光清晰可見。"},
+  {sentence:"Local （______） includes fresh fish and lamb, which are delicious.", answer:"cuisine", syn:"culinary style", cnKey:"烹饪风格；菜肴", cnSentence:"當地菜餚包括新鮮的魚和羊肉，非常美味。"},
+  {sentence:"If you go, you are （______） to see amazing natural wonders.", answer:"bound", syn:"almost certain", cnKey:"必然的", cnSentence:"如果你去，你一定會看到令人驚嘆的自然奇觀。"},
+  {sentence:"This beautiful （______） happens when particles from the sun enter the earth's atmosphere.", answer:"phenomenon", syn:"an unusual or interesting event", cnKey:"现象", cnSentence:"當太陽粒子進入地球大氣層時，就會出現這種美麗的現象。"},
+  {sentence:"This beautiful phenomenon happens when particles from the sun enter the earth's （______）.", answer:"atmosphere", syn:"a mixture of gases surrounding a planet", cnKey:"大气层", cnSentence:"這種美麗的現象發生在太陽粒子進入地球大氣層時。"},
+  {sentence:"There are also many exciting activities to （______）, such as hiking on glaciers, visiting hot springs, and whale watching.", answer:"engage in", syn:"take part in", cnKey:"参与", cnSentence:"還有許多刺激的活動可以參與，比如在冰川上徒步、泡溫泉和賞鯨。"},
+  {sentence:"Many tourists only visit famous capitals, but there are many （______） holiday sightseeing spots worth exploring.", answer:"overlooked", syn:"underrated", cnKey:"被忽略的", cnSentence:"許多遊客只去著名的首都，但還有許多被忽略的度假觀光景點值得探索。"},
+  {sentence:"One example is a （______） in Denmark called the island of Funen.", answer:"destination", syn:"place", cnKey:"目的地", cnSentence:"一個例子是丹麥一個叫菲英島的目的地。"},
+  {sentence:"This peaceful （______） is perfect for travellers who want something different.", answer:"region", syn:"area", cnKey:"地区", cnSentence:"這個寧靜的地區非常適合想要與眾不同的旅行者。"},
+  {sentence:"Some castles there （______） the Renaissance period.", answer:"date back to", syn:"originate from", cnKey:"追溯到", cnSentence:"那裡的一些城堡可以追溯到文藝復興時期。"},
+  {sentence:"You can easily （______） a visit to Copenhagen, which is only a short train ride away.", answer:"combine with", syn:"pair with", cnKey:"与……结合", cnSentence:"你可以輕鬆地把哥本哈根的遊覽結合起來，只需短程火車即可到達。"},
+  {sentence:"The countryside is （______） covered with green fields, farms, and charming villages.", answer:"entirely", syn:"completely", cnKey:"完全地", cnSentence:"鄉村完全被綠色的田野、農場和迷人的村莊覆蓋著。"},
+  {sentence:"There are （______） small towns where locals are very welcoming.", answer:"several", syn:"a few", cnKey:"数个", cnSentence:"有幾個小鎮，當地人都非常熱情。"},
+  {sentence:"Visitors can enjoy a wide （______） of experiences, including cycling through scenic routes, visiting Hans Christian Andersen's childhood home, and tasting Danish pastries.", answer:"range", syn:"variety", cnKey:"范围", cnSentence:"遊客可以享受各種各樣的體驗。"},
+  {sentence:"If you love history and nature, （______） these amazing places.", answer:"check out", syn:"see", cnKey:"查看", cnSentence:"如果你喜歡歷史和自然，去看看這些令人驚嘆的地方吧。"},
+  {sentence:"Finally, to （______） the journey, you can relax by the coast and watch the sunset over the Baltic Sea.", answer:"wrap up", syn:"conclude", cnKey:"结束", cnSentence:"最後，為了結束旅程，你可以在海邊放鬆，看波羅的海上的日落。"}
+];
+
+function loadContent(key, defaultVal){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw){
+      localStorage.setItem(key, JSON.stringify(defaultVal));
+      return JSON.parse(JSON.stringify(defaultVal));
+    }
+    const arr = JSON.parse(raw);
+    if(!Array.isArray(arr)) throw new Error("not array");
+    return arr;
+  }catch(e){
+    localStorage.setItem(key, JSON.stringify(defaultVal));
+    return JSON.parse(JSON.stringify(defaultVal));
+  }
+}
+function saveContent(key, arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+
+let wordList = loadContent("customWordList", DEFAULT_WORD_LIST);
+let clozeBank = loadContent("customClozeBank", DEFAULT_CLOZE_BANK);
+
+document.getElementById("dailyPasswordText").innerText = dailyPasswordTip||"（無今日密碼提示）";
+document.getElementById("dailyPwdInput").value = dailyPasswordTip;
+document.getElementById("saveDailyPwd").onclick = function(){
+  let val = document.getElementById("dailyPwdInput").value.trim();
+  localStorage.setItem("dailyPasswordTip",val);
+  dailyPasswordTip=val;
+  document.getElementById("dailyPasswordText").innerText = val||"（無今日密碼提示）";
+  alert("今日密碼提示已儲存！");
+};
+
+document.getElementById("passBtn").onclick = function(){
+  const inputVal = document.getElementById("passInput").value.trim();
+  const errMsg = document.getElementById("passErrorMsg");
+  errMsg.style.display="none";
+  if(inputVal === userPwd){
+    document.getElementById("passwordOverlay").style.display="none";
+    document.getElementById("disclaimerModal").style.display="flex";
+  }else if(inputVal === CREATOR_PWD){
+    document.getElementById("passwordOverlay").style.display="none";
+    document.getElementById("creatorPanel").style.display="block";
+    renderCreatorPanel();
+  }else{
+    errMsg.style.display="block";
+  }
+};
+document.getElementById("passInput").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("passBtn").click();});
+
+document.getElementById("discCancel").onclick = function(){
+  document.getElementById("disclaimerModal").style.display="none";
+  document.getElementById("passwordOverlay").style.display="flex";
+};
+document.getElementById("discOk").onclick = function(){
+  if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}
+  document.getElementById("disclaimerModal").style.display="none";
+  document.getElementById("mainContent").style.display="block";
+  showRoot("vocabPool");
+  renderRecordList();
+};
+
+function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
+function showRoot(id){
+  if(!guardNavigation()) return;
+  hideAllBox();
+  document.getElementById(id).classList.add("show");
+}
+function openVocabUnit3(){
+  if(!guardNavigation()) return;
+  hideAllBox();
+  document.getElementById("vocabUnit3").classList.add("show");
+  document.getElementById("cardPanel").innerHTML="";
+  document.getElementById("tablePanel").innerHTML="";
+}
+function showVocabCard(){
+  const wrap=document.getElementById("cardPanel");
+  const tablePanel=document.getElementById("tablePanel");
+  tablePanel.innerHTML="";
+  wrap.innerHTML='<div class="word-grid"></div>';
+  const g=wrap.querySelector(".word-grid");
+  wordList.forEach(w=>{
+    const div=document.createElement("div");
+    div.className="word-card";
+    div.innerHTML=`
+    <div class="word-header">
+      <span class="word-num">${w.no}</span>
+      <div>
+        <span class="word-en">${w.en}</span>
+        <span class="speaker" data-word="${w.en}">🔊</span>
+      </div>
+      <span class="word-pos">${w.pos||""}</span>
+    </div>
+    <div class="word-cn">${w.cn||""}</div>
+    <div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span></div>
+    <div class="tip">備註：${w.memo||""}</div>
+    `;
+    g.appendChild(div);
+    div.querySelector(".speaker").onclick = function(){
+      const word = this.dataset.word;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(word);
+      u.lang = "en-US";
+      speechSynthesis.speak(u);
+    };
+  });
+}
+function showVocabTable(){
+  const wrap=document.getElementById("tablePanel");
+  const cardPanel=document.getElementById("cardPanel");
+  cardPanel.innerHTML="";
+  wrap.innerHTML=`<div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>`;
+  const tb=wrap.querySelector("tbody");
+  wordList.forEach(w=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${w.no}</td><td>${w.en}</td><td>${w.pos||""}</td><td>${w.syn||""}</td><td>${w.cn||""}</td>`;
+    tb.appendChild(tr);
+  });
+}
+function openExerciseUnit3(){
+  if(!guardNavigation()) return;
+  hideAllBox();
+  document.getElementById("exerciseUnit3").classList.add("show");
+  ["writePanel","clozePanel","choicePanel"].forEach(id=>{
+    const el = document.getElementById(id);
+    el.innerHTML=""; el.style.display="none";
+  });
+}
+
+function normalizeWord(w){
+  let x = w.toLowerCase();
+  const suffixes = ["ing","ied","ed","es","s","d"];
+  for(const suf of suffixes){
+    if(x.endsWith(suf) && x.length > suf.length + 2){
+      let base = x.slice(0, -suf.length);
+      if(/([bcdfghjklmnpqrstvwxz])\1$/.test(base)) base = base.slice(0, -1);
+      return base;
+    }
+  }
+  return x;
+}
+function isWordFormMatch(a, b){
+  if(a === b) return true;
+  const na = normalizeWord(a);
+  const nb = normalizeWord(b);
+  if(na === nb && na.length >= 3) return true;
+  if(na + "e" === nb || nb + "e" === na) return true;
+  if(a.startsWith(b) || b.startsWith(a)){
+    if(Math.abs(a.length - b.length) <= 3) return true;
+  }
+  return false;
+}
+function judgeAnswer(userAns, realAns){
+  const u = (userAns||"").toLowerCase().trim().replace(/\s+/g," ");
+  const r = (realAns||"").toLowerCase().trim().replace(/\s+/g," ");
+  if(u === r) return "full";
+  if(!u) return "zero";
+  const uWords = u.split(" ");
+  const rWords = r.split(" ");
+  if(uWords.length === rWords.length){
+    let allMatch = true;
+    for(let i=0;i<uWords.length;i++){
+      if(!isWordFormMatch(uWords[i], rWords[i])){ allMatch = false; break; }
+    }
+    if(allMatch) return "half";
+  }
+  return "zero";
+}
+function shuffleArray(arr){
+  const copy=[...arr];
+  for(let i=copy.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]] = [copy[j],copy[i]];
+  }
+  return copy;
+}
+function showWriteExercise(){
+  const p=document.getElementById("writePanel");
+  document.getElementById("clozePanel").style.display="none";
+  document.getElementById("choicePanel").style.display="none";
+  p.style.display="block";
+  const maxNo = wordList.length ? Math.max(...wordList.map(w=>w.no)) : 0;
+  p.innerHTML=`
+  <div class="exercise-box">
+    <div class="range-input-area">
+      <span>練習範圍（1-${maxNo}）：</span>
+      <input type="text" id="rangeText" placeholder="例如1-10，留空預設全部">
+      <span>抽題數量：</span>
+      <input type="number" id="pickCount" placeholder="要抽幾題" min="1">
+      <button class="btn" id="startExercise">開始練習</button>
+    </div>
+    <div class="check-group">
+      <label><input type="checkbox" id="showTargetCn">顯示目標單詞的中文釋義</label>
+      <label><input type="checkbox" id="showSynCn">顯示同義詞的中文釋義</label>
+    </div>
+    <div id="exerciseArea"></div>
+    <div class="finish-area">
+      <button class="btn btn-finish" id="finishAllBtn" style="display:none;">✅全部作答完畢，查看成績</button>
+    </div>
+    <div class="result-page" id="resultPage">
+      <h2 style="text-align:center">📝本次練習成績</h2>
+      <div class="score-text" id="scoreText"></div>
+      <div id="resultList"></div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn" id="saveResultBtn">保存本次成績至紀錄+錯題本</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("startExercise").onclick = startWriteQuiz;
+  document.getElementById("finishAllBtn").onclick = showWriteResult;
+  document.getElementById("saveResultBtn").onclick = saveWriteRecord;
+}
+function startWriteQuiz(){
+  startTimer();
+  const rangeText = document.getElementById("rangeText").value.trim();
+  const pickCount = Number(document.getElementById("pickCount").value);
+  const showTargetCn = document.getElementById("showTargetCn").checked;
+  const showSynCn = document.getElementById("showSynCn").checked;
+  const area = document.getElementById("exerciseArea");
+  const finishBtn = document.getElementById("finishAllBtn");
+  const resultPage = document.getElementById("resultPage");
+  resultPage.style.display="none";
+  finishBtn.style.display="none";
+  area.innerHTML="";
+  const maxNo = wordList.length ? Math.max(...wordList.map(w=>w.no)) : 0;
+  let start=1,end=maxNo;
+  if(rangeText){
+    const parts = rangeText.split(/[–\-]/);
+    if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);}
+  }
+  const pool = wordList.filter(w=>w.no>=start&&w.no<=end);
+  if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
+  currentQuizList = shuffleArray([...pool]).slice(0,pickCount&&pickCount>0?pickCount:10);
+  quizType="write";
+  currentQuizList.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="exercise-item";
+    let hintParts=[item.syn||""];
+    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
+    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
+    div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" data-no="${item.no}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
+    area.appendChild(div);
+  });
+  finishBtn.style.display="block";
+}
+function showWriteResult(){
+  let fullCount=0, halfCount=0, zeroCount=0;
+  let wrongItems=[], halfItems=[];
+  const total = currentQuizList.length;
+  const resultListDom = document.getElementById("resultList");
+  resultListDom.innerHTML="";
+  document.querySelectorAll("#exerciseArea .exercise-item").forEach((dom,idx)=>{
+    const input = dom.querySelector(".user-display");
+    const feedback = dom.querySelector(".feedback");
+    const ans = input.dataset.ans;
+    const no = Number(input.dataset.no);
+    const userAns = input.value;
+    const level = judgeAnswer(userAns, ans);
+    if(level === "full"){
+      fullCount++;
+      feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`;
+      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ✅ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`;
+    }else if(level === "half"){
+      halfCount++; wrongItems.push(no); halfItems.push(no);
+      feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`;
+      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ⚠️ ${ans}（半分），你的答案：${userAns.trim()}</div>`;
+    }else{
+      zeroCount++; wrongItems.push(no);
+      feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`;
+      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ❌ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`;
+    }
+  });
+  const score = fullCount + halfCount * 0.5;
+  const percent = Number((score / total * 100).toFixed(2));
+  document.getElementById("scoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
+  document.getElementById("resultPage").style.display="block";
+  window._writeScore = {score,total,fullCount,halfCount,zeroCount,wrongItems,halfItems};
+  stopTimer();
+}
+function saveWriteRecord(){
+  const s = window._writeScore;
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const timeStr = `${min}分${sec}秒`;
+  const wrongEns = s.wrongItems.map(no => { const w = wordList.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
+  const halfEns = s.halfItems.map(no => { const w = wordList.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
+  const rec = {
+    type: "看同義詞默寫",
+    finishTime: new Date().toLocaleString(),
+    costTime: timeStr,
+    score: s.score, total: s.total,
+    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
+    wrongNos: s.wrongItems, halfNos: s.halfItems,
+    wrongEns: wrongEns, halfEns: halfEns,
+    percent: Number((s.score / s.total * 100).toFixed(2))
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: s.score, total: s.total, time: Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  alert("✅已保存練習紀錄，可前往錯題本查看");
+}
+
+function toggleClozeDetail(trigger){
+  const item = trigger.closest(".cloze-item");
+  const detail = item.querySelector(".cloze-detail");
+  const expanded = item.classList.toggle("expanded");
+  detail.style.display = expanded ? "block" : "none";
+}
+function toggleClozeCn(cb, type){
+  const item = cb.closest(".cloze-item");
+  if(type === "keyCn"){ item.querySelector(".key-cn").style.display = cb.checked ? "inline" : "none"; }
+  else { item.querySelector(".cloze-sentence-cn").style.display = cb.checked ? "block" : "none"; }
+}
+function speakParts(parts){
+  if(!parts || parts.length === 0) return;
+  const myToken = ++speakToken;
+  speechSynthesis.cancel();
+  let idx = 0;
+  function next(){
+    if(myToken !== speakToken) return;
+    if(idx >= parts.length) return;
+    const u = new SpeechSynthesisUtterance(parts[idx]);
+    u.lang = "en-US"; u.rate = 0.9;
+    idx++;
+    u.onend = () => { if(myToken !== speakToken) return; if(idx < parts.length) setTimeout(next, 450); };
+    speechSynthesis.speak(u);
+  }
+  next();
+}
+function speakClozeSentenceFromTrigger(btn){
+  const item = btn.closest(".cloze-item");
+  const sentence = item.querySelector(".cloze-sentence-trigger").dataset.sentence;
+  if(!sentence) return;
+  const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p);
+  speakParts(parts);
+}
+function speakClozeSentence(btn){
+  const item = btn.closest(".cloze-item");
+  const sentence = item.querySelector(".user-display").dataset.sentence;
+  const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p);
+  speakParts(parts);
+}
+
+function showClozeExercise(){
+  const p=document.getElementById("clozePanel");
+  document.getElementById("writePanel").style.display="none";
+  document.getElementById("choicePanel").style.display="none";
+  p.style.display="block";
+  const total = clozeBank.length;
+  p.innerHTML=`
+  <div class="exercise-box">
+    <div class="lock-tip">⚠️ 本篇章句子為生詞閱讀例句，並非正式考題。</div>
+    <div class="range-input-area">
+      <span>抽取題目數量（共${total}題）：</span>
+      <input type="number" id="clozePickCount" min="1" max="${total}" value="${total}">
+      <button class="btn" id="startClozeExercise">開始完形測驗</button>
+    </div>
+    <div class="mode-select-group">
+      <div>選擇提示模式：</div>
+      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="initial" checked>模式1：全部給首字母提示</label>
+      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="syn">模式2：全部給同義詞提示</label>
+      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label>
+      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="percent">模式4：自訂兩種提示比例</label>
+      <div class="percent-row"><span>首字母提示佔比：</span><input type="number" id="clozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
+      <div class="percent-row"><span>同義詞提示佔比：</span><input type="number" id="clozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
+    </div>
+    <div id="clozeExerciseArea"></div>
+    <div class="finish-area">
+      <button class="btn btn-finish" id="clozeFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button>
+    </div>
+    <div class="result-page" id="clozeResultPage">
+      <h2 style="text-align:center">📝完形測驗成績</h2>
+      <div class="score-text" id="clozeScoreText"></div>
+      <div id="clozeResultList"></div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn" id="saveClozeResultBtn">保存本次成績至紀錄+錯題本</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("startClozeExercise").onclick = startClozeQuiz;
+  document.getElementById("clozeFinishBtn").onclick = showClozeResult;
+  document.getElementById("saveClozeResultBtn").onclick = saveClozeRecord;
+}
+function startClozeQuiz(){
+  startTimer();
+  const pickNum = Number(document.getElementById("clozePickCount").value);
+  currentQuizList = shuffleArray([...clozeBank]).slice(0,pickNum);
+  quizType = "cloze";
+  const area = document.getElementById("clozeExerciseArea");
+  const finishBtn = document.getElementById("clozeFinishBtn");
+  const resultPage = document.getElementById("clozeResultPage");
+  resultPage.style.display="none";
+  finishBtn.style.display="none";
+  area.innerHTML="";
+  const mode = document.querySelector('input[name="clozeMode"]:checked').value;
+  let pInitial=0, pSyn=0;
+  if(mode === "initial") pInitial = 100;
+  else if(mode === "syn") pSyn = 100;
+  else if(mode === "percent"){
+    pInitial = Number(document.getElementById("clozePercentInitial").value)||0;
+    pSyn = Number(document.getElementById("clozePercentSyn").value)||0;
+    if(pInitial + pSyn > 100){ alert("提示比例相加不可超過100%！"); stopTimer(); return; }
+  }
+  const total = currentQuizList.length;
+  const initialCount = Math.round(total * pInitial / 100);
+  const synCount = Math.round(total * pSyn / 100);
+  let typeArr = [];
+  for(let i=0;i<initialCount;i++) typeArr.push("initial");
+  for(let i=0;i<synCount;i++) typeArr.push("syn");
+  while(typeArr.length < total) typeArr.push("none");
+  typeArr = shuffleArray(typeArr);
+  currentQuizList.forEach((item,idx)=>{
+    const hintType = typeArr[idx];
+    let hintText = "";
+    if(hintType === "initial") hintText = `（首字母提示：${item.answer[0]}...）`;
+    else if(hintType === "syn") hintText = `（同義詞提示：${item.syn}）`;
+    else hintText = "（無提示）";
+    const div=document.createElement("div");
+    div.className="exercise-item cloze-item";
+    div.innerHTML=`
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
+        <span class="q-num">${idx+1}.</span>
+        <span class="cloze-sentence">${item.sentence}</span>
+        <span class="cloze-toggle-icon">▼</span>
+      </div>
+      <div class="q-syn-info">${hintText}</div>
+      <div class="cloze-detail" style="display:none;">
+        <div class="cloze-toolbar">
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
+          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
+        </div>
+        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
+        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
+      </div>
+      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
+      <div class="feedback"></div>
+    `;
+    area.appendChild(div);
+  });
+  finishBtn.style.display="block";
+}
+function showClozeResult(){
+  let score=0;
+  let wrongSentences=[];
+  const total = currentQuizList.length;
+  const resultListDom = document.getElementById("clozeResultList");
+  resultListDom.innerHTML="";
+  document.querySelectorAll("#clozeExerciseArea .exercise-item").forEach((dom,idx)=>{
+    const input = dom.querySelector(".user-display");
+    const feedback = dom.querySelector(".feedback");
+    const ans = input.dataset.ans;
+    const sen = input.dataset.sentence;
+    const userAns = input.value.trim().toLowerCase();
+    const realAns = ans.toLowerCase();
+    const isCorrect = userAns === realAns;
+    if(isCorrect) score++;
+    else wrongSentences.push(sen);
+    feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${ans}</span>` : `<span class="err">❌錯誤，答案：${ans}</span>`;
+    resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${isCorrect?"✅":"❌"} ${ans}，你的答案：${userAns||"（未作答）"}</div>`;
+  });
+  const percent = Number((score/total*100).toFixed(2));
+  document.getElementById("clozeScoreText").innerText = `得分：${score}/${total}（${percent}%）`;
+  document.getElementById("clozeResultPage").style.display="block";
+  window._clozeScore = {score,total,wrongSentences};
+  stopTimer();
+}
+function saveClozeRecord(){
+  const {score,total,wrongSentences} = window._clozeScore;
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const timeStr = `${min}分${sec}秒`;
+  const rec = {
+    type: "完形填空",
+    finishTime: new Date().toLocaleString(),
+    costTime: timeStr,
+    score: score, total: total,
+    fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongSentences: wrongSentences,
+    percent: Number((score / total * 100).toFixed(2))
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score:score, total:total, time:Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  alert("✅已保存練習紀錄，可前往錯題本查看");
+}
+function showChoiceExercise(){
+  const p=document.getElementById("choicePanel");
+  document.getElementById("writePanel").style.display="none";
+  document.getElementById("clozePanel").style.display="none";
+  p.style.display="block";
+  const total = clozeBank.length;
+  p.innerHTML=`
+  <div class="exercise-box">
+    <div class="lock-tip">🧩 把上方詞庫裡的單詞拖到下方對應的空格上（也可以點單詞後再點空格）。</div>
+    <div class="range-input-area">
+      <span>練習範圍：</span>
+      <input type="text" id="choiceRangeText" placeholder="例如1-10，留空預設全部">
+      <span>抽題數量（共${total}題）：</span>
+      <input type="number" id="choicePickCount" min="1" placeholder="預設10">
+      <button class="btn" id="startChoiceBtn">開始練習</button>
+    </div>
+    <div id="choiceExerciseArea"></div>
+    <div class="finish-area">
+      <button class="btn btn-finish" id="choiceFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button>
+    </div>
+    <div class="result-page" id="choiceResultPage">
+      <h2 style="text-align:center">📝本次選擇成績</h2>
+      <div class="score-text" id="choiceScoreText"></div>
+      <div id="choiceResultList"></div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn" id="saveChoiceResultBtn">保存本次成績至紀錄+錯題本</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("startChoiceBtn").onclick = startChoiceQuiz;
+  document.getElementById("choiceFinishBtn").onclick = showChoiceResult;
+  document.getElementById("saveChoiceResultBtn").onclick = saveChoiceRecord;
+}
+function startChoiceQuiz(){
+  startTimer();
+  const rangeText = document.getElementById("choiceRangeText").value.trim();
+  const pickCount = Number(document.getElementById("choicePickCount").value);
+  let start=1,end=clozeBank.length;
+  if(rangeText){
+    const parts = rangeText.split(/[–\-]/);
+    if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);}
+  }
+  const pool = clozeBank.map((it,i)=>({...it, no:i+1})).filter(w=>w.no>=start&&w.no<=end);
+  if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
+  currentQuizList = shuffleArray([...pool]).slice(0, pickCount&&pickCount>0?pickCount:10);
+  quizType = "choice";
+  document.getElementById("choiceResultPage").style.display="none";
+  renderChoiceQuestions(currentQuizList, "choiceExerciseArea");
+  document.getElementById("choiceFinishBtn").style.display="block";
+}
+
+let selectedWordEl = null;
+let draggingWordEl = null;
+
+function onDragStart(e){
+  if(this.classList.contains("used")){ e.preventDefault(); return; }
+  draggingWordEl = this;
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", this.dataset.word);
+}
+function onWordChipClick(chip){
+  if(chip.classList.contains("used")) return;
+  if(chip === selectedWordEl){
+    chip.classList.remove("selected");
+    selectedWordEl = null;
+    updateDragStatus(chip.closest(".drag-bank"));
+    return;
+  }
+  if(selectedWordEl) selectedWordEl.classList.remove("selected");
+  selectedWordEl = chip;
+  chip.classList.add("selected");
+  updateDragStatus(chip.closest(".drag-bank"), chip.dataset.word);
+}
+function onZoneDrop(e, zone){
+  e.preventDefault();
+  zone.classList.remove("over");
+  if(!draggingWordEl) return;
+  placeWordToZone(zone, draggingWordEl);
+  draggingWordEl = null;
+}
+function onZoneClick(zone){
+  if(selectedWordEl){
+    placeWordToZone(zone, selectedWordEl);
+    selectedWordEl.classList.remove("selected");
+    selectedWordEl = null;
+  }else if(zone.dataset.filled === "true"){
+    clearZone(zone);
+  }
+  updateDragStatus(zone.closest(".box-wrap"));
+}
+function findAnyUsedChipByWord(word, zone){
+  const area = zone.closest(".box-wrap") || document;
+  const chips = area.querySelectorAll(`.drag-word.used`);
+  for(const chip of chips){
+    if(chip.dataset.word === word) return chip;
+  }
+  return null;
+}
+function placeWordToZone(zone, chip){
+  if(chip.classList.contains("used")) return;
+  if(zone.dataset.filled === "true") clearZone(zone);
+  const word = chip.dataset.word;
+  zone.dataset.filled = "true";
+  zone.dataset.filledWord = word;
+  zone.textContent = word;
+  zone.classList.add("filled");
+  chip.classList.add("used");
+  chip.classList.remove("selected");
+  if(selectedWordEl === chip) selectedWordEl = null;
+  updateDragStatus(zone.closest(".box-wrap"));
+}
+function clearZone(zone){
+  const word = zone.dataset.filledWord;
+  if(word){
+    const chip = findAnyUsedChipByWord(word, zone);
+    if(chip) chip.classList.remove("used");
+  }
+  zone.dataset.filled = "false";
+  zone.dataset.filledWord = "";
+  zone.textContent = "拖到這裡";
+  zone.classList.remove("filled","zone-ok","zone-half","zone-err");
+  updateDragStatus(zone.closest(".box-wrap"));
+}
+function updateDragStatus(bankEl, selectedWord){
+  if(!bankEl) return;
+  const area = bankEl.closest(".box-wrap") || document;
+  const bar = area.querySelector(".drag-status");
+  if(!bar) return;
+  if(selectedWord){
+    bar.textContent = `✅ 已選中「${selectedWord}」，請點擊下方句子中的空格填入。`;
+    bar.style.background = "#e8f9ee";
+    bar.style.borderColor = "#a9e0bc";
+    bar.style.color = "#1e8449";
+  }else{
+    bar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。";
+    bar.style.background = "#fff9d6";
+    bar.style.borderColor = "#ffe68a";
+    bar.style.color = "#7a5b00";
+  }
+}
+
+function renderChoiceQuestions(list, containerId){
+  const area = document.getElementById(containerId);
+  area.innerHTML = "";
+  const statusBar = document.createElement("div");
+  statusBar.className = "drag-status";
+  statusBar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。";
+  area.appendChild(statusBar);
+  const freq = {};
+  list.forEach(it => { freq[it.answer] = (freq[it.answer] || 0) + 1; });
+  const bankWords = [];
+  Object.keys(freq).forEach(word => {
+    for(let i=0;i<freq[word];i++){
+      bankWords.push({ wid: containerId + "_w" + bankWords.length, word: word });
+    }
+  });
+  const shuffledBank = shuffleArray(bankWords);
+  const bankDiv = document.createElement("div");
+  bankDiv.className = "drag-bank";
+  bankDiv.innerHTML = `<div class="bank-title">🧩 可選單詞（拖到對應空格，或點選後再點空格）</div><div class="bank-words"></div>`;
+  const wordsWrap = bankDiv.querySelector(".bank-words");
+  shuffledBank.forEach(b=>{
+    const chip = document.createElement("div");
+    chip.className = "drag-word";
+    chip.draggable = true;
+    chip.dataset.wid = b.wid;
+    chip.dataset.word = b.word;
+    chip.textContent = b.word;
+    chip.ondragstart = onDragStart;
+    chip.onclick = () => onWordChipClick(chip);
+    wordsWrap.appendChild(chip);
+  });
+  area.appendChild(bankDiv);
+  list.forEach((item, idx)=>{
+    const div=document.createElement("div");
+    div.className="exercise-item cloze-item";
+    const sentenceHtml = item.sentence.replace(
+      /（\s*_+\s*）|\(\s*_+\s*\)|_+/,
+      `<span class="drop-zone" data-ans="${item.answer}" data-filled="false">拖到這裡</span>`
+    );
+    div.innerHTML=`
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
+        <span class="q-num">${idx+1}.</span>
+        <span class="cloze-sentence">${sentenceHtml}</span>
+        <span class="cloze-toggle-icon">▼</span>
+      </div>
+      <div class="cloze-detail" style="display:none;">
+        <div class="cloze-toolbar">
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
+          <button class="cloze-speaker" type="button" onclick="speakClozeSentenceFromTrigger(this)">🔊 朗讀整句</button>
+        </div>
+        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
+        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
+      </div>
+    `;
+    area.appendChild(div);
+    const zone = div.querySelector(".drop-zone");
+    if(zone){
+      zone.ondragover = (e) => { e.preventDefault(); zone.classList.add("over"); };
+      zone.ondragleave = () => zone.classList.remove("over");
+      zone.ondrop = (e) => onZoneDrop(e, zone);
+      zone.onclick = (e) => { e.stopPropagation(); onZoneClick(zone); };
+    }
+  });
+}
+
+function showChoiceResult(){
+  let fullCount=0, halfCount=0, zeroCount=0;
+  let wrongSentences=[];
+  const total = currentQuizList.length;
+  const area = document.getElementById("choiceExerciseArea");
+  const resultListDom = document.getElementById("choiceResultList");
+  resultListDom.innerHTML="";
+  const zones = area.querySelectorAll(".drop-zone");
+  zones.forEach((zone,idx)=>{
+    const ans = zone.dataset.ans;
+    const userAns = zone.dataset.filledWord || "";
+    const item = currentQuizList[idx];
+    const level = judgeAnswer(userAns, ans);
+    if(level === "full") fullCount++;
+    else if(level === "half"){ halfCount++; wrongSentences.push(item.sentence); }
+    else { zeroCount++; wrongSentences.push(item.sentence); }
+    zone.classList.remove("zone-ok","zone-half","zone-err");
+    zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
+    if(!userAns) zone.textContent = "（未填）";
+    const icon = level === "full" ? "✅" : (level === "half" ? "⚠️" : "❌");
+    resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${icon} 正確答案：${ans}，你選的：${userAns || "（未填）"}</div>`;
+  });
+  const score = fullCount + halfCount * 0.5;
+  const percent = Number((score / total * 100).toFixed(2));
+  document.getElementById("choiceScoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
+  document.getElementById("choiceResultPage").style.display="block";
+  window._choiceScore = {score,total,fullCount,halfCount,zeroCount,wrongSentences};
+  stopTimer();
+}
+function saveChoiceRecord(){
+  const s = window._choiceScore;
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const timeStr = `${min}分${sec}秒`;
+  const rec = {
+    type: "拖拽選擇練習",
+    finishTime: new Date().toLocaleString(),
+    costTime: timeStr,
+    score: s.score, total: s.total,
+    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
+    wrongSentences: s.wrongSentences,
+    percent: Number((s.score / s.total * 100).toFixed(2))
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: s.score, total: s.total, time: Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  alert("✅已保存練習紀錄，可前往錯題本查看");
+}
+
+function openWrongBook(){ showRoot("wrongBookPanel"); renderRecordList(); }
+function backToMainRoot(){ showRoot("vocabPool"); }
+
+function renderRecordList(){
+  const wrap = document.getElementById("recordList");
+  wrap.innerHTML="";
+  if(exerciseRecords.length===0){
+    wrap.innerHTML = "<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>";
+    return;
+  }
+  exerciseRecords.slice().reverse().forEach((rec,revIdx)=>{
+    const idx = exerciseRecords.length - 1 - revIdx;
+    const percent = rec.percent;
+    let color = "#27ae60";
+    if(percent < 60) color = "#e74c3c";
+    else if(percent < 85) color = "#f39c12";
+    const fullCount = rec.fullCount !== undefined ? rec.fullCount : rec.score;
+    const halfCount = rec.halfCount || 0;
+    const zeroCount = rec.zeroCount !== undefined ? rec.zeroCount : (rec.total - rec.score);
+    const card = document.createElement("div");
+    card.className = "record-card";
+    card.innerHTML = `
+      <div class="record-card-left">
+        <div class="record-type">📝 ${rec.type}</div>
+        <div class="record-meta">📅 ${rec.finishTime}</div>
+        <div class="record-meta">⏱ 耗時：${rec.costTime}｜共 ${rec.total} 題</div>
+        <div class="record-meta">
+          <span style="color:#27ae60;">🟢 全對 ${fullCount}</span> ｜
+          <span style="color:#f39c12;">🟡 半對 ${halfCount}</span> ｜
+          <span style="color:#e74c3c;">🔴 全錯 ${zeroCount}</span>
+        </div>
+      </div>
+      <div class="record-card-right">
+        <div class="record-percent" style="color:${color}">${percent}%</div>
+        <div class="record-percent-label">分數：${rec.score} / ${rec.total}</div>
+        <div class="record-enter">點擊複習 →</div>
+      </div>
+    `;
+    card.onclick = ()=>openWrongRedo(idx);
+    wrap.appendChild(card);
+  });
+}
+
+document.getElementById("clearAllRecords").onclick = function(){
+  if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return;
+  exerciseRecords=[];
+  localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));
+  renderRecordList();
+};
+
+function openWrongRedo(idx){
+  if(!guardNavigation()) return;
+  currentWrongRecordIndex = idx;
+  const rec = exerciseRecords[idx];
+  hideAllBox();
+  document.getElementById("wrongRedoPanel").classList.add("show");
+  const settingDom = document.getElementById("wrongRedoSetting");
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  const resPage = document.getElementById("wrongRedoResultPage");
+  areaDom.innerHTML="";
+  finishBtn.style.display="none";
+  resPage.style.display="none";
+  const isWrite = rec.type === "看同義詞默寫" || rec.type === "默寫刷題練習";
+  const isChoice = rec.type === "拖拽選擇練習";
+  if(isWrite){
+    settingDom.innerHTML=`
+    <div class="mode-select-group">
+      <h4>重做默寫錯題｜選擇提示</h4>
+      <label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label>
+      <label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label>
+      <br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button>
+    </div>`;
+  }else if(isChoice){
+    settingDom.innerHTML=`
+    <div class="mode-select-group">
+      <h4>重做拖拽選擇錯題</h4>
+      <p style="font-size:14px;color:#666;margin:8px 0;">直接載入錯題開始重做，操作方式與原練習相同。</p>
+      <button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button>
+    </div>`;
+  }else{
+    settingDom.innerHTML=`
+    <div class="mode-select-group">
+      <h4>重做完形錯題｜選擇提示模式</h4>
+      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="initial" checked>模式1：全部給首字母提示</label>
+      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="syn">模式2：全部給同義詞提示</label>
+      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="none">模式3：完全無提示</label>
+      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="percent">模式4：自訂兩種提示比例</label>
+      <div class="percent-row"><span>首字母提示佔比：</span><input type="number" id="rwClozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
+      <div class="percent-row"><span>同義詞提示佔比：</span><input type="number" id="rwClozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
+      <br><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button>
+    </div>`;
+  }
+}
+
+function startWrongWrite(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const showTargetCn = document.getElementById("rwShowTargetCn").checked;
+  const showSynCn = document.getElementById("rwShowSynCn").checked;
+  let wrongWords = [];
+  if(rec.wrongEns && rec.wrongEns.length){
+    wrongWords = rec.wrongEns.map(en => wordList.find(w=>w.en===en)).filter(Boolean);
+  }else{
+    wrongWords = wordList.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no));
+  }
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  areaDom.innerHTML="";
+  if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題（原題可能已被刪除）</p>"; stopTimer(); return; }
+  wrongWords.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="exercise-item";
+    let hintParts=[item.syn||""];
+    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
+    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
+    div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
+    areaDom.appendChild(div);
+  });
+  finishBtn.style.display="block";
+  finishBtn.onclick = function(){
+    let fullCount=0, halfCount=0, zeroCount=0;
+    const total = wrongWords.length;
+    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
+      const inp = dom.querySelector(".user-display");
+      const fb = dom.querySelector(".feedback");
+      const ans = inp.dataset.ans;
+      const level = judgeAnswer(inp.value, ans);
+      if(level === "full"){ fullCount++; fb.innerHTML = `<span class="ok">✅${ans}</span>`; }
+      else if(level === "half"){ halfCount++; fb.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`; }
+      else { zeroCount++; fb.innerHTML = `<span class="err">❌答案：${ans}</span>`; }
+    });
+    const score = fullCount + halfCount * 0.5;
+    const percent = Number((score / total * 100).toFixed(2));
+    const resPage = document.getElementById("wrongRedoResultPage");
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+function startWrongCloze(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const wrongQ = clozeBank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  areaDom.innerHTML="";
+  if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題（原題可能已被刪除）</p>";stopTimer();return;}
+  const mode = document.querySelector('input[name="rwClozeMode"]:checked').value;
+  let pInitial=0, pSyn=0;
+  if(mode === "initial") pInitial = 100;
+  else if(mode === "syn") pSyn = 100;
+  else if(mode === "percent"){
+    pInitial = Number(document.getElementById("rwClozePercentInitial").value)||0;
+    pSyn = Number(document.getElementById("rwClozePercentSyn").value)||0;
+    if(pInitial + pSyn > 100){ alert("提示比例相加不可超過100%！"); stopTimer(); return; }
+  }
+  const total = wrongQ.length;
+  const initialCount = Math.round(total * pInitial / 100);
+  const synCount = Math.round(total * pSyn / 100);
+  let typeArr = [];
+  for(let i=0;i<initialCount;i++) typeArr.push("initial");
+  for(let i=0;i<synCount;i++) typeArr.push("syn");
+  while(typeArr.length < total) typeArr.push("none");
+  typeArr = shuffleArray(typeArr);
+  wrongQ.forEach((item,idx)=>{
+    const hintType = typeArr[idx];
+    let hintText = "";
+    if(hintType === "initial") hintText = `（首字母提示：${item.answer[0]}...）`;
+    else if(hintType === "syn") hintText = `（同義詞提示：${item.syn}）`;
+    else hintText = "（無提示）";
+    const div=document.createElement("div");
+    div.className="exercise-item cloze-item";
+    div.innerHTML=`
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
+        <span class="q-num">${idx+1}.</span>
+        <span class="cloze-sentence">${item.sentence}</span>
+        <span class="cloze-toggle-icon">▼</span>
+      </div>
+      <div class="q-syn-info">${hintText}</div>
+      <div class="cloze-detail" style="display:none;">
+        <div class="cloze-toolbar">
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
+          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
+        </div>
+        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
+        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
+      </div>
+      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
+      <div class="feedback"></div>
+    `;
+    areaDom.appendChild(div);
+  });
+  finishBtn.style.display="block";
+  finishBtn.onclick = function(){
+    let score=0;
+    const resPage = document.getElementById("wrongRedoResultPage");
+    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
+      const inp = dom.querySelector(".user-display");
+      const fb = dom.querySelector(".feedback");
+      const ans = inp.dataset.ans;
+      const ok = inp.value.trim().toLowerCase() === ans.toLowerCase();
+      if(ok) score++;
+      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
+    });
+    const percent = Number((score / total * 100).toFixed(2));
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+function startWrongChoice(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const wrongQ = clozeBank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  if(wrongQ.length===0){ document.getElementById("wrongRedoArea").innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+  renderChoiceQuestions(wrongQ, "wrongRedoArea");
+  finishBtn.style.display = "block";
+  finishBtn.onclick = function(){
+    let fullCount=0, halfCount=0, zeroCount=0;
+    const total = wrongQ.length;
+    const area = document.getElementById("wrongRedoArea");
+    area.querySelectorAll(".drop-zone").forEach((zone)=>{
+      const ans = zone.dataset.ans;
+      const userAns = zone.dataset.filledWord || "";
+      const level = judgeAnswer(userAns, ans);
+      if(level === "full") fullCount++;
+      else if(level === "half") halfCount++;
+      else zeroCount++;
+      zone.classList.remove("zone-ok","zone-half","zone-err");
+      zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
+      if(!userAns) zone.textContent = "（未填）";
+    });
+    const score = fullCount + halfCount * 0.5;
+    const percent = Number((score / total * 100).toFixed(2));
+    const resPage = document.getElementById("wrongRedoResultPage");
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+
+let creatorPwdRevealed = false;
+let userPwdRevealed = false;
+
+function renderCreatorPanel(){
+  const cPwdEl = document.getElementById("nowCreatorPwd");
+  const uPwdEl = document.getElementById("nowUserPwd");
+  cPwdEl.innerText = creatorPwdRevealed ? CREATOR_PWD : "••••••";
+  uPwdEl.innerText = userPwdRevealed ? userPwd : "••••••";
+  document.getElementById("dailyPwdInput").value = dailyPasswordTip;
+  const visitNum = Number(localStorage.getItem("totalVisit")||0);
+  document.getElementById("visitCount").innerText = visitNum;
+  document.getElementById("totalAttempt").innerText = attemptStats.length;
+  let totalScore = 0, totalQ = 0;
+  attemptStats.forEach(s=>{ totalScore += s.score; totalQ += s.total; });
+  const avg = totalQ>0 ? Number((totalScore/totalQ*100).toFixed(2)) : 0;
+  document.getElementById("avgAcc").innerText = avg;
+  const statList = document.getElementById("statList");
+  statList.innerHTML = "";
+  if(attemptStats.length===0){
+    statList.innerHTML = "<p style='color:#888;font-size:14px;'>尚無作答數據</p>";
+  }else{
+    const recent = attemptStats.slice(-10).reverse();
+    recent.forEach((s,i)=>{
+      statList.innerHTML += `<p style="font-size:14px;margin:4px 0;">最近第${i+1}次：${s.score}/${s.total}（${Number((s.score/s.total*100).toFixed(2))}%）</p>`;
+    });
+  }
+  renderWordAdminList();
+  renderClozeAdminList();
+}
+document.getElementById("showCreatorPwd").onclick = function(){
+  creatorPwdRevealed = !creatorPwdRevealed;
+  this.innerText = creatorPwdRevealed ? "隱藏" : "顯示";
+  renderCreatorPanel();
+};
+document.getElementById("showUserPwd").onclick = function(){
+  userPwdRevealed = !userPwdRevealed;
+  this.innerText = userPwdRevealed ? "隱藏" : "顯示";
+  renderCreatorPanel();
+};
+document.querySelectorAll(".creator-tab").forEach(tab=>{
+  tab.onclick = function(){
+    document.querySelectorAll(".creator-tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".creator-tab-content").forEach(c=>c.classList.remove("active"));
+    this.classList.add("active");
+    document.getElementById("tab-" + this.dataset.tab).classList.add("active");
+  };
+});
+
+let editingWordNo = null;
+function renderWordAdminList(){
+  document.getElementById("wordCount").innerText = wordList.length;
+  const wrap = document.getElementById("wordAdminList");
+  wrap.innerHTML = "";
+  if(wordList.length===0){ wrap.innerHTML = "<p style='padding:14px;color:#888;'>尚無生詞</p>"; return; }
+  wordList.slice().sort((a,b)=>a.no-b.no).forEach(w=>{
+    const div = document.createElement("div");
+    div.className = "admin-item";
+    div.innerHTML = `
+      <div class="admin-item-main">
+        <span class="admin-item-en">#${w.no} ${w.en}</span>
+        <span style="color:#888;">（${w.pos||""}）</span>
+        <div class="admin-item-sub">同義：${w.syn||""}｜中文：${w.cn||""}｜備註：${w.memo||""}</div>
+      </div>
+      <div class="admin-item-actions">
+        <button class="btn btn-sm" data-edit="${w.no}">編輯</button>
+        <button class="btn btn-sm btn-danger" data-del="${w.no}">刪除</button>
+      </div>`;
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("[data-edit]").forEach(btn=>{ btn.onclick = ()=>editWord(Number(btn.dataset.edit)); });
+  wrap.querySelectorAll("[data-del]").forEach(btn=>{ btn.onclick = ()=>deleteWord(Number(btn.dataset.del)); });
+}
+function editWord(no){
+  const w = wordList.find(x=>x.no===no);
+  if(!w) return;
+  editingWordNo = no;
+  document.getElementById("w_en").value = w.en||"";
+  document.getElementById("w_pos").value = w.pos||"";
+  document.getElementById("w_syn").value = w.syn||"";
+  document.getElementById("w_synCn").value = w.synCn||"";
+  document.getElementById("w_cn").value = w.cn||"";
+  document.getElementById("w_memo").value = w.memo||"";
+  document.getElementById("wordFormTitle").innerText = `✏️ 編輯生詞 #${no}`;
+  document.getElementById("wordCancelBtn").style.display = "inline-block";
+  document.getElementById("tab-words").scrollIntoView({behavior:"smooth"});
+}
+function resetWordForm(){
+  editingWordNo = null;
+  ["w_en","w_pos","w_syn","w_synCn","w_cn","w_memo"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("wordFormTitle").innerText = "➕ 新增生詞";
+  document.getElementById("wordCancelBtn").style.display = "none";
+}
+document.getElementById("wordCancelBtn").onclick = resetWordForm;
+document.getElementById("wordSaveBtn").onclick = function(){
+  const en = document.getElementById("w_en").value.trim();
+  if(!en){ alert("英文不可為空"); return; }
+  const data = {
+    en: en, pos: document.getElementById("w_pos").value.trim(),
+    syn: document.getElementById("w_syn").value.trim(),
+    synCn: document.getElementById("w_synCn").value.trim(),
+    cn: document.getElementById("w_cn").value.trim(),
+    memo: document.getElementById("w_memo").value.trim()
+  };
+  if(editingWordNo !== null){
+    const idx = wordList.findIndex(x=>x.no===editingWordNo);
+    if(idx>=0){ wordList[idx] = {...wordList[idx], ...data}; }
+  }else{
+    const maxNo = wordList.length ? Math.max(...wordList.map(w=>w.no)) : 0;
+    wordList.push({no: maxNo+1, ...data});
+  }
+  saveContent("customWordList", wordList);
+  resetWordForm();
+  renderWordAdminList();
+  alert("✅ 保存成功");
+};
+function deleteWord(no){
+  if(!confirm(`確定刪除生詞 #${no}？`)) return;
+  wordList = wordList.filter(w=>w.no!==no);
+  saveContent("customWordList", wordList);
+  renderWordAdminList();
+}
+document.getElementById("wordExportBtn").onclick = function(){
+  const blob = new Blob([JSON.stringify(wordList, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "wordList_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+document.getElementById("wordImportBtn").onclick = function(){ document.getElementById("wordImportFile").click(); };
+document.getElementById("wordImportFile").onchange = function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const arr = JSON.parse(ev.target.result);
+      if(!Array.isArray(arr)) throw new Error("必須是 JSON 陣列");
+      arr.forEach((w,i)=>{ if(typeof w.en !== "string" || !w.en.trim()) throw new Error("第"+(i+1)+"筆缺少 en"); });
+      arr.forEach((w,i)=>{ w.no = i+1; });
+      if(!confirm(`即將用 ${arr.length} 筆資料覆蓋現有生詞，確定？`)) return;
+      wordList = arr;
+      saveContent("customWordList", wordList);
+      renderWordAdminList();
+      alert("✅ 導入成功");
+    }catch(err){ alert("導入失敗：" + err.message); }
+    e.target.value = "";
+  };
+  reader.readAsText(file);
+};
+document.getElementById("wordResetBtn").onclick = function(){
+  if(!confirm("確定恢復為預設 30 個生詞？")) return;
+  wordList = JSON.parse(JSON.stringify(DEFAULT_WORD_LIST));
+  saveContent("customWordList", wordList);
+  renderWordAdminList();
+  alert("已重置為預設");
+};
+
+let editingClozeIdx = null;
+function renderClozeAdminList(){
+  document.getElementById("clozeCount").innerText = clozeBank.length;
+  const wrap = document.getElementById("clozeAdminList");
+  wrap.innerHTML = "";
+  if(clozeBank.length===0){ wrap.innerHTML = "<p style='padding:14px;color:#888;'>尚無完形句子</p>"; return; }
+  clozeBank.forEach((c,idx)=>{
+    const div = document.createElement("div");
+    div.className = "admin-item";
+    div.innerHTML = `
+      <div class="admin-item-main">
+        <span class="admin-item-en">#${idx+1} 答案：${c.answer}</span>
+        <div class="admin-item-sub">${c.sentence}</div>
+        <div class="admin-item-sub">同義：${c.syn||""}｜關鍵詞中文：${c.cnKey||""}</div>
+      </div>
+      <div class="admin-item-actions">
+        <button class="btn btn-sm" data-edit="${idx}">編輯</button>
+        <button class="btn btn-sm btn-danger" data-del="${idx}">刪除</button>
+      </div>`;
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("[data-edit]").forEach(btn=>{ btn.onclick = ()=>editCloze(Number(btn.dataset.edit)); });
+  wrap.querySelectorAll("[data-del]").forEach(btn=>{ btn.onclick = ()=>deleteCloze(Number(btn.dataset.del)); });
+}
+function editCloze(idx){
+  const c = clozeBank[idx];
+  if(!c) return;
+  editingClozeIdx = idx;
+  document.getElementById("c_sentence").value = c.sentence||"";
+  document.getElementById("c_answer").value = c.answer||"";
+  document.getElementById("c_syn").value = c.syn||"";
+  document.getElementById("c_cnKey").value = c.cnKey||"";
+  document.getElementById("c_cnSentence").value = c.cnSentence||"";
+  document.getElementById("clozeFormTitle").innerText = `✏️ 編輯完形 #${idx+1}`;
+  document.getElementById("clozeCancelBtn").style.display = "inline-block";
+  document.getElementById("tab-cloze").scrollIntoView({behavior:"smooth"});
+}
+function resetClozeForm(){
+  editingClozeIdx = null;
+  ["c_sentence","c_answer","c_syn","c_cnKey","c_cnSentence"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("clozeFormTitle").innerText = "➕ 新增完形句子";
+  document.getElementById("clozeCancelBtn").style.display = "none";
+}
+document.getElementById("clozeCancelBtn").onclick = resetClozeForm;
+document.getElementById("clozeSaveBtn").onclick = function(){
+  const sentence = document.getElementById("c_sentence").value.trim();
+  const answer = document.getElementById("c_answer").value.trim();
+  if(!sentence || !answer){ alert("句子與答案不可為空"); return; }
+  if(!/（\s*_+\s*）|\(\s*_+\s*\)|_+/.test(sentence)){ alert("句子中必須包含空位標示：（______）、(______) 或 ______"); return; }
+  const data = {
+    sentence, answer,
+    syn: document.getElementById("c_syn").value.trim(),
+    cnKey: document.getElementById("c_cnKey").value.trim(),
+    cnSentence: document.getElementById("c_cnSentence").value.trim()
+  };
+  if(editingClozeIdx !== null) clozeBank[editingClozeIdx] = data;
+  else clozeBank.push(data);
+  saveContent("customClozeBank", clozeBank);
+  resetClozeForm();
+  renderClozeAdminList();
+  alert("✅ 保存成功");
+};
+function deleteCloze(idx){
+  if(!confirm(`確定刪除完形 #${idx+1}？`)) return;
+  clozeBank.splice(idx,1);
+  saveContent("customClozeBank", clozeBank);
+  renderClozeAdminList();
+}
+document.getElementById("clozeExportBtn").onclick = function(){
+  const blob = new Blob([JSON.stringify(clozeBank, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "clozeBank_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+document.getElementById("clozeImportBtn").onclick = function(){ document.getElementById("clozeImportFile").click(); };
+document.getElementById("clozeImportFile").onchange = function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const arr = JSON.parse(ev.target.result);
+      if(!Array.isArray(arr)) throw new Error("必須是 JSON 陣列");
+      arr.forEach((c,i)=>{
+        if(typeof c.sentence !== "string" || typeof c.answer !== "string")
+          throw new Error("第"+(i+1)+"筆缺少 sentence 或 answer");
+      });
+      if(!confirm(`即將用 ${arr.length} 筆資料覆蓋現有完形，確定？`)) return;
+      clozeBank = arr;
+      saveContent("customClozeBank", clozeBank);
+      renderClozeAdminList();
+      alert("✅ 導入成功");
+    }catch(err){ alert("導入失敗：" + err.message); }
+    e.target.value = "";
+  };
+  reader.readAsText(file);
+};
+document.getElementById("clozeResetBtn").onclick = function(){
+  if(!confirm("確定恢復為預設 30 個完形句子？")) return;
+  clozeBank = JSON.parse(JSON.stringify(DEFAULT_CLOZE_BANK));
+  saveContent("customClozeBank", clozeBank);
+  renderClozeAdminList();
+  alert("已重置為預設");
+};
+
+document.getElementById("saveNewCreatorPwd").onclick = function(){
+  const newPwd = document.getElementById("newCreatorPwdInput").value.trim();
+  if(!newPwd){alert("密碼不可空白");return;}
+  CREATOR_PWD = newPwd; localStorage.setItem("creatorPwd",newPwd); renderCreatorPanel(); alert("創作者密碼更新成功");
+};
+document.getElementById("saveNewPwd").onclick = function(){
+  const newPwd = document.getElementById("newPwdInput").value.trim();
+  if(!newPwd){alert("密碼不可空白");return;}
+  userPwd = newPwd; localStorage.setItem("userPwd",newPwd); renderCreatorPanel(); alert("使用者密碼更新成功");
+};
+document.getElementById("goToMain").onclick = function(){
+  document.getElementById("creatorPanel").style.display="none";
+  document.getElementById("mainContent").style.display="block";
+  showRoot("vocabPool");
+};
+document.getElementById("clearStat").onclick = function(){
+  if(confirm("確定要清空全部統計數據？")){
+    localStorage.removeItem("totalVisit");
+    localStorage.removeItem("hasVisited");
+    localStorage.removeItem("attemptStats");
+    attemptStats=[];
+    renderCreatorPanel();
+    alert("統計已清空");
+  }
+};
+</script>
+</body>
+</html>
