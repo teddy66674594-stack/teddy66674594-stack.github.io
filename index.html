@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英語練習系統</title>
+<title>英語練習系統 v1.1</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;-webkit-touch-callout:none;}
@@ -16,13 +16,15 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .box-wrap.show{display:block;}
 .unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:8px;background:#dde2fc;color:#2c3e50;font-size:15px;cursor:pointer;}
 .sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:6px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
-#disclaimerModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
-.disc-box{background:#fff;padding:24px;border-radius:12px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
-.disc-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
-.disc-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
+#disclaimerModal,#noticeModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
+.disc-box,.notice-box{background:#fff;padding:24px;border-radius:12px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
+.disc-buttons,.notice-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
+.disc-text,.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
+.notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
+.notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
 .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
 .word-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #667eea;}
-.word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;}
+.word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;flex-wrap:wrap;}
 .word-num{width:24px;height:24px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .word-en{font-weight:bold;font-size:17px;color:#2c3e50;}
 .speaker{cursor:pointer;color:#667eea;margin-left:4px;}
@@ -30,6 +32,7 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .word-cn{color:#e74c3c;font-weight:bold;margin:8px 0;font-size:15px;}
 .label{color:#667eea;font-weight:bold;}
 .syn{background:#f0f4ff;padding:3px 6px;border-radius:4px;color:#4a69bd;}
+.syn-speaker{cursor:pointer;color:#4a69bd;margin-left:4px;}
 .tip{color:#27ae60;margin-top:6px;font-size:14px;}
 .table-container{margin-top:16px;}
 table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;}
@@ -42,6 +45,7 @@ th{background:#667eea;color:#fff;}
 .btn{padding:8px 14px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer;font-size:15px;}
 .btn-finish{background:#27ae60;}
 .btn-clear-wrong{background:#e74c3c;}
+.btn-download{background:#4a69bd;}
 .exercise-item{margin:16px 0;}
 .q-num{font-weight:bold;margin-right:4px;}
 .q-syn-info{font-size:14px;color:#444;margin-bottom:10px;}
@@ -94,40 +98,67 @@ th{background:#667eea;color:#fff;}
 .zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;color:#b9770e !important;}
 .zone-err{border-color:#e74c3c !important;background:#fdecea !important;color:#c0392b !important;}
 .drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
+/* 閱讀理解 */
+.reading-passage{line-height:1.9;font-size:15px;color:#333;background:#fafbff;padding:16px;border-radius:8px;margin:12px 0;user-select:text;-webkit-user-select:text;}
+.reading-passage p{margin-bottom:12px;}
+.reading-word{cursor:pointer;padding:0 2px;border-radius:3px;transition:background 0.15s;}
+.reading-word:hover{background:#fff3cd;}
+.reading-word.active{background:#ffe68a;}
+#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);pointer-events:none;max-width:200px;text-align:center;}
+.reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:10px;font-size:14px;}
+.reading-choice .choice-opt{display:block;padding:6px 10px;margin:4px 0;border-radius:6px;cursor:pointer;}
+.reading-choice .choice-opt:hover{background:#f0f4ff;}
+.reading-choice .choice-opt.selected{background:#e8f0ff;font-weight:bold;}
+.reading-choice .choice-opt.correct{background:#e8f9ee;color:#1e8449;font-weight:bold;}
+.reading-choice .choice-opt.wrong{background:#fdecea;color:#c0392b;font-weight:bold;}
+.reading-intro{background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div id="timerBadge">⏱ 00:00</div>
+<div id="wordPopup"></div>
 
-<div id="disclaimerModal" style="display:none;">
+<div id="noticeModal">
+  <div class="notice-box">
+    <div class="notice-title" id="noticeTitle">公告</div>
+    <div class="notice-meta" id="noticeMeta"></div>
+    <div class="notice-text" id="noticeContent"></div>
+    <div class="notice-buttons">
+      <button id="noticeOk" class="btn">知道了</button>
+    </div>
+  </div>
+</div>
+
+<div id="disclaimerModal">
   <div class="disc-box">
     <h3 style="text-align:center">公告｜免責聲明</h3>
     <div class="disc-text">
-本英語單詞練習系統為純公益非商用學習工具，完全免費，不收取任何費用，僅可供個人英語自學練習使用，嚴禁商用轉載、二次售賣。<br>
+本英語練習系統為純公益非商用學習工具，完全免費，不收取任何費用，僅可供個人英語自學練習使用，嚴禁商用轉載、二次售賣。<br>
 網站所有學習內容僅作教學參考，不承擔使用本系統所衍生的任何責任。使用本網站即代表您已閱讀並同意本聲明。
     </div>
     <label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意以上條款</label>
     <div class="disc-buttons">
-      <button id="discOk">同意並進入系統</button>
+      <button id="discOk" class="btn">同意並進入系統</button>
     </div>
   </div>
 </div>
 
 <div id="mainContent" style="display:none;">
-<h1>英語練習系統</h1>
-<div class="sub-desc">生詞池、練習題、語法、錯題本</div>
+<h1>英語練習系統 <span style="color:#999;font-size:14px;">v1.1</span></h1>
+<div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
 <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
 
 <div class="top-nav">
-  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池</button>
-  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題</button>
-  <button class="top-btn" onclick="openGrammarRoot()">📖 語法</button>
-  <button class="top-btn" onclick="openWrongBook()">📒 錯題本</button>
+  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池 Vocabulary</button>
+  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題 Exercises</button>
+  <button class="top-btn" onclick="openGrammarRoot()">📖 語法 Grammar</button>
+  <button class="top-btn" onclick="openReadingRoot()">📘 閱讀理解 Reading</button>
+  <button class="top-btn" onclick="openWrongBook()">📒 錯題本 Mistakes</button>
 </div>
 
 <div id="vocabPool" class="box-wrap show">
-  <h2>📚 生詞池</h2>
+  <h2>📚 生詞池 Vocabulary</h2>
   <p style="margin:10px 0;">請選擇單元：</p>
   <button class="unit-btn" onclick="openVocabUnit('第三單元')">第三單元</button>
 </div>
@@ -143,7 +174,7 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="exerciseRoot" class="box-wrap">
-  <h2>📝 練習題</h2>
+  <h2>📝 練習題 Exercises</h2>
   <p style="margin:10px 0;">請選擇單元：</p>
   <button class="unit-btn" onclick="openExerciseUnit('第三單元')">第三單元</button>
 </div>
@@ -161,31 +192,25 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="grammarRoot" class="box-wrap">
-  <h2>📖 語法練習</h2>
-  <p style="margin:10px 0;font-size:14px;">選擇要練的時態（可多選）：</p>
-  <div id="grammarTopicFilter" style="margin-bottom:12px;"></div>
-  <div class="range-input-area">
-    <span>抽題數量：</span>
-    <input type="number" id="grammarPickCount" min="1" placeholder="留空 = 10 題">
-    <button class="btn" id="grammarStartBtn">開始練習</button>
-  </div>
-  <div id="grammarExerciseArea"></div>
-  <div class="finish-area">
-    <button class="btn btn-finish" id="grammarFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button>
-  </div>
-  <div class="result-page" id="grammarResultPage">
-    <h2 style="text-align:center">📝語法成績</h2>
-    <div class="score-text" id="grammarScoreText"></div>
-    <div id="grammarResultList"></div>
-    <div style="margin-top:12px;text-align:center">
-      <button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button>
-    </div>
-  </div>
-  <button class="sub-btn" onclick="showRoot('vocabPool')" style="margin-top:16px;">← 返回首頁</button>
+  <h2>📖 語法 Grammar</h2>
+  <p style="margin:10px 0;">請選擇模塊：</p>
+  <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
+  <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
+  <button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button>
+  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
+  <div id="grammarPanel" style="margin-top:18px;"></div>
+</div>
+
+<div id="readingRoot" class="box-wrap">
+  <h2>📘 閱讀理解 Reading</h2>
+  <p style="margin:10px 0;">請選擇測驗：</p>
+  <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
+  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
+  <div id="readingPanel" style="margin-top:18px;"></div>
 </div>
 
 <div id="wrongBookPanel" class="box-wrap">
-  <h2>📒 錯題本複習</h2>
+  <h2>📒 錯題本 Mistakes</h2>
   <p style="margin:8px 0;font-size:14px;">點擊下方紀錄進入對應錯題重做</p>
   <div class="record-list" id="recordList"></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -206,9 +231,12 @@ th{background:#667eea;color:#fff;}
 </div>
 </div>
 
+<script src="notice.js"></script>
 <script src="words.js"></script>
 <script src="cloze.js"></script>
 <script src="grammar.js"></script>
+<script src="irregular_verbs.js"></script>
+<script src="reading.js"></script>
 <script>
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
@@ -218,6 +246,8 @@ let exerciseStartTime = 0;
 let currentWrongRecordIndex = -1;
 let speakToken = 0;
 let currentUnitName = "第三單元";
+let currentReadingUnit = "";
+let currentReadingSub = "";
 
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
@@ -255,7 +285,7 @@ function guardNavigation(){
   return false;
 }
 
-/* 開場直接顯示免責聲明 */
+/* 開場顯示免責聲明 */
 document.getElementById("disclaimerModal").style.display = "flex";
 
 document.getElementById("discOk").onclick = function(){
@@ -264,7 +294,19 @@ document.getElementById("discOk").onclick = function(){
   document.getElementById("mainContent").style.display="block";
   showRoot("vocabPool");
   renderRecordList();
+  showNoticeIfAny();
 };
+document.getElementById("noticeOk").onclick = function(){
+  document.getElementById("noticeModal").style.display="none";
+};
+function showNoticeIfAny(){
+  if(typeof NOTICE !== "undefined"){
+    document.getElementById("noticeTitle").innerText = NOTICE.title || "公告";
+    document.getElementById("noticeMeta").innerText = (NOTICE.version || "") + "｜" + (NOTICE.date || "");
+    document.getElementById("noticeContent").innerHTML = NOTICE.content || "";
+    document.getElementById("noticeModal").style.display = "flex";
+  }
+}
 
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
@@ -272,6 +314,8 @@ function showRoot(id){
   hideAllBox();
   document.getElementById(id).classList.add("show");
 }
+
+/* ============ 生詞池 ============ */
 function openVocabUnit(unit){
   if(!guardNavigation()) return;
   currentUnitName = unit;
@@ -280,6 +324,12 @@ function openVocabUnit(unit){
   document.getElementById("vocabUnitTitle").innerText = unit + "｜生詞池";
   document.getElementById("cardPanel").innerHTML="";
   document.getElementById("tablePanel").innerHTML="";
+}
+function speakWord(word){
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = "en-US";
+  speechSynthesis.speak(u);
 }
 function showVocabCard(){
   const wrap=document.getElementById("cardPanel");
@@ -301,31 +351,48 @@ function showVocabCard(){
       <span class="word-pos">${w.pos||""}</span>
     </div>
     <div class="word-cn">${w.cn||""}</div>
-    <div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span></div>
+    <div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span><span class="syn-speaker" data-word="${w.syn||""}">🔊</span></div>
     <div class="tip">備註：${w.memo||""}</div>
     `;
     g.appendChild(div);
-    div.querySelector(".speaker").onclick = function(){
-      const word = this.dataset.word;
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(word);
-      u.lang = "en-US";
-      speechSynthesis.speak(u);
-    };
+    div.querySelectorAll(".speaker,.syn-speaker").forEach(sp=>{
+      sp.onclick = function(){ speakWord(this.dataset.word); };
+    });
   });
 }
 function showVocabTable(){
   const wrap=document.getElementById("tablePanel");
   const cardPanel=document.getElementById("cardPanel");
   cardPanel.innerHTML="";
-  wrap.innerHTML=`<div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>`;
+  const list = getWordList();
+  wrap.innerHTML = `
+    <div style="margin-bottom:10px;">
+      <button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button>
+    </div>
+    <div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>
+  `;
   const tb=wrap.querySelector("tbody");
-  getWordList().forEach(w=>{
+  list.forEach(w=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`<td>${w.no}</td><td>${w.en}</td><td>${w.pos||""}</td><td>${w.syn||""}</td><td>${w.cn||""}</td>`;
     tb.appendChild(tr);
   });
+  document.getElementById("downloadWordTableBtn").onclick = function(){
+    let txt = "序號,單詞,詞性,同義詞,中文\n";
+    list.forEach(w=>{
+      txt += `${w.no},${w.en},${w.pos||""},${w.syn||""},${w.cn||""}\n`;
+    });
+    const blob = new Blob(["\uFEFF"+txt], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = currentUnitName + "_生詞表.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 }
+
+/* ============ 練習題 ============ */
 function openExerciseUnit(unit){
   if(!guardNavigation()) return;
   currentUnitName = unit;
@@ -386,7 +453,7 @@ function shuffleArray(arr){
   return copy;
 }
 
-/* ================== ① 默寫 ================== */
+/* ============ 默寫 ============ */
 function showWriteExercise(){
   const p=document.getElementById("writePanel");
   document.getElementById("clozePanel").style.display="none";
@@ -397,10 +464,10 @@ function showWriteExercise(){
   p.innerHTML=`
   <div class="exercise-box">
     <div class="range-input-area">
-      <span>練習範圍（1-${maxNo}）：</span>
+      <span>練習範圍（生字池 1-${maxNo}）：</span>
       <input type="text" id="rangeText" placeholder="例如1-10，留空預設全部">
       <span>抽題數量：</span>
-      <input type="number" id="pickCount" placeholder="要抽幾題" min="1">
+      <input type="number" id="pickCount" placeholder="預設10題" min="1">
       <button class="btn" id="startExercise">開始練習</button>
     </div>
     <div class="check-group">
@@ -519,7 +586,7 @@ function saveWriteRecord(){
   alert("✅已保存練習紀錄，可前往錯題本查看");
 }
 
-/* ================== 共用：展開/中文/朗讀 ================== */
+/* ============ 共用：展開/中文/朗讀 ============ */
 function toggleClozeDetail(trigger){
   const item = trigger.closest(".cloze-item");
   const detail = item.querySelector(".cloze-detail");
@@ -561,7 +628,7 @@ function speakClozeSentence(btn){
   speakParts(parts);
 }
 
-/* ================== ② 完形填空 ================== */
+/* ============ 完形填空 ============ */
 function showClozeExercise(){
   const p=document.getElementById("clozePanel");
   document.getElementById("writePanel").style.display="none";
@@ -571,10 +638,12 @@ function showClozeExercise(){
   const total = bank.length;
   p.innerHTML=`
   <div class="exercise-box">
-    <div class="lock-tip">⚠️ 本篇章句子為生詞閱讀例句，並非正式考題。</div>
+    <div class="lock-tip">⚠️ 本篇章句子為生字池的例句，並非正式考題。</div>
     <div class="range-input-area">
-      <span>抽取題目數量（共${total}題）：</span>
-      <input type="number" id="clozePickCount" min="1" max="${total}" value="${total}">
+      <span>練習範圍（生字池共 ${total} 題）：</span>
+      <input type="text" id="clozeRangeText" placeholder="例如1-10，留空預設全部">
+      <span>抽題數量：</span>
+      <input type="number" id="clozePickCount" min="1" placeholder="預設10題" value="10">
       <button class="btn" id="startClozeExercise">開始完形測驗</button>
     </div>
     <div class="mode-select-group">
@@ -606,8 +675,16 @@ function showClozeExercise(){
 function startClozeQuiz(){
   startTimer();
   const bank = getClozeBank();
-  const pickNum = Number(document.getElementById("clozePickCount").value);
-  currentQuizList = shuffleArray([...bank]).slice(0,pickNum);
+  const rangeText = document.getElementById("clozeRangeText").value.trim();
+  const pickNum = Number(document.getElementById("clozePickCount").value) || 10;
+  let start=1,end=bank.length;
+  if(rangeText){
+    const parts = rangeText.split(/[–\-]/);
+    if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);}
+  }
+  const pool = bank.map((it,i)=>({...it, no:i+1})).filter(w=>w.no>=start&&w.no<=end);
+  if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
+  currentQuizList = shuffleArray([...pool]).slice(0,pickNum);
   quizType = "cloze";
   const area = document.getElementById("clozeExerciseArea");
   const finishBtn = document.getElementById("clozeFinishBtn");
@@ -711,7 +788,7 @@ function saveClozeRecord(){
   alert("✅已保存練習紀錄，可前往錯題本查看");
 }
 
-/* ================== ③ 拖拽選擇練習 ================== */
+/* ============ 拖拽選擇練習 ============ */
 function showChoiceExercise(){
   const p=document.getElementById("choicePanel");
   document.getElementById("writePanel").style.display="none";
@@ -723,10 +800,10 @@ function showChoiceExercise(){
   <div class="exercise-box">
     <div class="lock-tip">🧩 把上方詞庫裡的單詞拖到下方對應的空格上（也可以點單詞後再點空格）。</div>
     <div class="range-input-area">
-      <span>練習範圍：</span>
+      <span>練習範圍（生字池共 ${total} 題）：</span>
       <input type="text" id="choiceRangeText" placeholder="例如1-10，留空預設全部">
-      <span>抽題數量（共${total}題）：</span>
-      <input type="number" id="choicePickCount" min="1" placeholder="預設10">
+      <span>抽題數量：</span>
+      <input type="number" id="choicePickCount" min="1" placeholder="預設10題" value="10">
       <button class="btn" id="startChoiceBtn">開始練習</button>
     </div>
     <div id="choiceExerciseArea"></div>
@@ -750,7 +827,7 @@ function startChoiceQuiz(){
   startTimer();
   const bank = getClozeBank();
   const rangeText = document.getElementById("choiceRangeText").value.trim();
-  const pickCount = Number(document.getElementById("choicePickCount").value);
+  const pickCount = Number(document.getElementById("choicePickCount").value) || 10;
   let start=1,end=bank.length;
   if(rangeText){
     const parts = rangeText.split(/[–\-]/);
@@ -758,7 +835,7 @@ function startChoiceQuiz(){
   }
   const pool = bank.map((it,i)=>({...it, no:i+1})).filter(w=>w.no>=start&&w.no<=end);
   if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
-  currentQuizList = shuffleArray([...pool]).slice(0, pickCount&&pickCount>0?pickCount:10);
+  currentQuizList = shuffleArray([...pool]).slice(0, pickCount);
   quizType = "choice";
   document.getElementById("choiceResultPage").style.display="none";
   renderChoiceQuestions(currentQuizList, "choiceExerciseArea");
@@ -971,25 +1048,90 @@ function saveChoiceRecord(){
   alert("✅已保存練習紀錄，可前往錯題本查看");
 }
 
-/* ================== 語法模組 ================== */
+/* ============ 語法模組 ============ */
 function openGrammarRoot(){
   if(!guardNavigation()) return;
   hideAllBox();
   document.getElementById("grammarRoot").classList.add("show");
+  document.getElementById("grammarPanel").innerHTML = "";
+}
+function openVerbTable(){
+  if(!guardNavigation()) return;
+  currentGrammarBranch = "verb";
+  hideAllBox();
+  document.getElementById("grammarRoot").classList.add("show");
+  const p = document.getElementById("grammarPanel");
+  let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">核心 62 個不規則動詞</h3>`;
+  html += `<div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`;
+  IRREGULAR_VERBS.forEach(v=>{
+    html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`;
+  });
+  html += `</tbody></table></div><br><button class="sub-btn" onclick="openGrammarRoot()">← 返回語法</button>`;
+  p.innerHTML = html;
+}
+function openTenseStructure(){
+  if(!guardNavigation()) return;
+  currentGrammarBranch = "structure";
+  hideAllBox();
+  document.getElementById("grammarRoot").classList.add("show");
+  const p = document.getElementById("grammarPanel");
+  const tenses = [
+    {en:"Present Perfect", cn:"現在完成時", struct:"have/has + 過去分詞"},
+    {en:"Present Perfect Continuous", cn:"現在完成進行時", struct:"have/has + been + 現在分詞"},
+    {en:"Past Perfect", cn:"過去完成時", struct:"had + 過去分詞"},
+    {en:"Past Perfect Continuous", cn:"過去完成進行時", struct:"had + been + 現在分詞"}
+  ];
+  let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">4 種時態結構</h3>`;
+  tenses.forEach(t=>{
+    html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`;
+  });
+  html += `<button class="sub-btn" onclick="openGrammarRoot()">← 返回語法</button>`;
+  p.innerHTML = html;
+}
+function openGrammarQuizRoot(){
+  if(!guardNavigation()) return;
+  currentGrammarBranch = "quiz";
+  hideAllBox();
+  document.getElementById("grammarRoot").classList.add("show");
+  const p = document.getElementById("grammarPanel");
+  p.innerHTML = `
+    <h3 style="color:#2c3e50;margin-bottom:12px;">語法測驗</h3>
+    <p style="font-size:14px;margin-bottom:8px;">選擇要練的時態（可多選）：</p>
+    <div id="grammarTopicFilter" style="margin-bottom:12px;"></div>
+    <label style="display:block;margin:10px 0;font-size:14px;">
+      <input type="checkbox" id="grammarShowTopic"> 顯示時態提示
+    </label>
+    <div class="range-input-area">
+      <span>抽題數量：</span>
+      <input type="number" id="grammarPickCount" min="1" placeholder="留空 = 20 題">
+      <button class="btn" id="grammarStartBtn">開始練習</button>
+    </div>
+    <div id="grammarExerciseArea"></div>
+    <div class="finish-area">
+      <button class="btn btn-finish" id="grammarFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button>
+    </div>
+    <div class="result-page" id="grammarResultPage">
+      <h2 style="text-align:center">📝語法成績</h2>
+      <div class="score-text" id="grammarScoreText"></div>
+      <div id="grammarResultList"></div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button>
+      </div>
+    </div>
+    <button class="sub-btn" onclick="openGrammarRoot()" style="margin-top:16px;">← 返回語法</button>
+  `;
   renderGrammarFilters();
-  document.getElementById("grammarExerciseArea").innerHTML = "";
-  document.getElementById("grammarResultPage").style.display = "none";
-  document.getElementById("grammarFinishBtn").style.display = "none";
-  document.getElementById("grammarPickCount").value = "";
+  document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
+  document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
+  document.getElementById("saveGrammarResultBtn").onclick = saveGrammarRecord;
 }
 function renderGrammarFilters(){
   const wrap = document.getElementById("grammarTopicFilter");
+  if(!wrap) return;
   wrap.innerHTML = "";
   const topicSet = new Map();
   GRAMMAR_BANK.forEach(item => {
-    if(!topicSet.has(item.topic)){
-      topicSet.set(item.topic, item.topicEn);
-    }
+    if(!topicSet.has(item.topic)) topicSet.set(item.topic, item.topicEn);
   });
   topicSet.forEach((topicEn, topic) => {
     const div = document.createElement("label");
@@ -1012,22 +1154,15 @@ function renderGrammarFilters(){
 function startGrammarQuiz(){
   startTimer();
   const selTopics = Array.from(document.querySelectorAll(".grammar-topic-cb:checked")).map(cb => cb.value);
-  if(selTopics.length === 0){
-    alert("請至少勾選一個時態");
-    stopTimer();
-    return;
-  }
+  if(selTopics.length === 0){ alert("請至少勾選一個時態"); stopTimer(); return; }
   const pool = GRAMMAR_BANK.filter(item => selTopics.includes(item.topic));
-  if(pool.length === 0){
-    alert("沒有符合條件的題目，請調整勾選");
-    stopTimer();
-    return;
-  }
+  if(pool.length === 0){ alert("沒有符合條件的題目"); stopTimer(); return; }
   let pickNum = Number(document.getElementById("grammarPickCount").value);
-  if(!pickNum || pickNum < 1) pickNum = 10;
+  if(!pickNum || pickNum < 1) pickNum = 20;
   if(pickNum > pool.length) pickNum = pool.length;
   currentQuizList = shuffleArray([...pool]).slice(0, pickNum);
   quizType = "grammar";
+  const showTopic = document.getElementById("grammarShowTopic").checked;
   const area = document.getElementById("grammarExerciseArea");
   const finishBtn = document.getElementById("grammarFinishBtn");
   document.getElementById("grammarResultPage").style.display = "none";
@@ -1036,8 +1171,9 @@ function startGrammarQuiz(){
   currentQuizList.forEach((item, idx) => {
     const div = document.createElement("div");
     div.className = "exercise-item";
+    const topicTag = showTopic ? `<span style="color:#888;font-size:13px;">[${item.topic}]</span> ` : "";
     div.innerHTML = `
-      <div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.topic}]</span> ${item.q}</div>
+      <div class="q-num">${idx + 1}. ${topicTag}${item.q}</div>
       <div class="q-syn-info">提示：${item.hint}</div>
       <input class="user-display" data-ans="${item.a}" placeholder="填入正確形式">
       <div class="feedback"></div>
@@ -1101,10 +1237,7 @@ function startWrongGrammar(){
   const areaDom = document.getElementById("wrongRedoArea");
   const finishBtn = document.getElementById("wrongRedoFinishBtn");
   areaDom.innerHTML = "";
-  if(wrongQ.length === 0){
-    areaDom.innerHTML = "<p>本次練習沒有可重做的錯題</p>";
-    stopTimer(); return;
-  }
+  if(wrongQ.length === 0){ areaDom.innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
   wrongQ.forEach((item, idx) => {
     const div = document.createElement("div");
     div.className = "exercise-item";
@@ -1136,11 +1269,423 @@ function startWrongGrammar(){
   };
 }
 
-document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
-document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
-document.getElementById("saveGrammarResultBtn").onclick = saveGrammarRecord;
+/* ============ 閱讀理解 ============ */
+function openReadingRoot(){
+  if(!guardNavigation()) return;
+  hideAllBox();
+  document.getElementById("readingRoot").classList.add("show");
+  document.getElementById("readingPanel").innerHTML = "";
+}
+function openReadingUnit(unitName){
+  if(!guardNavigation()) return;
+  currentReadingUnit = unitName;
+  const p = document.getElementById("readingPanel");
+  p.innerHTML = `
+    <h3 style="color:#2c3e50;margin-bottom:12px;">${unitName}</h3>
+    <button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button>
+    <button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button>
+    <button class="sub-btn" onclick="openReadingRoot()">← 返回閱讀理解</button>
+    <div id="readingSubPanel" style="margin-top:18px;"></div>
+  `;
+}
+function openReadingSub(subName){
+  if(!guardNavigation()) return;
+  currentReadingSub = subName;
+  const sub = READING_UNITS[currentReadingUnit][subName];
+  const p = document.getElementById("readingSubPanel");
+  if(subName === "文章一"){
+    p.innerHTML = `
+      <div class="reading-intro">${sub.intro}</div>
+      <div style="margin-bottom:12px;">
+        <button class="btn" id="togglePassageBtn">📖 顯示文章原文</button>
+      </div>
+      <div id="passageBox" style="display:none;">
+        <div class="reading-passage" id="passageContent"></div>
+      </div>
+      <hr style="margin:16px 0;">
+      <h4 style="color:#2c3e50;margin-bottom:8px;">📝 選擇題（每次抽 5 道）</h4>
+      <button class="btn" id="startReadingChoiceBtn">開始選擇題</button>
+      <div id="readingChoiceArea"></div>
+      <div id="readingChoiceResult" class="result-page"></div>
+      <hr style="margin:16px 0;">
+      <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 填空題（每次抽 6 道）</h4>
+      <button class="btn" id="startReadingBlankBtn">開始填空題</button>
+      <div id="readingBlankArea"></div>
+      <div id="readingBlankResult" class="result-page"></div>
+    `;
+    // 文章渲染，含长按查词
+    const passageBox = document.getElementById("passageContent");
+    const paras = sub.passage.split(/\n\n+/);
+    let html = "";
+    paras.forEach(par=>{
+      const words = par.split(/(\s+|[.,!?;:()"—–])/);
+      let line = "";
+      words.forEach(w=>{
+        const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
+        if(clean && sub.vocab[clean]){
+          line += `<span class="reading-word" data-word="${clean}" data-cn="${sub.vocab[clean]}">${w}</span>`;
+        }else{
+          line += w;
+        }
+      });
+      html += `<p>${line}</p>`;
+    });
+    passageBox.innerHTML = html;
+    document.getElementById("togglePassageBtn").onclick = function(){
+      const box = document.getElementById("passageBox");
+      if(box.style.display === "none"){
+        box.style.display = "block";
+        this.innerText = "📕 隱藏文章原文";
+      }else{
+        box.style.display = "none";
+        this.innerText = "📖 顯示文章原文";
+      }
+    };
+    // 长按查词绑定
+    bindReadingWordLongPress(sub.vocab);
+    // 选择题
+    document.getElementById("startReadingChoiceBtn").onclick = function(){
+      startReadingChoice(sub);
+    };
+    // 填空题
+    document.getElementById("startReadingBlankBtn").onclick = function(){
+      startReadingBlank(sub);
+    };
+  }else{
+    p.innerHTML = `
+      <div class="reading-intro">${sub.intro}</div>
+      <div style="margin-bottom:12px;">
+        <button class="btn" id="togglePassageBtn">📖 顯示完整對話/段落</button>
+      </div>
+      <div id="passageBox" style="display:none;">
+        <div class="reading-passage" id="passageContent"></div>
+      </div>
+      <hr style="margin:16px 0;">
+      <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 語境完形填空（共 9 題）</h4>
+      <button class="btn" id="startReadingClozeBtn">開始練習</button>
+      <div id="readingClozeArea"></div>
+      <div id="readingClozeResult" class="result-page"></div>
+    `;
+    // 顯示完整段落，並把填空處標記出來
+    const passageBox = document.getElementById("passageContent");
+    let html = "";
+    sub.paragraphs.forEach(par=>{
+      let text = par.text;
+      const words = text.split(/(\s+|[.,!?;:()"—–])/);
+      let line = "";
+      words.forEach(w=>{
+        const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
+        if(clean && sub.vocab[clean]){
+          line += `<span class="reading-word" data-word="${clean}" data-cn="${sub.vocab[clean]}">${w}</span>`;
+        }else{
+          line += w;
+        }
+      });
+      html += `<p>${line}</p>`;
+    });
+    passageBox.innerHTML = html;
+    document.getElementById("togglePassageBtn").onclick = function(){
+      const box = document.getElementById("passageBox");
+      if(box.style.display === "none"){
+        box.style.display = "block";
+        this.innerText = "📕 隱藏完整對話/段落";
+      }else{
+        box.style.display = "none";
+        this.innerText = "📖 顯示完整對話/段落";
+      }
+    };
+    bindReadingWordLongPress(sub.vocab);
+    // 完形填空
+    document.getElementById("startReadingClozeBtn").onclick = function(){
+      startReadingCloze(sub);
+    };
+  }
+}
 
-/* ================== 錯題本 ================== */
+/* === 長按查詞 === */
+function bindReadingWordLongPress(vocab){
+  document.querySelectorAll(".reading-word").forEach(el=>{
+    let pressTimer = null;
+    const showPopup = function(e){
+      const word = el.dataset.word;
+      const cn = el.dataset.cn;
+      const popup = document.getElementById("wordPopup");
+      popup.innerText = word + "：" + cn;
+      popup.style.display = "block";
+      let x = 0, y = 0;
+      if(e.touches && e.touches[0]){
+        x = e.touches[0].clientX;
+        y = e.touches[0].clientY;
+      }else{
+        x = e.clientX;
+        y = e.clientY;
+      }
+      popup.style.left = Math.min(x, window.innerWidth - 180) + "px";
+      popup.style.top = (y - 50) + "px";
+      setTimeout(()=>{ popup.style.display = "none"; }, 2000);
+    };
+    el.addEventListener("touchstart", function(e){
+      pressTimer = setTimeout(()=>{ showPopup(e); }, 400);
+    });
+    el.addEventListener("touchend", function(){ clearTimeout(pressTimer); });
+    el.addEventListener("touchmove", function(){ clearTimeout(pressTimer); });
+    el.addEventListener("mousedown", function(e){
+      pressTimer = setTimeout(()=>{ showPopup(e); }, 400);
+    });
+    el.addEventListener("mouseup", function(){ clearTimeout(pressTimer); });
+    el.addEventListener("mouseleave", function(){ clearTimeout(pressTimer); });
+    el.addEventListener("click", function(e){
+      // 桌面點擊也可看
+      showPopup(e);
+    });
+  });
+}
+
+/* === 閱讀選擇題 === */
+function startReadingChoice(sub){
+  startTimer();
+  const pool = shuffleArray([...sub.choices]).slice(0, 5);
+  window._readingChoicePool = pool;
+  window._readingChoiceSub = sub;
+  const area = document.getElementById("readingChoiceArea");
+  document.getElementById("readingChoiceResult").style.display = "none";
+  area.innerHTML = "";
+  pool.forEach((item, idx) => {
+    const div = document.createElement("div");
+    div.className = "reading-choice";
+    let opts = "";
+    ["A","B","C","D"].forEach((letter, i) => {
+      opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}">${letter}. ${item.opts[i]}</span>`;
+    });
+    div.innerHTML = `<div style="font-weight:bold;margin-bottom:8px;">${idx+1}. ${item.q}</div>${opts}`;
+    area.appendChild(div);
+  });
+  // 綁定選項點擊
+  area.querySelectorAll(".choice-opt").forEach(opt=>{
+    opt.onclick = function(){
+      const qidx = Number(this.dataset.qidx);
+      const siblings = this.parentElement.querySelectorAll(".choice-opt");
+      siblings.forEach(s=>s.classList.remove("selected"));
+      this.classList.add("selected");
+    };
+  });
+  // 加提交按鈕
+  if(!document.getElementById("submitReadingChoiceBtn")){
+    const btn = document.createElement("button");
+    btn.className = "btn btn-finish";
+    btn.id = "submitReadingChoiceBtn";
+    btn.innerText = "✅提交選擇題";
+    btn.style.marginTop = "12px";
+    btn.onclick = submitReadingChoice;
+    area.appendChild(btn);
+  }else{
+    document.getElementById("submitReadingChoiceBtn").style.display = "block";
+  }
+}
+function submitReadingChoice(){
+  const pool = window._readingChoicePool;
+  let score = 0;
+  const wrong = [];
+  document.querySelectorAll("#readingChoiceArea .reading-choice").forEach((div, idx)=>{
+    const item = pool[idx];
+    const selected = div.querySelector(".choice-opt.selected");
+    const userAns = selected ? selected.dataset.letter : "";
+    // 顯示正確/錯誤
+    div.querySelectorAll(".choice-opt").forEach(opt=>{
+      const letter = opt.dataset.letter;
+      if(letter === item.ans) opt.classList.add("correct");
+      else if(letter === userAns) opt.classList.add("wrong");
+    });
+    if(userAns === item.ans) score++;
+    else wrong.push(item.q);
+    // 解析
+    const expDiv = document.createElement("div");
+    expDiv.style.fontSize = "13px";
+    expDiv.style.color = "#666";
+    expDiv.style.marginTop = "6px";
+    expDiv.innerText = "解析：" + item.exp;
+    div.appendChild(expDiv);
+  });
+  const total = pool.length;
+  const percent = Number((score / total * 100).toFixed(2));
+  const resPage = document.getElementById("readingChoiceResult");
+  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">選擇題：${score}/${total}（${percent}%）</div>`;
+  resPage.style.display = "block";
+  // 存進錯題本
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const rec = {
+    type: "閱讀選擇題", unit: currentReadingUnit + "｜" + currentReadingSub,
+    finishTime: new Date().toLocaleString(),
+    costTime: `${min}分${sec}秒`,
+    score: score, total: total,
+    fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong,
+    percent: percent
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: score, total: total, time: Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  stopTimer();
+  document.getElementById("submitReadingChoiceBtn").style.display = "none";
+}
+
+/* === 閱讀填空題 === */
+function startReadingBlank(sub){
+  startTimer();
+  const pool = shuffleArray([...sub.blanks]).slice(0, 6);
+  window._readingBlankPool = pool;
+  window._readingBlankSub = sub;
+  const area = document.getElementById("readingBlankArea");
+  document.getElementById("readingBlankResult").style.display = "none";
+  area.innerHTML = "";
+  pool.forEach((item, idx) => {
+    const div = document.createElement("div");
+    div.className = "exercise-item";
+    div.innerHTML = `
+      <div class="q-num">${idx+1}. ${item.q}</div>
+      <div class="q-syn-info">提示：${item.hint}</div>
+      <input class="user-display" data-ans="${item.a}" placeholder="填入單詞">
+      <div class="feedback"></div>
+    `;
+    area.appendChild(div);
+  });
+  if(!document.getElementById("submitReadingBlankBtn")){
+    const btn = document.createElement("button");
+    btn.className = "btn btn-finish";
+    btn.id = "submitReadingBlankBtn";
+    btn.innerText = "✅提交填空題";
+    btn.style.marginTop = "12px";
+    btn.onclick = submitReadingBlank;
+    area.appendChild(btn);
+  }else{
+    document.getElementById("submitReadingBlankBtn").style.display = "block";
+  }
+}
+function submitReadingBlank(){
+  const pool = window._readingBlankPool;
+  let score = 0;
+  const wrong = [];
+  document.querySelectorAll("#readingBlankArea .exercise-item").forEach((div, idx)=>{
+    const inp = div.querySelector(".user-display");
+    const fb = div.querySelector(".feedback");
+    const item = pool[idx];
+    const u = inp.value.trim().toLowerCase();
+    const a = item.a.toLowerCase();
+    if(u === a){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.a}</span>`; }
+    else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.a}</span>`; }
+  });
+  const total = pool.length;
+  const percent = Number((score / total * 100).toFixed(2));
+  const resPage = document.getElementById("readingBlankResult");
+  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">填空題：${score}/${total}（${percent}%）</div>`;
+  resPage.style.display = "block";
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const rec = {
+    type: "閱讀填空題", unit: currentReadingUnit + "｜" + currentReadingSub,
+    finishTime: new Date().toLocaleString(),
+    costTime: `${min}分${sec}秒`,
+    score: score, total: total,
+    fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong,
+    percent: percent
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: score, total: total, time: Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  stopTimer();
+  document.getElementById("submitReadingBlankBtn").style.display = "none";
+}
+
+/* === 閱讀語境完形 === */
+function startReadingCloze(sub){
+  startTimer();
+  const area = document.getElementById("readingClozeArea");
+  document.getElementById("readingClozeResult").style.display = "none";
+  area.innerHTML = "";
+  sub.items.forEach((item, idx) => {
+    const div = document.createElement("div");
+    div.className = "exercise-item";
+    let opts = "";
+    ["A","B","C","D"].forEach((letter, i) => {
+      opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:4px 10px;margin:3px;border-radius:6px;cursor:pointer;border:1px solid #ddd;">${letter}. ${item.opts[i]}</span>`;
+    });
+    div.innerHTML = `<div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div>`;
+    area.appendChild(div);
+  });
+  area.querySelectorAll(".choice-opt").forEach(opt=>{
+    opt.onclick = function(){
+      const siblings = this.parentElement.querySelectorAll(".choice-opt");
+      siblings.forEach(s=>{ s.style.background = ""; s.style.fontWeight = ""; });
+      this.style.background = "#e8f0ff";
+      this.style.fontWeight = "bold";
+      this.dataset.selected = "true";
+    };
+  });
+  if(!document.getElementById("submitReadingClozeBtn")){
+    const btn = document.createElement("button");
+    btn.className = "btn btn-finish";
+    btn.id = "submitReadingClozeBtn";
+    btn.innerText = "✅提交答案";
+    btn.style.marginTop = "12px";
+    btn.onclick = submitReadingCloze;
+    area.appendChild(btn);
+  }else{
+    document.getElementById("submitReadingClozeBtn").style.display = "block";
+  }
+}
+function submitReadingCloze(){
+  const sub = READING_UNITS[currentReadingUnit]["語境完形填空"];
+  let score = 0;
+  const wrong = [];
+  document.querySelectorAll("#readingClozeArea .exercise-item").forEach((div, idx)=>{
+    const item = sub.items[idx];
+    const opts = div.querySelectorAll(".choice-opt");
+    let userAns = "";
+    opts.forEach(o=>{ if(o.dataset.selected === "true") userAns = o.dataset.letter; });
+    opts.forEach(o=>{
+      const letter = o.dataset.letter;
+      if(letter === item.ans) o.style.background = "#e8f9ee";
+      else if(letter === userAns) o.style.background = "#fdecea";
+    });
+    const fb = div.querySelector(".feedback");
+    if(userAns === item.ans){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.ans}</span>`; }
+    else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.ans}。${item.exp}</span>`; }
+  });
+  const total = sub.items.length;
+  const percent = Number((score / total * 100).toFixed(2));
+  const resPage = document.getElementById("readingClozeResult");
+  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;
+  resPage.style.display = "block";
+  const costMs = Date.now() - exerciseStartTime;
+  const min = Math.floor(costMs/60000);
+  const sec = Math.floor((costMs%60000)/1000);
+  const rec = {
+    type: "閱讀語境完形", unit: currentReadingUnit + "｜" + currentReadingSub,
+    finishTime: new Date().toLocaleString(),
+    costTime: `${min}分${sec}秒`,
+    score: score, total: total,
+    fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong,
+    percent: percent
+  };
+  exerciseRecords.push(rec);
+  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: score, total: total, time: Date.now()});
+  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList();
+  stopTimer();
+  document.getElementById("submitReadingClozeBtn").style.display = "none";
+}
+
+/* ============ 錯題本 ============ */
 function openWrongBook(){
   showRoot("wrongBookPanel");
   renderRecordList();
@@ -1186,14 +1731,12 @@ function renderRecordList(){
     wrap.appendChild(card);
   });
 }
-
 document.getElementById("clearAllRecords").onclick = function(){
   if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return;
   exerciseRecords=[];
   localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));
   renderRecordList();
 };
-
 function openWrongRedo(idx){
   if(!guardNavigation()) return;
   currentWrongRecordIndex = idx;
@@ -1236,22 +1779,16 @@ function openWrongRedo(idx){
     settingDom.innerHTML=`
     <div class="mode-select-group">
       <h4>重做完形錯題｜選擇提示模式</h4>
-      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="initial" checked>模式1：全部給首字母提示</label>
-      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="syn">模式2：全部給同義詞提示</label>
-      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="none">模式3：完全無提示</label>
-      <label style="display:block;margin:4px 0;"><input type="radio" name="rwClozeMode" value="percent">模式4：自訂兩種提示比例</label>
-      <div class="percent-row"><span>首字母提示佔比：</span><input type="number" id="rwClozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
-      <div class="percent-row"><span>同義詞提示佔比：</span><input type="number" id="rwClozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
-      <br><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button>
+      <p style="font-size:14px;color:#666;margin:8px 0;">直接載入錯題開始重做。</p>
+      <button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button>
     </div>`;
   }
 }
-
 function startWrongWrite(){
   startTimer();
   const rec = exerciseRecords[currentWrongRecordIndex];
-  const showTargetCn = document.getElementById("rwShowTargetCn").checked;
-  const showSynCn = document.getElementById("rwShowSynCn").checked;
+  const showTargetCn = document.getElementById("rwShowTargetCn") ? document.getElementById("rwShowTargetCn").checked : false;
+  const showSynCn = document.getElementById("rwShowSynCn") ? document.getElementById("rwShowSynCn").checked : false;
   let wrongWords = [];
   const list = getWordList();
   if(rec.wrongEns && rec.wrongEns.length){
@@ -1262,7 +1799,7 @@ function startWrongWrite(){
   const areaDom = document.getElementById("wrongRedoArea");
   const finishBtn = document.getElementById("wrongRedoFinishBtn");
   areaDom.innerHTML="";
-  if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題（原題可能已被刪除）</p>"; stopTimer(); return; }
+  if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
   wrongWords.forEach((item,idx)=>{
     const div=document.createElement("div");
     div.className="exercise-item";
@@ -1274,21 +1811,19 @@ function startWrongWrite(){
   });
   finishBtn.style.display="block";
   finishBtn.onclick = function(){
-    let fullCount=0, halfCount=0, zeroCount=0;
+    let score=0;
     const total = wrongWords.length;
+    const resPage = document.getElementById("wrongRedoResultPage");
     document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
       const inp = dom.querySelector(".user-display");
       const fb = dom.querySelector(".feedback");
       const ans = inp.dataset.ans;
-      const level = judgeAnswer(inp.value, ans);
-      if(level === "full"){ fullCount++; fb.innerHTML = `<span class="ok">✅${ans}</span>`; }
-      else if(level === "half"){ halfCount++; fb.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`; }
-      else { zeroCount++; fb.innerHTML = `<span class="err">❌答案：${ans}</span>`; }
+      const ok = inp.value.trim().toLowerCase() === ans.toLowerCase();
+      if(ok) score++;
+      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
     });
-    const score = fullCount + halfCount * 0.5;
     const percent = Number((score / total * 100).toFixed(2));
-    const resPage = document.getElementById("wrongRedoResultPage");
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}</div></div>`;
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
     resPage.style.display="block";
     stopTimer();
   };
@@ -1301,30 +1836,8 @@ function startWrongCloze(){
   const areaDom = document.getElementById("wrongRedoArea");
   const finishBtn = document.getElementById("wrongRedoFinishBtn");
   areaDom.innerHTML="";
-  if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題（原題可能已被刪除）</p>";stopTimer();return;}
-  const mode = document.querySelector('input[name="rwClozeMode"]:checked').value;
-  let pInitial=0, pSyn=0;
-  if(mode === "initial") pInitial = 100;
-  else if(mode === "syn") pSyn = 100;
-  else if(mode === "percent"){
-    pInitial = Number(document.getElementById("rwClozePercentInitial").value)||0;
-    pSyn = Number(document.getElementById("rwClozePercentSyn").value)||0;
-    if(pInitial + pSyn > 100){ alert("提示比例相加不可超過100%！"); stopTimer(); return; }
-  }
-  const total = wrongQ.length;
-  const initialCount = Math.round(total * pInitial / 100);
-  const synCount = Math.round(total * pSyn / 100);
-  let typeArr = [];
-  for(let i=0;i<initialCount;i++) typeArr.push("initial");
-  for(let i=0;i<synCount;i++) typeArr.push("syn");
-  while(typeArr.length < total) typeArr.push("none");
-  typeArr = shuffleArray(typeArr);
+  if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>";stopTimer();return;}
   wrongQ.forEach((item,idx)=>{
-    const hintType = typeArr[idx];
-    let hintText = "";
-    if(hintType === "initial") hintText = `（首字母提示：${item.answer[0]}...）`;
-    else if(hintType === "syn") hintText = `（同義詞提示：${item.syn}）`;
-    else hintText = "（無提示）";
     const div=document.createElement("div");
     div.className="exercise-item cloze-item";
     div.innerHTML=`
@@ -1333,7 +1846,7 @@ function startWrongCloze(){
         <span class="cloze-sentence">${item.sentence}</span>
         <span class="cloze-toggle-icon">▼</span>
       </div>
-      <div class="q-syn-info">${hintText}</div>
+      <div class="q-syn-info">（同義詞提示：${item.syn}）</div>
       <div class="cloze-detail" style="display:none;">
         <div class="cloze-toolbar">
           <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
@@ -1351,6 +1864,7 @@ function startWrongCloze(){
   finishBtn.style.display="block";
   finishBtn.onclick = function(){
     let score=0;
+    const total = wrongQ.length;
     const resPage = document.getElementById("wrongRedoResultPage");
     document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
       const inp = dom.querySelector(".user-display");
@@ -1376,24 +1890,22 @@ function startWrongChoice(){
   renderChoiceQuestions(wrongQ, "wrongRedoArea");
   finishBtn.style.display = "block";
   finishBtn.onclick = function(){
-    let fullCount=0, halfCount=0, zeroCount=0;
+    let score=0;
     const total = wrongQ.length;
     const area = document.getElementById("wrongRedoArea");
     area.querySelectorAll(".drop-zone").forEach((zone)=>{
       const ans = zone.dataset.ans;
       const userAns = zone.dataset.filledWord || "";
       const level = judgeAnswer(userAns, ans);
-      if(level === "full") fullCount++;
-      else if(level === "half") halfCount++;
-      else zeroCount++;
+      if(level === "full") score++;
+      else if(level === "half") score += 0.5;
       zone.classList.remove("zone-ok","zone-half","zone-err");
       zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
       if(!userAns) zone.textContent = "（未填）";
     });
-    const score = fullCount + halfCount * 0.5;
     const percent = Number((score / total * 100).toFixed(2));
     const resPage = document.getElementById("wrongRedoResultPage");
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}</div></div>`;
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
     resPage.style.display="block";
     stopTimer();
   };
