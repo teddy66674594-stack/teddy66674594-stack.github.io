@@ -6,9 +6,9 @@
 <title>英語練習系統</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;-webkit-touch-callout:none;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;}
 h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
-.sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;line-height:1.5;}
+.sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;}
 .warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
 .top-nav{max-width:900px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
 .top-btn{padding:11px 20px;border:none;border-radius:10px;background:#667eea;color:#fff;font-size:15px;cursor:pointer;}
@@ -22,7 +22,7 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .disc-text,.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
 .notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
 .notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
-#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;box-shadow:0 3px 10px rgba(230,126,34,0.4);display:none;font-weight:bold;}
+#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;}
 .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
 .word-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #667eea;}
 .word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;flex-wrap:wrap;}
@@ -37,7 +37,7 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .tip{color:#27ae60;margin-top:6px;font-size:14px;}
 .table-container{margin-top:16px;}
 table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;}
-th,td{border:1px solid #ddd;padding:8px 6px;font-size:13px;word-break:break-word;vertical-align:middle;}
+th,td{border:1px solid #ddd;padding:8px 6px;word-break:break-word;vertical-align:middle;}
 th{background:#667eea;color:#fff;}
 .range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
 .check-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;}
@@ -57,22 +57,20 @@ th{background:#667eea;color:#fff;}
 .result-page{margin-top:20px;padding:20px;background:#f0f8ff;border-radius:10px;display:none;}
 .result-item{padding:10px;margin:8px 0;border-radius:6px;background:#fff;font-size:14px;}
 .score-text{font-size:20px;font-weight:bold;text-align:center;margin:14px 0;white-space:pre-line;line-height:1.6;}
-.record-list{margin-bottom:18px;}
 .finish-area{margin:16px 0;text-align:center;}
 .lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:8px;margin-bottom:14px;font-weight:bold;font-size:14px;}
-#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:1px;z-index:9998;display:none;}
+#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;z-index:9998;display:none;}
 .record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
 .record-card-left{flex:1;min-width:0;}
 .record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
-.record-meta{font-size:13px;color:#666;margin:3px 0;word-break:break-word;}
+.record-meta{font-size:13px;color:#666;margin:3px 0;}
 .record-card-right{text-align:center;min-width:110px;padding-left:14px;border-left:1px dashed #ddd;flex-shrink:0;}
-.record-percent{font-size:26px;font-weight:bold;line-height:1.1;}
-.record-percent-label{font-size:12px;color:#999;margin-top:2px;}
+.record-percent{font-size:26px;font-weight:bold;}
+.record-percent-label{font-size:12px;color:#999;}
 .record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
 .cloze-sentence-trigger{cursor:pointer;padding:10px 12px;background:#f8f9fb;border-radius:8px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;user-select:none;}
 .cloze-sentence{flex:1;font-weight:bold;line-height:1.55;color:#2c3e50;font-size:15px;}
-.cloze-toggle-icon{color:#667eea;font-size:12px;transition:transform 0.2s;margin-top:5px;}
-.cloze-item.expanded .cloze-toggle-icon{transform:rotate(180deg);}
+.cloze-toggle-icon{color:#667eea;font-size:12px;margin-top:5px;}
 .cloze-detail{padding:12px 14px;background:#fffdf5;border-left:3px solid #f39c12;border-radius:6px;margin-bottom:10px;}
 .cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
 .cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:14px;font-size:13px;cursor:pointer;}
@@ -82,15 +80,14 @@ th{background:#667eea;color:#fff;}
 .drag-bank{background:#f4f7ff;padding:14px;border-radius:10px;margin-bottom:18px;border:1px dashed #a9b7e8;}
 .bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:10px;}
 .bank-words{display:flex;flex-wrap:wrap;gap:8px;}
-.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;user-select:none;}
+.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;}
 .drag-word.selected{background:#667eea;color:#fff;}
 .drag-word.used{opacity:0.3;cursor:not-allowed;border-style:dashed;}
-.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;vertical-align:middle;margin:0 4px;}
-.drop-zone.over{background:#eef4ff;border-color:#667eea;}
+.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;margin:0 4px;}
 .drop-zone.filled{background:#e8f0ff;border-style:solid;border-color:#667eea;color:#2c3e50;font-weight:bold;}
-.zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;color:#1e8449 !important;}
-.zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;color:#b9770e !important;}
-.zone-err{border-color:#e74c3c !important;background:#fdecea !important;color:#c0392b !important;}
+.zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;}
+.zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;}
+.zone-err{border-color:#e74c3c !important;background:#fdecea !important;}
 .drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
 .reading-passage{line-height:1.9;font-size:15px;color:#333;background:#fafbff;padding:16px;border-radius:8px;margin:12px 0;user-select:text;}
 .reading-passage p{margin-bottom:12px;}
@@ -108,12 +105,12 @@ th{background:#667eea;color:#fff;}
 .tense-en{font-weight:bold;color:#2c3e50;font-size:15px;}
 .tense-cn{color:#888;font-size:13px;margin-left:6px;}
 .tense-struct{color:#e74c3c;font-size:14px;margin-top:6px;font-family:monospace;}
-#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s ease-out;}
+#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s;}
 #eyeCareBanner.show{transform:translateY(0);}
 #eyeCareBanner.green{background:#27ae60;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
-#whaleCanvas{position:fixed;bottom:100px;right:20px;width:120px;height:130px;z-index:9999;cursor:grab;user-select:none;filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));transition:transform 0.2s;display:none;}
+#whaleCanvas{position:fixed;bottom:100px;right:20px;width:120px;height:130px;z-index:9999;cursor:grab;user-select:none;filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));display:none;}
 #whaleCanvas:active{transform:scale(0.95);}
 #whaleCanvas.jump{animation:whaleJump 0.5s ease-out;}
 @keyframes whaleJump{0%{transform:translateY(0) scale(1);}30%{transform:translateY(-25px) scale(1.08);}60%{transform:translateY(0) scale(0.95);}100%{transform:translateY(0) scale(1);}}
@@ -121,7 +118,11 @@ th{background:#667eea;color:#fff;}
 #whaleChat{position:fixed;bottom:260px;right:20px;width:320px;max-width:calc(100vw - 40px);height:420px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25);display:none;flex-direction:column;z-index:10001;overflow:hidden;}
 #whaleChatHeader{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 16px;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
 #whaleChatHeader span:last-child{cursor:pointer;font-size:18px;}
-#whaleChatBody{flex:1;padding:14px;overflow-y:auto;font-size:14px;color:#333;background:#f8f9fa;}
+#whaleChatBody{flex:1;padding:12px;overflow-y:auto;font-size:14px;color:#333;background:#f8f9fa;}
+.ai-msg{max-width:80%;padding:8px 12px;border-radius:12px;margin-bottom:8px;line-height:1.5;word-wrap:break-word;}
+.ai-msg-bot{background:#fff;color:#333;border:1px solid #e0e0e0;border-bottom-left-radius:4px;}
+.ai-msg-user{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;margin-left:auto;border-bottom-right-radius:4px;}
+.ai-msg-loading{color:#999;font-style:italic;}
 #whaleChatFooter{padding:10px;border-top:1px solid #eee;display:flex;gap:8px;}
 #whaleChatInput{flex:1;padding:8px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;outline:none;}
 #whaleChatSend{padding:8px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;}
@@ -132,7 +133,6 @@ th{background:#667eea;color:#fff;}
 <div id="eyeCareBanner"></div>
 <div id="timerBadge">⏱ 00:00</div>
 <div id="wordPopup"></div>
-
 <button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
 
 <div id="noticeModal">
@@ -250,11 +250,11 @@ th{background:#667eea;color:#fff;}
     <span onclick="closeWhaleChat()">×</span>
   </div>
   <div id="whaleChatBody">
-    <div style="color:#888;font-size:13px;text-align:center;margin-top:20px;">🐋 你好呀～我是小鲸鱼<br>（AI 功能即将上线）</div>
+    <div class="ai-msg ai-msg-bot">你好呀～我是小鲸鱼，有什么可以帮你的？</div>
   </div>
   <div id="whaleChatFooter">
-    <input id="whaleChatInput" placeholder="問我問題...">
-    <button id="whaleChatSend">發送</button>
+    <input id="whaleChatInput" placeholder="問我問題..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+    <button id="whaleChatSend" onclick="sendAIMessage()">發送</button>
   </div>
 </div>
 
@@ -280,7 +280,7 @@ let currentReadingSub = "";
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
 
-/* ================== 字符归一化（修特殊符号 bug） ================== */
+/* ================== 字符归一化 ================== */
 function normalizePunctuation(str){
   if(!str) return "";
   return String(str)
@@ -327,7 +327,7 @@ function guardNavigation(){
   return false;
 }
 
-/* ================== 開場顯示免責聲明 ================== */
+/* ================== 免責聲明 ================== */
 document.getElementById("disclaimerModal").style.display = "flex";
 
 document.getElementById("discOk").onclick = function(){
@@ -452,7 +452,6 @@ function openExerciseUnit(unit){
     el.innerHTML=""; el.style.display="none";
   });
 }
-
 function normalizeWord(w){
   let x = w.toLowerCase();
   const suffixes = ["ing","ied","ed","es","s","d"];
@@ -498,7 +497,6 @@ function shuffleArray(arr){
   }
   return copy;
 }
-
 /* ================== 默寫 ================== */
 function showWriteExercise(){
   const p=document.getElementById("writePanel");
@@ -600,9 +598,7 @@ function showWriteResult(){
 function saveWriteRecord(){
   const s = window._writeScore;
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
-  const timeStr = `${min}分${sec}秒`;
+  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const list = getWordList();
   const wrongEns = s.wrongItems.map(no => { const w = list.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
   const halfEns = s.halfItems.map(no => { const w = list.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
@@ -622,6 +618,7 @@ function saveWriteRecord(){
   renderRecordList();
   alert("✅已保存練習紀錄");
 }
+
 /* ================== 完形填空 ================== */
 function toggleClozeDetail(trigger){
   const item = trigger.closest(".cloze-item");
@@ -686,8 +683,8 @@ function showClozeExercise(){
       <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="syn">模式2：全部給同義詞提示</label>
       <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label>
       <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="percent">模式4：自訂兩種提示比例</label>
-      <div class="percent-row"><span>首字母提示佔比：</span><input type="number" id="clozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
-      <div class="percent-row"><span>同義詞提示佔比：</span><input type="number" id="clozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
+      <div style="margin:8px 0;"><span>首字母提示佔比：</span><input type="number" id="clozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
+      <div style="margin:8px 0;"><span>同義詞提示佔比：</span><input type="number" id="clozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
     </div>
     <div id="clozeExerciseArea"></div>
     <div class="finish-area"><button class="btn btn-finish" id="clozeFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div>
@@ -1203,7 +1200,6 @@ function startWrongGrammar(){
     stopTimer();
   };
 }
-
 /* ================== 閱讀理解 ================== */
 function openReadingRoot(){
   if(!guardNavigation()) return;
@@ -1732,7 +1728,7 @@ function startWrongChoice(){
   };
 }
 
-/* ================== AI 桌宠 ================== */
+/* ================== AI 桌宠 + 聊天 ================== */
 (function(){
   const canvas = document.getElementById("whaleCanvas");
   if(!canvas) return;
@@ -1875,40 +1871,41 @@ function startWrongChoice(){
 
   window.openWhaleChat = function(){ chat.style.display = "flex"; };
   window.closeWhaleChat = function(){ chat.style.display = "none"; };
+
   window.sendAIMessage = async function(){
-  const input = document.getElementById("whaleChatInput");
-  const text = input.value.trim();
-  if(!text) return;
-  input.value = "";
-  const body = document.getElementById("whaleChatBody");
-  const userMsg = document.createElement("div");
-  userMsg.className = "ai-msg ai-msg-user";
-  userMsg.innerText = text;
-  body.appendChild(userMsg);
-  body.scrollTop = body.scrollHeight;
+    const input = document.getElementById("whaleChatInput");
+    const text = input.value.trim();
+    if(!text) return;
+    input.value = "";
+    const body = document.getElementById("whaleChatBody");
+    const userMsg = document.createElement("div");
+    userMsg.className = "ai-msg ai-msg-user";
+    userMsg.innerText = text;
+    body.appendChild(userMsg);
+    body.scrollTop = body.scrollHeight;
 
-  const loading = document.createElement("div");
-  loading.className = "ai-msg ai-msg-bot ai-msg-loading";
-  loading.innerText = "🐋 思考中...";
-  body.appendChild(loading);
-  body.scrollTop = body.scrollHeight;
+    const loading = document.createElement("div");
+    loading.className = "ai-msg ai-msg-bot ai-msg-loading";
+    loading.innerText = "🐋 思考中...";
+    body.appendChild(loading);
+    body.scrollTop = body.scrollHeight;
 
-  try {
-    const res = await fetch("https://whale-ai-proxy.teddy66674594.workers.dev", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [{ role: "user", content: text }] })
-    });
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || "抱歉，我没听清楚～";
-    loading.classList.remove("ai-msg-loading");
-    loading.innerText = reply;
-  } catch (err) {
-    loading.classList.remove("ai-msg-loading");
-    loading.innerText = "出错啦：" + err.message;
-  }
-  body.scrollTop = body.scrollHeight;
-};
+    try {
+      const res = await fetch("https://whale-ai-proxy.teddy66674594.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [{ role: "user", content: text }] })
+      });
+      const data = await res.json();
+      const reply = data.choices?.[0]?.message?.content || "抱歉，我没听清楚～";
+      loading.classList.remove("ai-msg-loading");
+      loading.innerText = reply;
+    } catch (err) {
+      loading.classList.remove("ai-msg-loading");
+      loading.innerText = "出错啦：" + err.message;
+    }
+    body.scrollTop = body.scrollHeight;
+  };
 })();
 </script>
 </body>
