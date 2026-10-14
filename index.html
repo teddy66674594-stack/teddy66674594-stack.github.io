@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英語練習系統 v1.1</title>
+<title>英語練習系統</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;-webkit-touch-callout:none;}
@@ -23,7 +23,6 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
 .notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
 #noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;box-shadow:0 3px 10px rgba(230,126,34,0.4);display:none;font-weight:bold;}
-#noticeFloatBtn:hover{background:#d35400;}
 .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
 .word-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #667eea;}
 .word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;flex-wrap:wrap;}
@@ -38,12 +37,11 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .tip{color:#27ae60;margin-top:6px;font-size:14px;}
 .table-container{margin-top:16px;}
 table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;}
-th,td{border:1px solid #ddd;padding:8px 6px;font-size:13px;word-break:break-word;overflow-wrap:break-word;vertical-align:middle;}
+th,td{border:1px solid #ddd;padding:8px 6px;font-size:13px;word-break:break-word;vertical-align:middle;}
 th{background:#667eea;color:#fff;}
 .range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
 .check-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;}
 .mode-select-group{margin:12px 0;padding:14px;background:#f4f7ff;border-radius:8px;font-size:14px;}
-.percent-row{margin:8px 0;}
 .btn{padding:8px 14px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer;font-size:15px;}
 .btn-finish{background:#27ae60;}
 .btn-clear-wrong{background:#e74c3c;}
@@ -62,9 +60,8 @@ th{background:#667eea;color:#fff;}
 .record-list{margin-bottom:18px;}
 .finish-area{margin:16px 0;text-align:center;}
 .lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:8px;margin-bottom:14px;font-weight:bold;font-size:14px;}
-#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:1px;z-index:9998;display:none;box-shadow:0 3px 10px rgba(231,76,60,0.4);}
-.record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.15s,box-shadow 0.15s;}
-.record-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(102,126,234,0.28);}
+#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:1px;z-index:9998;display:none;}
+.record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
 .record-card-left{flex:1;min-width:0;}
 .record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
 .record-meta{font-size:13px;color:#666;margin:3px 0;word-break:break-word;}
@@ -72,39 +69,34 @@ th{background:#667eea;color:#fff;}
 .record-percent{font-size:26px;font-weight:bold;line-height:1.1;}
 .record-percent-label{font-size:12px;color:#999;margin-top:2px;}
 .record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
-.cloze-sentence-trigger{cursor:pointer;padding:10px 12px;background:#f8f9fb;border-radius:8px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;transition:background 0.15s;user-select:none;}
-.cloze-sentence-trigger:hover{background:#eef4ff;}
+.cloze-sentence-trigger{cursor:pointer;padding:10px 12px;background:#f8f9fb;border-radius:8px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;user-select:none;}
 .cloze-sentence{flex:1;font-weight:bold;line-height:1.55;color:#2c3e50;font-size:15px;}
 .cloze-toggle-icon{color:#667eea;font-size:12px;transition:transform 0.2s;margin-top:5px;}
 .cloze-item.expanded .cloze-toggle-icon{transform:rotate(180deg);}
-.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:3px solid #f39c12;border-radius:6px;margin-bottom:10px;animation:slideDown 0.2s ease-out;}
-@keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:3px solid #f39c12;border-radius:6px;margin-bottom:10px;}
 .cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
-.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:14px;font-size:13px;cursor:pointer;user-select:none;transition:border-color 0.15s,background 0.15s;}
-.cloze-chip:hover{border-color:#667eea;background:#f4f7ff;}
-.cloze-speaker{background:#667eea;color:#fff;border:none;padding:5px 14px;border-radius:14px;font-size:13px;cursor:pointer;transition:background 0.15s;}
-.cloze-speaker:hover{background:#5567d5;}
+.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:14px;font-size:13px;cursor:pointer;}
+.cloze-speaker{background:#667eea;color:#fff;border:none;padding:5px 14px;border-radius:14px;font-size:13px;cursor:pointer;}
 .key-cn{color:#555;font-size:14px;}
 .cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:6px;font-size:14px;color:#444;line-height:1.65;border:1px dashed #e0e0e0;}
 .drag-bank{background:#f4f7ff;padding:14px;border-radius:10px;margin-bottom:18px;border:1px dashed #a9b7e8;}
 .bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:10px;}
 .bank-words{display:flex;flex-wrap:wrap;gap:8px;}
-.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;user-select:none;transition:all 0.15s;}
-.drag-word:hover{background:#eef4ff;}
+.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;user-select:none;}
 .drag-word.selected{background:#667eea;color:#fff;}
 .drag-word.used{opacity:0.3;cursor:not-allowed;border-style:dashed;}
-.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;vertical-align:middle;transition:all 0.15s;margin:0 4px;}
-.drop-zone:hover,.drop-zone.over{background:#eef4ff;border-color:#667eea;}
+.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;vertical-align:middle;margin:0 4px;}
+.drop-zone.over{background:#eef4ff;border-color:#667eea;}
 .drop-zone.filled{background:#e8f0ff;border-style:solid;border-color:#667eea;color:#2c3e50;font-weight:bold;}
 .zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;color:#1e8449 !important;}
 .zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;color:#b9770e !important;}
 .zone-err{border-color:#e74c3c !important;background:#fdecea !important;color:#c0392b !important;}
 .drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
-.reading-passage{line-height:1.9;font-size:15px;color:#333;background:#fafbff;padding:16px;border-radius:8px;margin:12px 0;user-select:text;-webkit-user-select:text;}
+.reading-passage{line-height:1.9;font-size:15px;color:#333;background:#fafbff;padding:16px;border-radius:8px;margin:12px 0;user-select:text;}
 .reading-passage p{margin-bottom:12px;}
-.reading-word{cursor:pointer;padding:0 2px;border-radius:3px;transition:background 0.15s;}
+.reading-word{cursor:pointer;padding:0 2px;border-radius:3px;}
 .reading-word:hover{background:#fff3cd;}
-#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;z-index:99999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);pointer-events:none;max-width:200px;text-align:center;}
+#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;z-index:99999;display:none;pointer-events:none;max-width:200px;text-align:center;}
 .reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:10px;font-size:14px;}
 .reading-choice .choice-opt{display:block;padding:6px 10px;margin:4px 0;border-radius:6px;cursor:pointer;}
 .reading-choice .choice-opt:hover{background:#f0f4ff;}
@@ -116,25 +108,22 @@ th{background:#667eea;color:#fff;}
 .tense-en{font-weight:bold;color:#2c3e50;font-size:15px;}
 .tense-cn{color:#888;font-size:13px;margin-left:6px;}
 .tense-struct{color:#e74c3c;font-size:14px;margin-top:6px;font-family:monospace;}
-#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s ease-out;box-shadow:0 3px 12px rgba(0,0,0,0.15);}
+#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s ease-out;}
 #eyeCareBanner.show{transform:translateY(0);}
 #eyeCareBanner.green{background:#27ae60;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
-#whaleCanvas{position:fixed;bottom:100px;right:20px;width:120px;height:130px;z-index:9999;cursor:grab;user-select:none;filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));image-rendering:pixelated;transition:transform 0.2s;}
-#whaleCanvas{display:none;}
+#whaleCanvas{position:fixed;bottom:100px;right:20px;width:120px;height:130px;z-index:9999;cursor:grab;user-select:none;filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));transition:transform 0.2s;display:none;}
 #whaleCanvas:active{transform:scale(0.95);}
 #whaleCanvas.jump{animation:whaleJump 0.5s ease-out;}
 @keyframes whaleJump{0%{transform:translateY(0) scale(1);}30%{transform:translateY(-25px) scale(1.08);}60%{transform:translateY(0) scale(0.95);}100%{transform:translateY(0) scale(1);}}
-#whaleBubble{position:fixed;background:#fff;color:#2c3e50;padding:8px 14px;border-radius:16px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;z-index:10000;max-width:180px;pointer-events:none;border:2px solid #667eea;animation:bubbleIn 0.3s ease-out;}
-@keyframes bubbleIn{from{opacity:0;transform:scale(0.8) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
-#whaleChat{position:fixed;bottom:260px;right:20px;width:320px;max-width:calc(100vw - 40px);height:420px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25);display:none;flex-direction:column;z-index:10001;overflow:hidden;animation:bubbleIn 0.3s ease-out;}
+#whaleBubble{position:fixed;background:#fff;color:#2c3e50;padding:8px 14px;border-radius:16px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;z-index:10000;max-width:180px;pointer-events:none;border:2px solid #667eea;}
+#whaleChat{position:fixed;bottom:260px;right:20px;width:320px;max-width:calc(100vw - 40px);height:420px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25);display:none;flex-direction:column;z-index:10001;overflow:hidden;}
 #whaleChatHeader{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 16px;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
 #whaleChatHeader span:last-child{cursor:pointer;font-size:18px;}
 #whaleChatBody{flex:1;padding:14px;overflow-y:auto;font-size:14px;color:#333;background:#f8f9fa;}
 #whaleChatFooter{padding:10px;border-top:1px solid #eee;display:flex;gap:8px;}
 #whaleChatInput{flex:1;padding:8px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;outline:none;}
-#whaleChatInput:focus{border-color:#667eea;}
 #whaleChatSend{padding:8px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;}
 </style>
 </head>
@@ -151,9 +140,7 @@ th{background:#667eea;color:#fff;}
     <div class="notice-title" id="noticeTitle">公告</div>
     <div class="notice-meta" id="noticeMeta"></div>
     <div class="notice-text" id="noticeContent"></div>
-    <div class="notice-buttons">
-      <button id="noticeOk" class="btn">知道了</button>
-    </div>
+    <div class="notice-buttons"><button id="noticeOk" class="btn">知道了</button></div>
   </div>
 </div>
 
@@ -166,27 +153,25 @@ th{background:#667eea;color:#fff;}
 網站所有學習內容僅作教學參考，不承擔使用本系統所衍生的任何責任。使用本網站即代表您已閱讀並同意本聲明。
     </div>
     <label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意以上條款</label>
-    <div class="disc-buttons">
-      <button id="discOk" class="btn">同意並進入系統</button>
-    </div>
+    <div class="disc-buttons"><button id="discOk" class="btn">同意並進入系統</button></div>
   </div>
 </div>
 
 <div id="mainContent" style="display:none;">
-<h1>英語練習系統 <span style="color:#999;font-size:14px;">v1.1</span></h1>
+<h1>英語練習系統</h1>
 <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
 <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
 
 <div class="top-nav">
-  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池 Vocabulary</button>
-  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題 Exercises</button>
-  <button class="top-btn" onclick="openGrammarRoot()">📖 語法 Grammar</button>
-  <button class="top-btn" onclick="openReadingRoot()">📘 閱讀理解 Reading</button>
-  <button class="top-btn" onclick="openWrongBook()">📒 錯題本 Mistakes</button>
+  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池</button>
+  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題</button>
+  <button class="top-btn" onclick="openGrammarRoot()">📖 語法</button>
+  <button class="top-btn" onclick="openReadingRoot()">📘 閱讀理解</button>
+  <button class="top-btn" onclick="openWrongBook()">📒 錯題本</button>
 </div>
 
 <div id="vocabPool" class="box-wrap show">
-  <h2>📚 生詞池 Vocabulary</h2>
+  <h2>📚 生詞池</h2>
   <p style="margin:10px 0;">請選擇單元：</p>
   <button class="unit-btn" onclick="openVocabUnit('第三單元')">第三單元</button>
 </div>
@@ -202,7 +187,7 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="exerciseRoot" class="box-wrap">
-  <h2>📝 練習題 Exercises</h2>
+  <h2>📝 練習題</h2>
   <p style="margin:10px 0;">請選擇單元：</p>
   <button class="unit-btn" onclick="openExerciseUnit('第三單元')">第三單元</button>
 </div>
@@ -220,7 +205,7 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="grammarRoot" class="box-wrap">
-  <h2>📖 語法 Grammar</h2>
+  <h2>📖 語法</h2>
   <p style="margin:10px 0;">請選擇模塊：</p>
   <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
   <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
@@ -230,7 +215,7 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="readingRoot" class="box-wrap">
-  <h2>📘 閱讀理解 Reading</h2>
+  <h2>📘 閱讀理解</h2>
   <p style="margin:10px 0;">請選擇測驗：</p>
   <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
   <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
@@ -238,7 +223,7 @@ th{background:#667eea;color:#fff;}
 </div>
 
 <div id="wrongBookPanel" class="box-wrap">
-  <h2>📒 錯題本 Mistakes</h2>
+  <h2>📒 錯題本</h2>
   <p style="margin:8px 0;font-size:14px;">點擊下方紀錄進入對應錯題重做</p>
   <div class="record-list" id="recordList"></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -251,9 +236,7 @@ th{background:#667eea;color:#fff;}
   <h2>🔁 錯題重做</h2>
   <div id="wrongRedoSetting"></div>
   <div id="wrongRedoArea"></div>
-  <div class="finish-area">
-    <button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button>
-  </div>
+  <div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div>
   <div class="result-page" id="wrongRedoResultPage"></div>
   <button class="sub-btn" onclick="openWrongBook()" style="margin-top:16px;">← 返回錯題本列表</button>
 </div>
@@ -267,10 +250,7 @@ th{background:#667eea;color:#fff;}
     <span onclick="closeWhaleChat()">×</span>
   </div>
   <div id="whaleChatBody">
-    <div style="color:#888;font-size:13px;text-align:center;margin-top:20px;">
-      🐋 你好呀～我是小鲸鱼<br>
-      （AI 功能即将上线）
-    </div>
+    <div style="color:#888;font-size:13px;text-align:center;margin-top:20px;">🐋 你好呀～我是小鲸鱼<br>（AI 功能即将上线）</div>
   </div>
   <div id="whaleChatFooter">
     <input id="whaleChatInput" placeholder="問我問題...">
@@ -323,8 +303,7 @@ function startTimer(){
   isPracticing = true;
   timerStartTime = Date.now();
   exerciseStartTime = timerStartTime;
-  const badge = document.getElementById("timerBadge");
-  badge.style.display = "block";
+  document.getElementById("timerBadge").style.display = "block";
   updateTimerDisplay();
   clearInterval(timerInterval);
   timerInterval = setInterval(updateTimerDisplay, 1000);
@@ -355,8 +334,8 @@ document.getElementById("discOk").onclick = function(){
   if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}
   document.getElementById("disclaimerModal").style.display="none";
   document.getElementById("mainContent").style.display="block";
-  document.getElementById("whaleCanvas").style.display = "block";
   document.getElementById("noticeFloatBtn").style.display="block";
+  document.getElementById("whaleCanvas").style.display="block";
   showRoot("vocabPool");
   renderRecordList();
   showNoticeIfAny();
@@ -376,18 +355,18 @@ function showNoticeIfAny(){
 /* ================== 護眼提醒 ================== */
 (function eyeCareReminder(){
   const banner = document.getElementById("eyeCareBanner");
-  let shown15 = false, shown30 = false, shown60 = false;
-  const startTime = Date.now();
-  function showBanner(text, colorClass){
+  let s15=false, s30=false, s60=false;
+  const start = Date.now();
+  function show(text, cls){
     banner.innerText = text;
-    banner.className = "show " + colorClass;
+    banner.className = "show " + cls;
     setTimeout(()=>{ banner.classList.remove("show"); }, 6000);
   }
   setInterval(function(){
-    const minutes = Math.floor((Date.now() - startTime) / 60000);
-    if(minutes >= 15 && !shown15){ shown15 = true; showBanner("👀 已看 15 分鐘，勞逸結合，看看遠處放鬆一下眼睛吧～", "green"); }
-    if(minutes >= 30 && !shown30){ shown30 = true; showBanner("🚶 已看 30 分鐘，建議站起來活動一下，讓眼睛休息 5 分鐘。", "yellow"); }
-    if(minutes >= 60 && !shown60){ shown60 = true; showBanner("❤️ 已看 1 小時，該休息了！長時間看屏幕對眼睛不好，請先關掉頁面休息一下。", "red"); }
+    const minutes = Math.floor((Date.now()-start)/60000);
+    if(minutes>=15 && !s15){ s15=true; show("👀 已看 15 分鐘，勞逸結合，看看遠處放鬆一下眼睛吧～","green"); }
+    if(minutes>=30 && !s30){ s30=true; show("🚶 已看 30 分鐘，建議站起來活動一下，讓眼睛休息 5 分鐘。","yellow"); }
+    if(minutes>=60 && !s60){ s60=true; show("❤️ 已看 1 小時，該休息了！長時間看屏幕對眼睛不好，請先關掉頁面休息一下。","red"); }
   }, 30000);
 })();
 
@@ -417,12 +396,10 @@ function speakWord(word){
 }
 function showVocabCard(){
   const wrap=document.getElementById("cardPanel");
-  const tablePanel=document.getElementById("tablePanel");
-  tablePanel.innerHTML="";
+  document.getElementById("tablePanel").innerHTML="";
   wrap.innerHTML='<div class="word-grid"></div>';
   const g=wrap.querySelector(".word-grid");
-  const list = getWordList();
-  list.forEach(w=>{
+  getWordList().forEach(w=>{
     const div=document.createElement("div");
     div.className="word-card";
     div.innerHTML=`
@@ -433,8 +410,7 @@ function showVocabCard(){
     </div>
     <div class="word-cn">${w.cn||""}</div>
     <div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span><span class="syn-speaker" data-word="${w.syn||""}">🔊</span></div>
-    <div class="tip">備註：${w.memo||""}</div>
-    `;
+    <div class="tip">備註：${w.memo||""}</div>`;
     g.appendChild(div);
     div.querySelectorAll(".speaker,.syn-speaker").forEach(sp=>{
       sp.onclick = function(){ speakWord(this.dataset.word); };
@@ -443,13 +419,10 @@ function showVocabCard(){
 }
 function showVocabTable(){
   const wrap=document.getElementById("tablePanel");
-  const cardPanel=document.getElementById("cardPanel");
-  cardPanel.innerHTML="";
+  document.getElementById("cardPanel").innerHTML="";
   const list = getWordList();
-  wrap.innerHTML = `
-    <div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button></div>
-    <div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>
-  `;
+  wrap.innerHTML = `<div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button></div>
+    <div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>`;
   const tb=wrap.querySelector("tbody");
   list.forEach(w=>{
     const tr=document.createElement("tr");
@@ -462,9 +435,7 @@ function showVocabTable(){
     const blob = new Blob(["\uFEFF"+txt], {type:"text/csv;charset=utf-8"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = currentUnitName + "_生詞表.csv";
-    a.click();
+    a.href = url; a.download = currentUnitName + "_生詞表.csv"; a.click();
     URL.revokeObjectURL(url);
   };
 }
@@ -496,8 +467,7 @@ function normalizeWord(w){
 }
 function isWordFormMatch(a, b){
   if(a === b) return true;
-  const na = normalizeWord(a);
-  const nb = normalizeWord(b);
+  const na = normalizeWord(a), nb = normalizeWord(b);
   if(na === nb && na.length >= 3) return true;
   if(na + "e" === nb || nb + "e" === na) return true;
   if(a.startsWith(b) || b.startsWith(a)){
@@ -510,12 +480,11 @@ function judgeAnswer(userAns, realAns){
   const r = normalizePunctuation(realAns);
   if(u === r) return "full";
   if(!u) return "zero";
-  const uWords = u.split(" ");
-  const rWords = r.split(" ");
-  if(uWords.length === rWords.length){
+  const uW = u.split(" "), rW = r.split(" ");
+  if(uW.length === rW.length){
     let allMatch = true;
-    for(let i=0;i<uWords.length;i++){
-      if(!isWordFormMatch(uWords[i], rWords[i])){ allMatch = false; break; }
+    for(let i=0;i<uW.length;i++){
+      if(!isWordFormMatch(uW[i], rW[i])){ allMatch = false; break; }
     }
     if(allMatch) return "half";
   }
@@ -639,8 +608,7 @@ function saveWriteRecord(){
   const halfEns = s.halfItems.map(no => { const w = list.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
   const rec = {
     type: "看同義詞默寫", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(),
-    costTime: timeStr,
+    finishTime: new Date().toLocaleString(), costTime: timeStr,
     score: s.score, total: s.total,
     fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
     wrongNos: s.wrongItems, halfNos: s.halfItems,
@@ -652,7 +620,7 @@ function saveWriteRecord(){
   attemptStats.push({score: s.score, total: s.total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄，可前往錯題本查看");
+  alert("✅已保存練習紀錄");
 }
 /* ================== 完形填空 ================== */
 function toggleClozeDetail(trigger){
@@ -792,15 +760,13 @@ function startClozeQuiz(){
         <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
       </div>
       <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
-      <div class="feedback"></div>
-    `;
+      <div class="feedback"></div>`;
     area.appendChild(div);
   });
   finishBtn.style.display="block";
 }
 function showClozeResult(){
-  let score=0;
-  let wrongSentences=[];
+  let score=0, wrongSentences=[];
   const total = currentQuizList.length;
   const resultListDom = document.getElementById("clozeResultList");
   resultListDom.innerHTML="";
@@ -810,10 +776,8 @@ function showClozeResult(){
     const ans = input.dataset.ans;
     const sen = input.dataset.sentence;
     const userAns = input.value.trim().toLowerCase();
-    const realAns = ans.toLowerCase();
-    const isCorrect = userAns === realAns;
-    if(isCorrect) score++;
-    else wrongSentences.push(sen);
+    const isCorrect = userAns === ans.toLowerCase();
+    if(isCorrect) score++; else wrongSentences.push(sen);
     feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${ans}</span>` : `<span class="err">❌錯誤，答案：${ans}</span>`;
     resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${isCorrect?"✅":"❌"} ${ans}，你的答案：${userAns||"（未作答）"}</div>`;
   });
@@ -826,13 +790,10 @@ function showClozeResult(){
 function saveClozeRecord(){
   const {score,total,wrongSentences} = window._clozeScore;
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
-  const timeStr = `${min}分${sec}秒`;
+  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const rec = {
     type: "完形填空", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(),
-    costTime: timeStr,
+    finishTime: new Date().toLocaleString(), costTime: timeStr,
     score: score, total: total,
     fullCount: score, halfCount: 0, zeroCount: total - score,
     wrongSentences: wrongSentences,
@@ -843,7 +804,7 @@ function saveClozeRecord(){
   attemptStats.push({score:score, total:total, time:Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄，可前往錯題本查看");
+  alert("✅已保存練習紀錄");
 }
 
 /* ================== 拖拽選擇 ================== */
@@ -892,8 +853,7 @@ function startChoiceQuiz(){
   renderChoiceQuestions(currentQuizList, "choiceExerciseArea");
   document.getElementById("choiceFinishBtn").style.display="block";
 }
-let selectedWordEl = null;
-let draggingWordEl = null;
+let selectedWordEl = null, draggingWordEl = null;
 function onDragStart(e){
   if(this.classList.contains("used")){ e.preventDefault(); return; }
   draggingWordEl = this;
@@ -935,23 +895,16 @@ function placeWordToZone(zone, chip){
   if(chip.classList.contains("used")) return;
   if(zone.dataset.filled === "true") clearZone(zone);
   const word = chip.dataset.word;
-  zone.dataset.filled = "true";
-  zone.dataset.filledWord = word;
-  zone.textContent = word;
-  zone.classList.add("filled");
-  chip.classList.add("used");
-  chip.classList.remove("selected");
+  zone.dataset.filled = "true"; zone.dataset.filledWord = word;
+  zone.textContent = word; zone.classList.add("filled");
+  chip.classList.add("used"); chip.classList.remove("selected");
   if(selectedWordEl === chip) selectedWordEl = null;
   updateDragStatus(zone.closest(".box-wrap"));
 }
 function clearZone(zone){
   const word = zone.dataset.filledWord;
-  if(word){
-    const chip = findAnyUsedChipByWord(word, zone);
-    if(chip) chip.classList.remove("used");
-  }
-  zone.dataset.filled = "false";
-  zone.dataset.filledWord = "";
+  if(word){ const chip = findAnyUsedChipByWord(word, zone); if(chip) chip.classList.remove("used"); }
+  zone.dataset.filled = "false"; zone.dataset.filledWord = "";
   zone.textContent = "拖到這裡";
   zone.classList.remove("filled","zone-ok","zone-half","zone-err");
   updateDragStatus(zone.closest(".box-wrap"));
@@ -979,9 +932,7 @@ function renderChoiceQuestions(list, containerId){
   const freq = {};
   list.forEach(it => { freq[it.answer] = (freq[it.answer] || 0) + 1; });
   const bankWords = [];
-  Object.keys(freq).forEach(word => {
-    for(let i=0;i<freq[word];i++){ bankWords.push({ wid: containerId + "_w" + bankWords.length, word: word }); }
-  });
+  Object.keys(freq).forEach(word => { for(let i=0;i<freq[word];i++){ bankWords.push({ wid: containerId + "_w" + bankWords.length, word: word }); } });
   const shuffledBank = shuffleArray(bankWords);
   const bankDiv = document.createElement("div");
   bankDiv.className = "drag-bank";
@@ -989,10 +940,8 @@ function renderChoiceQuestions(list, containerId){
   const wordsWrap = bankDiv.querySelector(".bank-words");
   shuffledBank.forEach(b=>{
     const chip = document.createElement("div");
-    chip.className = "drag-word";
-    chip.draggable = true;
-    chip.dataset.wid = b.wid;
-    chip.dataset.word = b.word;
+    chip.className = "drag-word"; chip.draggable = true;
+    chip.dataset.wid = b.wid; chip.dataset.word = b.word;
     chip.textContent = b.word;
     chip.ondragstart = onDragStart;
     chip.onclick = () => onWordChipClick(chip);
@@ -1017,8 +966,7 @@ function renderChoiceQuestions(list, containerId){
         </div>
         <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
         <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
-      </div>
-    `;
+      </div>`;
     area.appendChild(div);
     const zone = div.querySelector(".drop-zone");
     if(zone){
@@ -1061,13 +1009,10 @@ function showChoiceResult(){
 function saveChoiceRecord(){
   const s = window._choiceScore;
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
-  const timeStr = `${min}分${sec}秒`;
+  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const rec = {
     type: "拖拽選擇練習", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(),
-    costTime: timeStr,
+    finishTime: new Date().toLocaleString(), costTime: timeStr,
     score: s.score, total: s.total,
     fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
     wrongSentences: s.wrongSentences,
@@ -1078,7 +1023,7 @@ function saveChoiceRecord(){
   attemptStats.push({score: s.score, total: s.total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄，可前往錯題本查看");
+  alert("✅已保存練習紀錄");
 }
 
 /* ================== 語法 ================== */
@@ -1138,8 +1083,7 @@ function openGrammarQuizRoot(){
       <div id="grammarResultList"></div>
       <div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div>
     </div>
-    <button class="sub-btn" onclick="openGrammarRoot()" style="margin-top:16px;">← 返回語法</button>
-  `;
+    <button class="sub-btn" onclick="openGrammarRoot()" style="margin-top:16px;">← 返回語法</button>`;
   renderGrammarFilters();
   document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
   document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
@@ -1200,8 +1144,7 @@ function showGrammarResult(){
     const userAns = input.value.trim().toLowerCase().replace(/\s+/g, " ");
     const realAns = ans.toLowerCase().replace(/\s+/g, " ");
     const isCorrect = userAns === realAns;
-    if(isCorrect) score++;
-    else wrongQuestions.push(currentQuizList[idx].q);
+    if(isCorrect) score++; else wrongQuestions.push(currentQuizList[idx].q);
     feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${ans}</span>` : `<span class="err">❌錯誤，答案：${ans}</span><br><span style="color:#666;font-size:13px;">${currentQuizList[idx].exp}</span>`;
     resultListDom.innerHTML += `<div class="result-item">${idx + 1}. ${isCorrect ? "✅" : "❌"} ${ans}，你的答案：${userAns || "（未作答）"}</div>`;
   });
@@ -1214,9 +1157,7 @@ function showGrammarResult(){
 function saveGrammarRecord(){
   const {score, total, wrongQuestions} = window._grammarScore;
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs / 60000);
-  const sec = Math.floor((costMs % 60000) / 1000);
-  const timeStr = `${min}分${sec}秒`;
+  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const rec = {
     type: "語法填空", finishTime: new Date().toLocaleString(), costTime: timeStr,
     score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
@@ -1227,7 +1168,7 @@ function saveGrammarRecord(){
   attemptStats.push({score: score, total: total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄，可前往錯題本查看");
+  alert("✅已保存練習紀錄");
 }
 function startWrongGrammar(){
   startTimer();
@@ -1240,7 +1181,7 @@ function startWrongGrammar(){
   wrongQ.forEach((item, idx) => {
     const div = document.createElement("div");
     div.className = "exercise-item";
-    div.innerHTML = `<div class="q-num">${idx + 1}. <span style="color:#888;font-size:13px;">[${item.topic}]</span> ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`;
+    div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`;
     areaDom.appendChild(div);
   });
   finishBtn.style.display = "block";
@@ -1262,6 +1203,7 @@ function startWrongGrammar(){
     stopTimer();
   };
 }
+
 /* ================== 閱讀理解 ================== */
 function openReadingRoot(){
   if(!guardNavigation()) return;
@@ -1278,8 +1220,7 @@ function openReadingUnit(unitName){
     <button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button>
     <button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button>
     <button class="sub-btn" onclick="openReadingRoot()">← 返回閱讀理解</button>
-    <div id="readingSubPanel" style="margin-top:18px;"></div>
-  `;
+    <div id="readingSubPanel" style="margin-top:18px;"></div>`;
 }
 function openReadingSub(subName){
   if(!guardNavigation()) return;
@@ -1300,8 +1241,7 @@ function openReadingSub(subName){
       <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 填空題（每次抽 6 道）</h4>
       <button class="btn" id="startReadingBlankBtn">開始填空題</button>
       <div id="readingBlankArea"></div>
-      <div id="readingBlankResult" class="result-page"></div>
-    `;
+      <div id="readingBlankResult" class="result-page"></div>`;
     const passageBox = document.getElementById("passageContent");
     const paras = sub.passage.split(/\n\n+/);
     let html = "";
@@ -1333,8 +1273,7 @@ function openReadingSub(subName){
       <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 語境完形填空（共 9 題）</h4>
       <button class="btn" id="startReadingClozeBtn">開始練習</button>
       <div id="readingClozeArea"></div>
-      <div id="readingClozeResult" class="result-page"></div>
-    `;
+      <div id="readingClozeResult" class="result-page"></div>`;
     const passageBox = document.getElementById("passageContent");
     let html = "";
     sub.paragraphs.forEach(par=>{
@@ -1394,9 +1333,7 @@ function startReadingChoice(sub){
     const div = document.createElement("div");
     div.className = "reading-choice";
     let opts = "";
-    ["A","B","C","D"].forEach((letter, i) => {
-      opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}">${letter}. ${item.opts[i]}</span>`;
-    });
+    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}">${letter}. ${item.opts[i]}</span>`; });
     div.innerHTML = `<div style="font-weight:bold;margin-bottom:8px;">${idx+1}. ${item.q}</div>${opts}`;
     area.appendChild(div);
   });
@@ -1415,9 +1352,7 @@ function startReadingChoice(sub){
     btn.style.marginTop = "12px";
     btn.onclick = submitReadingChoice;
     area.appendChild(btn);
-  }else{
-    document.getElementById("submitReadingChoiceBtn").style.display = "block";
-  }
+  }else{ document.getElementById("submitReadingChoiceBtn").style.display = "block"; }
 }
 function submitReadingChoice(){
   const pool = window._readingChoicePool;
@@ -1432,12 +1367,9 @@ function submitReadingChoice(){
       if(letter === item.ans) opt.classList.add("correct");
       else if(letter === userAns) opt.classList.add("wrong");
     });
-    if(userAns === item.ans) score++;
-    else wrong.push(item.q);
+    if(userAns === item.ans) score++; else wrong.push(item.q);
     const expDiv = document.createElement("div");
-    expDiv.style.fontSize = "13px";
-    expDiv.style.color = "#666";
-    expDiv.style.marginTop = "6px";
+    expDiv.style.fontSize = "13px"; expDiv.style.color = "#666"; expDiv.style.marginTop = "6px";
     expDiv.innerText = "解析：" + item.exp;
     div.appendChild(expDiv);
   });
@@ -1447,16 +1379,12 @@ function submitReadingChoice(){
   resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">選擇題：${score}/${total}（${percent}%）</div>`;
   resPage.style.display = "block";
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
   const rec = {
     type: "閱讀選擇題", unit: currentReadingUnit + "｜" + currentReadingSub,
     finishTime: new Date().toLocaleString(),
-    costTime: `${min}分${sec}秒`,
-    score: score, total: total,
-    fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong,
-    percent: percent
+    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
+    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong, percent: percent
   };
   exerciseRecords.push(rec);
   localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
@@ -1487,9 +1415,7 @@ function startReadingBlank(sub){
     btn.style.marginTop = "12px";
     btn.onclick = submitReadingBlank;
     area.appendChild(btn);
-  }else{
-    document.getElementById("submitReadingBlankBtn").style.display = "block";
-  }
+  }else{ document.getElementById("submitReadingBlankBtn").style.display = "block"; }
 }
 function submitReadingBlank(){
   const pool = window._readingBlankPool;
@@ -1499,9 +1425,7 @@ function submitReadingBlank(){
     const inp = div.querySelector(".user-display");
     const fb = div.querySelector(".feedback");
     const item = pool[idx];
-    const u = inp.value.trim().toLowerCase();
-    const a = item.a.toLowerCase();
-    if(u === a){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.a}</span>`; }
+    if(inp.value.trim().toLowerCase() === item.a.toLowerCase()){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.a}</span>`; }
     else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.a}</span>`; }
   });
   const total = pool.length;
@@ -1510,16 +1434,12 @@ function submitReadingBlank(){
   resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">填空題：${score}/${total}（${percent}%）</div>`;
   resPage.style.display = "block";
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
   const rec = {
     type: "閱讀填空題", unit: currentReadingUnit + "｜" + currentReadingSub,
     finishTime: new Date().toLocaleString(),
-    costTime: `${min}分${sec}秒`,
-    score: score, total: total,
-    fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong,
-    percent: percent
+    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
+    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong, percent: percent
   };
   exerciseRecords.push(rec);
   localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
@@ -1550,9 +1470,7 @@ function startReadingCloze(sub){
   let itemsHtml = "";
   sub.items.forEach((item, idx) => {
     let opts = "";
-    ["A","B","C","D"].forEach((letter, i) => {
-      opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:6px 12px;margin:4px;border-radius:6px;cursor:pointer;border:1px solid #ddd;background:#fff;">${letter}. ${item.opts[i]}</span>`;
-    });
+    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:6px 12px;margin:4px;border-radius:6px;cursor:pointer;border:1px solid #ddd;background:#fff;">${letter}. ${item.opts[i]}</span>`; });
     itemsHtml += `<div class="exercise-item" data-idx="${idx}"><div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div></div>`;
   });
   area.innerHTML = passageHtml + `<hr style="margin:16px 0;">` + itemsHtml;
@@ -1561,9 +1479,7 @@ function startReadingCloze(sub){
     opt.onclick = function(){
       const siblings = this.parentElement.querySelectorAll(".choice-opt");
       siblings.forEach(s=>{ s.style.background = "#fff"; s.style.fontWeight = ""; s.dataset.selected = ""; });
-      this.style.background = "#e8f0ff";
-      this.style.fontWeight = "bold";
-      this.dataset.selected = "true";
+      this.style.background = "#e8f0ff"; this.style.fontWeight = "bold"; this.dataset.selected = "true";
     };
   });
   if(!document.getElementById("submitReadingClozeBtn")){
@@ -1574,9 +1490,7 @@ function startReadingCloze(sub){
     btn.style.marginTop = "12px";
     btn.onclick = submitReadingCloze;
     area.appendChild(btn);
-  }else{
-    document.getElementById("submitReadingClozeBtn").style.display = "block";
-  }
+  }else{ document.getElementById("submitReadingClozeBtn").style.display = "block"; }
 }
 function submitReadingCloze(){
   const sub = READING_UNITS[currentReadingUnit]["語境完形填空"];
@@ -1603,16 +1517,12 @@ function submitReadingCloze(){
   resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;
   resPage.style.display = "block";
   const costMs = Date.now() - exerciseStartTime;
-  const min = Math.floor(costMs/60000);
-  const sec = Math.floor((costMs%60000)/1000);
   const rec = {
     type: "閱讀語境完形", unit: currentReadingUnit + "｜" + currentReadingSub,
     finishTime: new Date().toLocaleString(),
-    costTime: `${min}分${sec}秒`,
-    score: score, total: total,
-    fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong,
-    percent: percent
+    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
+    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
+    wrongQuestions: wrong, percent: percent
   };
   exerciseRecords.push(rec);
   localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
@@ -1662,8 +1572,7 @@ function renderRecordList(){
         <div class="record-percent" style="color:${color}">${percent}%</div>
         <div class="record-percent-label">分數：${rec.score} / ${rec.total}</div>
         <div class="record-enter">點擊複習 →</div>
-      </div>
-    `;
+      </div>`;
     card.onclick = ()=>openWrongRedo(idx);
     wrap.appendChild(card);
   });
@@ -1691,13 +1600,13 @@ function openWrongRedo(idx){
   const isChoice = rec.type === "拖拽選擇練習";
   const isGrammar = rec.type === "語法填空";
   if(isGrammar){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><p style="font-size:14px;color:#666;margin:8px 0;">直接載入錯題開始重做。</p><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`;
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`;
   }else if(isWrite){
     settingDom.innerHTML=`<div class="mode-select-group"><h4>重做默寫錯題｜選擇提示</h4><label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label><br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button></div>`;
   }else if(isChoice){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><p style="font-size:14px;color:#666;margin:8px 0;">直接載入錯題開始重做。</p><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`;
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`;
   }else{
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><p style="font-size:14px;color:#666;margin:8px 0;">直接載入錯題開始重做。</p><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`;
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`;
   }
 }
 function startWrongWrite(){
@@ -1770,8 +1679,7 @@ function startWrongCloze(){
         <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
       </div>
       <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
-      <div class="feedback"></div>
-    `;
+      <div class="feedback"></div>`;
     areaDom.appendChild(div);
   });
   finishBtn.style.display="block";
@@ -1833,35 +1741,23 @@ function startWrongChoice(){
   const chat = document.getElementById("whaleChat");
 
   const SHEET = { src: "whale_sprites.webp", frameW: 192, frameH: 208 };
-
-  const STATES = {
-    idle:   { row: 0, frames: 8, fps: 8 },
-    walk:   { row: 1, frames: 8, fps: 12 },
-    wave:   { row: 2, frames: 8, fps: 10 },
-    jump:   { row: 3, frames: 8, fps: 12 },
-    fail:   { row: 4, frames: 8, fps: 8 },
-    wait:   { row: 5, frames: 8, fps: 6 },
-    work:   { row: 6, frames: 8, fps: 10 },
-    review: { row: 7, frames: 8, fps: 10 }
-  };
+  const FPS = 8;
+  const ROWS = 11;
+  const ROW_FRAMES = [7, 8, 8, 5, 5, 5, 6, 6, 6, 8, 8];
 
   const img = new Image();
   img.src = SHEET.src;
 
-  let currentState = "idle";
-  let currentFrame = 0;
-  let lastTime = 0;
-  let frameInterval = 1000 / STATES.idle.fps;
-  let returnToIdleTimer = null;
+  let currentRow = 0, currentFrame = 0, lastTime = 0, returnToIdleTimer = null;
 
   function draw(t){
     if(img.complete && img.naturalWidth > 0){
-      if(t - lastTime > frameInterval){
-        currentFrame = (currentFrame + 1) % STATES[currentState].frames;
+      if(t - lastTime > 1000 / FPS){
+        currentFrame = (currentFrame + 1) % ROW_FRAMES[currentRow];
         lastTime = t;
       }
       const sx = currentFrame * SHEET.frameW;
-      const sy = STATES[currentState].row * SHEET.frameH;
+      const sy = currentRow * SHEET.frameH;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, sx, sy, SHEET.frameW, SHEET.frameH, 0, 0, canvas.width, canvas.height);
     }
@@ -1869,18 +1765,10 @@ function startWrongChoice(){
   }
   requestAnimationFrame(draw);
 
-  function switchState(name, duration){
-    currentState = name;
-    currentFrame = 0;
-    frameInterval = 1000 / STATES[name].fps;
+  function switchRow(row, duration){
+    currentRow = row; currentFrame = 0;
     clearTimeout(returnToIdleTimer);
-    if(duration){
-      returnToIdleTimer = setTimeout(() => {
-        currentState = "idle";
-        currentFrame = 0;
-        frameInterval = 1000 / STATES.idle.fps;
-      }, duration);
-    }
+    if(duration){ returnToIdleTimer = setTimeout(() => { currentRow = 0; currentFrame = 0; }, duration); }
   }
 
   const lines = [
@@ -1890,10 +1778,12 @@ function startWrongChoice(){
     "干得漂亮！继续保持～"
   ];
 
-  let isDragging = false, longPressTriggered = false;
+  let gestureMode = "none", longPressTriggered = false;
   let startX = 0, startY = 0, petX = 0, petY = 0;
   let lastX = 0, lastY = 0, velX = 0, velY = 0;
   let pressTimer = null;
+  const MOVE_THRESHOLD = 8;
+  const LONG_PRESS_TIME = 600;
 
   function getPos(e){
     if(e.touches && e.touches[0]) return {x: e.touches[0].clientX, y: e.touches[0].clientY};
@@ -1901,55 +1791,48 @@ function startWrongChoice(){
   }
 
   function onStart(e){
-    isDragging = false; longPressTriggered = false;
+    gestureMode = "pressing"; longPressTriggered = false;
     const pos = getPos(e);
     startX = pos.x; startY = pos.y;
     lastX = pos.x; lastY = pos.y;
     velX = 0; velY = 0;
     const rect = canvas.getBoundingClientRect();
     petX = rect.left; petY = rect.top;
-    canvas.style.right = "auto";
-    canvas.style.bottom = "auto";
-    canvas.style.left = petX + "px";
-    canvas.style.top = petY + "px";
+    canvas.style.right = "auto"; canvas.style.bottom = "auto";
+    canvas.style.left = petX + "px"; canvas.style.top = petY + "px";
     clearTimeout(pressTimer);
     pressTimer = setTimeout(() => {
-      longPressTriggered = true;
-      window.openWhaleChat();
-    }, 600);
+      if(gestureMode === "pressing"){ longPressTriggered = true; window.openWhaleChat(); }
+    }, LONG_PRESS_TIME);
   }
 
   function onMove(e){
-    if(startX === 0 && startY === 0) return;
+    if(gestureMode === "none") return;
     const pos = getPos(e);
-    const dx = pos.x - startX;
-    const dy = pos.y - startY;
-    if(Math.abs(dx) > 5 || Math.abs(dy) > 5){
+    const dx = pos.x - startX, dy = pos.y - startY;
+    if(gestureMode === "pressing" && (Math.abs(dx) > MOVE_THRESHOLD || Math.abs(dy) > MOVE_THRESHOLD)){
+      gestureMode = "dragging";
       clearTimeout(pressTimer);
-      isDragging = true;
       canvas.style.cursor = "grabbing";
     }
-    if(isDragging){
+    if(gestureMode === "dragging"){
       if(e.cancelable) e.preventDefault();
       velX = pos.x - lastX; velY = pos.y - lastY;
       lastX = pos.x; lastY = pos.y;
-      canvas.style.left = (petX + dx) + "px";
-      canvas.style.top = (petY + dy) + "px";
+      canvas.style.left = (petX + dx) + "px"; canvas.style.top = (petY + dy) + "px";
     }
   }
 
   function onEnd(){
     clearTimeout(pressTimer);
     canvas.style.cursor = "grab";
-    if(!isDragging && !longPressTriggered){
+    if(gestureMode === "pressing" && !longPressTriggered){
       canvas.classList.add("jump");
       setTimeout(()=>{ canvas.classList.remove("jump"); }, 500);
-      const actions = ["wave", "jump", "fail", "work", "review"];
-      const pick = actions[Math.floor(Math.random() * actions.length)];
-      switchState(pick, 1800);
+      switchRow(1 + Math.floor(Math.random() * (ROWS - 1)), 1500);
       showBubble();
     }
-    if(isDragging){
+    if(gestureMode === "dragging"){
       let curX = parseFloat(canvas.style.left);
       let curY = parseFloat(canvas.style.top);
       function inertia(){
@@ -1960,14 +1843,12 @@ function startWrongChoice(){
         const maxY = window.innerHeight - canvas.offsetHeight;
         curX = Math.max(0, Math.min(curX, maxX));
         curY = Math.max(0, Math.min(curY, maxY));
-        canvas.style.left = curX + "px";
-        canvas.style.top = curY + "px";
+        canvas.style.left = curX + "px"; canvas.style.top = curY + "px";
         requestAnimationFrame(inertia);
       }
       inertia();
     }
-    isDragging = false;
-    startX = 0; startY = 0;
+    gestureMode = "none"; startX = 0; startY = 0;
   }
 
   canvas.addEventListener("mousedown", onStart);
@@ -1988,12 +1869,8 @@ function startWrongChoice(){
   }
 
   setInterval(() => {
-    if(isDragging) return;
-    if(Math.random() < 0.4){
-      const idleActions = ["wave", "jump", "idle"];
-      const pick = idleActions[Math.floor(Math.random() * idleActions.length)];
-      switchState(pick, 1500);
-    }
+    if(gestureMode !== "none") return;
+    if(Math.random() < 0.4){ switchRow(1 + Math.floor(Math.random() * (ROWS - 1)), 1500); }
   }, 10000);
 
   window.openWhaleChat = function(){ chat.style.display = "flex"; };
