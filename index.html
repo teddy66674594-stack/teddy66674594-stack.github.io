@@ -132,9 +132,124 @@ th{background:#667eea;color:#fff;}
 #eyeCareBanner.green{background:#27ae60;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
+/* AI 桌宠 */
+#whalePet{
+  position:fixed;
+  bottom:100px;
+  right:20px;
+  width:100px;
+  height:100px;
+  z-index:9999;
+  cursor:grab;
+  user-select:none;
+  transition:transform 0.2s;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+}
+#whalePet img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  border-radius:50%;
+  background:rgba(255,255,255,0.6);
+  padding:4px;
+}
+#whalePet.dragging{cursor:grabbing;transition:none;}
+#whalePet:active{transform:scale(0.95);}
+#whaleBubble{
+  position:fixed;
+  background:#fff;
+  color:#2c3e50;
+  padding:8px 14px;
+  border-radius:16px;
+  font-size:13px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  display:none;
+  z-index:10000;
+  max-width:180px;
+  pointer-events:none;
+  border:2px solid #667eea;
+}
+#whaleChat{
+  position:fixed;
+  bottom:220px;
+  right:20px;
+  width:320px;
+  max-width:calc(100vw - 40px);
+  height:420px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.25);
+  display:none;
+  flex-direction:column;
+  z-index:10001;
+  overflow:hidden;
+}
+#whaleChatHeader{
+  background:#667eea;
+  color:#fff;
+  padding:12px 16px;
+  font-weight:bold;
+  font-size:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+#whaleChatHeader span{cursor:pointer;font-size:18px;}
+#whaleChatBody{
+  flex:1;
+  padding:14px;
+  overflow-y:auto;
+  font-size:14px;
+  color:#333;
+  background:#f8f9fa;
+}
+#whaleChatFooter{
+  padding:10px;
+  border-top:1px solid #eee;
+  display:flex;
+  gap:8px;
+}
+#whaleChatInput{
+  flex:1;
+  padding:8px 12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:14px;
+  outline:none;
+}
+#whaleChatSend{
+  padding:8px 16px;
+  background:#667eea;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
 </style>
 </head>
 <body oncontextmenu="return false;">
+<div id="whalePet">
+  <img src="whale.jpg" alt="鲸鱼娘">
+</div>
+<div id="whaleBubble"></div>
+<div id="whaleChat">
+  <div id="whaleChatHeader">
+    <span>🐋 小鲸鱼助手</span>
+    <span onclick="closeWhaleChat()">×</span>
+  </div>
+  <div id="whaleChatBody">
+    <div style="color:#888;font-size:13px;text-align:center;margin-top:20px;">
+      🐋 你好呀～我是小鲸鱼<br>
+      （AI 功能即将上线）
+    </div>
+  </div>
+  <div id="whaleChatFooter">
+    <input id="whaleChatInput" placeholder="問我問題...">
+    <button id="whaleChatSend">發送</button>
+  </div>
+</div>
 
 <div id="eyeCareBanner"></div>
 <div id="timerBadge">⏱ 00:00</div>
@@ -1921,6 +2036,110 @@ function startWrongChoice(){
     stopTimer();
   };
 }
+/* ============ AI 桌宠 ============ */
+(function(){
+  const pet = document.getElementById("whalePet");
+  const bubble = document.getElementById("whaleBubble");
+  const chat = document.getElementById("whaleChat");
+
+  // 随机台词
+  const lines = [
+    "今天也要加油哦～",
+    "加油！你可以的！",
+    "累了就休息一下吧～",
+    "我又来陪你了！",
+    "有问题随时问我哦～",
+    "呜哇～今天学了多少呀？"
+  ];
+
+  // 拖动逻辑
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let petX = 0, petY = 0;
+  let pressTimer = null;
+  let longPressTriggered = false;
+
+  function getPos(e){
+    if(e.touches && e.touches[0]) return {x: e.touches[0].clientX, y: e.touches[0].clientY};
+    return {x: e.clientX, y: e.clientY};
+  }
+
+  function onStart(e){
+    isDragging = false;
+    longPressTriggered = false;
+    const pos = getPos(e);
+    startX = pos.x;
+    startY = pos.y;
+    const rect = pet.getBoundingClientRect();
+    petX = rect.left;
+    petY = rect.top;
+    pet.style.right = "auto";
+    pet.style.bottom = "auto";
+    pet.style.left = petX + "px";
+    pet.style.top = petY + "px";
+
+    // 长按 0.6 秒 -> 开聊天
+    pressTimer = setTimeout(() => {
+      longPressTriggered = true;
+      openWhaleChat();
+    }, 600);
+  }
+
+  function onMove(e){
+    if(startX === 0 && startY === 0) return;
+    const pos = getPos(e);
+    const dx = pos.x - startX;
+    const dy = pos.y - startY;
+    if(Math.abs(dx) > 5 || Math.abs(dy) > 5){
+      // 判定为拖动
+      clearTimeout(pressTimer);
+      isDragging = true;
+      pet.classList.add("dragging");
+    }
+    if(isDragging){
+      if(e.cancelable) e.preventDefault();
+      pet.style.left = (petX + dx) + "px";
+      pet.style.top = (petY + dy) + "px";
+    }
+  }
+
+  function onEnd(e){
+    clearTimeout(pressTimer);
+    if(!isDragging && !longPressTriggered){
+      // 单击 -> 气泡
+      showBubble();
+    }
+    isDragging = false;
+    startX = 0; startY = 0;
+    pet.classList.remove("dragging");
+  }
+
+  pet.addEventListener("mousedown", onStart);
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseup", onEnd);
+  pet.addEventListener("touchstart", onStart, {passive: true});
+  document.addEventListener("touchmove", onMove, {passive: false});
+  document.addEventListener("touchend", onEnd);
+
+  // 气泡
+  function showBubble(){
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    bubble.innerText = line;
+    const rect = pet.getBoundingClientRect();
+    bubble.style.display = "block";
+    bubble.style.left = Math.max(10, rect.left - 60) + "px";
+    bubble.style.top = (rect.top - 50) + "px";
+    setTimeout(() => { bubble.style.display = "none"; }, 2500);
+  }
+
+  // 聊天窗
+  window.openWhaleChat = function(){
+    chat.style.display = "flex";
+  };
+  window.closeWhaleChat = function(){
+    chat.style.display = "none";
+  };
+})();
 </script>
 </body>
 </html>
