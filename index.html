@@ -133,106 +133,45 @@ th{background:#667eea;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
 /* AI 桌宠 */
-#whalePet{
-  position:fixed;
-  bottom:100px;
-  right:20px;
-  width:100px;
-  height:100px;
-  z-index:9999;
-  cursor:grab;
-  user-select:none;
-  transition:transform 0.2s;
-  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+#whaleCanvas{
+  position:fixed;bottom:100px;right:20px;width:120px;height:130px;
+  z-index:9999;cursor:grab;user-select:none;
+  filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));
+  image-rendering:pixelated;transition:transform 0.2s;
 }
-#whalePet img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  pointer-events:none;
-  border-radius:50%;
-  background:rgba(255,255,255,0.6);
-  padding:4px;
+#whaleCanvas:active{transform:scale(0.95);}
+#whaleCanvas.jump{animation:whaleJump 0.5s ease-out;}
+@keyframes whaleJump{
+  0%{transform:translateY(0) scale(1);}
+  30%{transform:translateY(-25px) scale(1.08);}
+  60%{transform:translateY(0) scale(0.95);}
+  100%{transform:translateY(0) scale(1);}
 }
-#whalePet.dragging{cursor:grabbing;transition:none;}
-#whalePet:active{transform:scale(0.95);}
 #whaleBubble{
-  position:fixed;
-  background:#fff;
-  color:#2c3e50;
-  padding:8px 14px;
-  border-radius:16px;
-  font-size:13px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
-  display:none;
-  z-index:10000;
-  max-width:180px;
-  pointer-events:none;
-  border:2px solid #667eea;
+  position:fixed;background:#fff;color:#2c3e50;padding:8px 14px;border-radius:16px;
+  font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;z-index:10000;
+  max-width:180px;pointer-events:none;border:2px solid #667eea;animation:bubbleIn 0.3s ease-out;
 }
+@keyframes bubbleIn{from{opacity:0;transform:scale(0.8) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
 #whaleChat{
-  position:fixed;
-  bottom:220px;
-  right:20px;
-  width:320px;
-  max-width:calc(100vw - 40px);
-  height:420px;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.25);
-  display:none;
-  flex-direction:column;
-  z-index:10001;
-  overflow:hidden;
+  position:fixed;bottom:260px;right:20px;width:320px;max-width:calc(100vw - 40px);
+  height:420px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25);
+  display:none;flex-direction:column;z-index:10001;overflow:hidden;animation:bubbleIn 0.3s ease-out;
 }
 #whaleChatHeader{
-  background:#667eea;
-  color:#fff;
-  padding:12px 16px;
-  font-weight:bold;
-  font-size:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 16px;
+  font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;
 }
-#whaleChatHeader span{cursor:pointer;font-size:18px;}
-#whaleChatBody{
-  flex:1;
-  padding:14px;
-  overflow-y:auto;
-  font-size:14px;
-  color:#333;
-  background:#f8f9fa;
-}
-#whaleChatFooter{
-  padding:10px;
-  border-top:1px solid #eee;
-  display:flex;
-  gap:8px;
-}
-#whaleChatInput{
-  flex:1;
-  padding:8px 12px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:14px;
-  outline:none;
-}
-#whaleChatSend{
-  padding:8px 16px;
-  background:#667eea;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
-}
+#whaleChatHeader span:last-child{cursor:pointer;font-size:18px;}
+#whaleChatBody{flex:1;padding:14px;overflow-y:auto;font-size:14px;color:#333;background:#f8f9fa;}
+#whaleChatFooter{padding:10px;border-top:1px solid #eee;display:flex;gap:8px;}
+#whaleChatInput{flex:1;padding:8px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;outline:none;}
+#whaleChatInput:focus{border-color:#667eea;}
+#whaleChatSend{padding:8px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;}
 </style>
 </head>
 <body oncontextmenu="return false;">
-<div id="whalePet">
-  <img src="whale.jpg" alt="鲸鱼娘">
-</div>
+<canvas id="whaleCanvas" width="192" height="208"></canvas>
 <div id="whaleBubble"></div>
 <div id="whaleChat">
   <div id="whaleChatHeader">
@@ -2038,26 +1977,74 @@ function startWrongChoice(){
 }
 /* ============ AI 桌宠 ============ */
 (function(){
-  const pet = document.getElementById("whalePet");
+  const canvas = document.getElementById("whaleCanvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
   const bubble = document.getElementById("whaleBubble");
   const chat = document.getElementById("whaleChat");
 
-  // 随机台词
+  const SHEET = { src: "whale_sprites.webp", frameW: 192, frameH: 208 };
+
+  const STATES = {
+    idle:   { row: 0, frames: 8, fps: 8 },
+    walk:   { row: 1, frames: 8, fps: 12 },
+    wave:   { row: 2, frames: 8, fps: 10 },
+    jump:   { row: 3, frames: 8, fps: 12 },
+    fail:   { row: 4, frames: 8, fps: 8 },
+    wait:   { row: 5, frames: 8, fps: 6 },
+    work:   { row: 6, frames: 8, fps: 10 },
+    review: { row: 7, frames: 8, fps: 10 }
+  };
+
+  const img = new Image();
+  img.src = SHEET.src;
+
+  let currentState = "idle";
+  let currentFrame = 0;
+  let lastTime = 0;
+  let frameInterval = 1000 / STATES.idle.fps;
+  let returnToIdleTimer = null;
+
+  function draw(t){
+    if(img.complete && img.naturalWidth > 0){
+      if(t - lastTime > frameInterval){
+        currentFrame = (currentFrame + 1) % STATES[currentState].frames;
+        lastTime = t;
+      }
+      const sx = currentFrame * SHEET.frameW;
+      const sy = STATES[currentState].row * SHEET.frameH;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, sx, sy, SHEET.frameW, SHEET.frameH, 0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  function switchState(name, duration){
+    currentState = name;
+    currentFrame = 0;
+    frameInterval = 1000 / STATES[name].fps;
+    clearTimeout(returnToIdleTimer);
+    if(duration){
+      returnToIdleTimer = setTimeout(() => {
+        currentState = "idle";
+        currentFrame = 0;
+        frameInterval = 1000 / STATES.idle.fps;
+      }, duration);
+    }
+  }
+
   const lines = [
-    "今天也要加油哦～",
-    "加油！你可以的！",
-    "累了就休息一下吧～",
-    "我又来陪你了！",
-    "有问题随时问我哦～",
-    "呜哇～今天学了多少呀？"
+    "今天也要加油哦～", "加油！你可以的！", "累了就休息一下吧～",
+    "我又来陪你了！", "有问题随时问我哦～", "呜哇～今天学了多少呀？",
+    "嘿嘿～在做题吗？", "我在这儿陪着你～", "别忘了休息眼睛哦！",
+    "干得漂亮！继续保持～"
   ];
 
-  // 拖动逻辑
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let petX = 0, petY = 0;
+  let isDragging = false, longPressTriggered = false;
+  let startX = 0, startY = 0, petX = 0, petY = 0;
+  let lastX = 0, lastY = 0, velX = 0, velY = 0;
   let pressTimer = null;
-  let longPressTriggered = false;
 
   function getPos(e){
     if(e.touches && e.touches[0]) return {x: e.touches[0].clientX, y: e.touches[0].clientY};
@@ -2065,23 +2052,21 @@ function startWrongChoice(){
   }
 
   function onStart(e){
-    isDragging = false;
-    longPressTriggered = false;
+    isDragging = false; longPressTriggered = false;
     const pos = getPos(e);
-    startX = pos.x;
-    startY = pos.y;
-    const rect = pet.getBoundingClientRect();
-    petX = rect.left;
-    petY = rect.top;
-    pet.style.right = "auto";
-    pet.style.bottom = "auto";
-    pet.style.left = petX + "px";
-    pet.style.top = petY + "px";
-
-    // 长按 0.6 秒 -> 开聊天
+    startX = pos.x; startY = pos.y;
+    lastX = pos.x; lastY = pos.y;
+    velX = 0; velY = 0;
+    const rect = canvas.getBoundingClientRect();
+    petX = rect.left; petY = rect.top;
+    canvas.style.right = "auto";
+    canvas.style.bottom = "auto";
+    canvas.style.left = petX + "px";
+    canvas.style.top = petY + "px";
+    clearTimeout(pressTimer);
     pressTimer = setTimeout(() => {
       longPressTriggered = true;
-      openWhaleChat();
+      window.openWhaleChat();
     }, 600);
   }
 
@@ -2091,46 +2076,80 @@ function startWrongChoice(){
     const dx = pos.x - startX;
     const dy = pos.y - startY;
     if(Math.abs(dx) > 5 || Math.abs(dy) > 5){
-      // 判定为拖动
       clearTimeout(pressTimer);
       isDragging = true;
-      pet.classList.add("dragging");
+      canvas.style.cursor = "grabbing";
     }
     if(isDragging){
       if(e.cancelable) e.preventDefault();
-      pet.style.left = (petX + dx) + "px";
-      pet.style.top = (petY + dy) + "px";
+      velX = pos.x - lastX; velY = pos.y - lastY;
+      lastX = pos.x; lastY = pos.y;
+      canvas.style.left = (petX + dx) + "px";
+      canvas.style.top = (petY + dy) + "px";
     }
   }
 
-  function onEnd(e){
+  function onEnd(){
     clearTimeout(pressTimer);
+    canvas.style.cursor = "grab";
     if(!isDragging && !longPressTriggered){
-      // 单击 -> 气泡
+      canvas.classList.add("jump");
+      setTimeout(()=>{ canvas.classList.remove("jump"); }, 500);
+      const actions = ["wave", "jump", "fail", "work", "review"];
+      const pick = actions[Math.floor(Math.random() * actions.length)];
+      switchState(pick, 1800);
       showBubble();
+    }
+    if(isDragging){
+      let curX = parseFloat(canvas.style.left);
+      let curY = parseFloat(canvas.style.top);
+      function inertia(){
+        velX *= 0.92; velY *= 0.92;
+        curX += velX; curY += velY;
+        if(Math.abs(velX) < 0.5 && Math.abs(velY) < 0.5) return;
+        const maxX = window.innerWidth - canvas.offsetWidth;
+        const maxY = window.innerHeight - canvas.offsetHeight;
+        curX = Math.max(0, Math.min(curX, maxX));
+        curY = Math.max(0, Math.min(curY, maxY));
+        canvas.style.left = curX + "px";
+        canvas.style.top = curY + "px";
+        requestAnimationFrame(inertia);
+      }
+      inertia();
     }
     isDragging = false;
     startX = 0; startY = 0;
-    pet.classList.remove("dragging");
   }
 
-  pet.addEventListener("mousedown", onStart);
+  canvas.addEventListener("mousedown", onStart);
   document.addEventListener("mousemove", onMove);
   document.addEventListener("mouseup", onEnd);
-  pet.addEventListener("touchstart", onStart, {passive: true});
+  canvas.addEventListener("touchstart", onStart, {passive: true});
   document.addEventListener("touchmove", onMove, {passive: false});
   document.addEventListener("touchend", onEnd);
 
-  // 气泡
   function showBubble(){
     const line = lines[Math.floor(Math.random() * lines.length)];
     bubble.innerText = line;
-    const rect = pet.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     bubble.style.display = "block";
     bubble.style.left = Math.max(10, rect.left - 60) + "px";
     bubble.style.top = (rect.top - 50) + "px";
     setTimeout(() => { bubble.style.display = "none"; }, 2500);
   }
+
+  setInterval(() => {
+    if(isDragging) return;
+    if(Math.random() < 0.4){
+      const idleActions = ["wave", "jump", "idle"];
+      const pick = idleActions[Math.floor(Math.random() * idleActions.length)];
+      switchState(pick, 1500);
+    }
+  }, 10000);
+
+  window.openWhaleChat = function(){ chat.style.display = "flex"; };
+  window.closeWhaleChat = function(){ chat.style.display = "none"; };
+})();
 
   // 聊天窗
   window.openWhaleChat = function(){
