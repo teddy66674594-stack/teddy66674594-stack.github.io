@@ -6,25 +6,93 @@
 <title>英語練習系統</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f9fa;padding:12px;user-select:none;}
-h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f9;padding:12px;user-select:none;color:#2c3e50;}
+h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:22px;}
 .sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;}
 .warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
-.top-nav{max-width:900px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.top-btn{padding:11px 20px;border:none;border-radius:10px;background:#667eea;color:#fff;font-size:15px;cursor:pointer;}
-.box-wrap{max-width:900px;margin:0 auto 18px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);display:none;}
-.box-wrap.show{display:block;}
-.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:8px;background:#dde2fc;color:#2c3e50;font-size:15px;cursor:pointer;}
-.sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:6px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
+.btn{padding:8px 14px;border:none;border-radius:8px;background:#667eea;color:#fff;cursor:pointer;font-size:14px;transition:opacity 0.2s;}
+.btn:hover{opacity:0.9;}
+.btn:active{transform:scale(0.96);}
+.btn-finish{background:#27ae60;}
+.btn-clear-wrong{background:#e74c3c;}
+.btn-download{background:#4a69bd;}
+.sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:8px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;transition:background 0.2s;}
+.sub-btn:hover{background:#dde2fc;}
+.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:10px;background:#eef4ff;color:#667eea;font-size:15px;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.unit-btn:hover{background:#667eea;color:#fff;transform:translateY(-2px);box-shadow:0 4px 10px rgba(102,126,234,0.3);}
 #disclaimerModal,#noticeModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
-.disc-box,.notice-box{background:#fff;padding:24px;border-radius:12px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
+.disc-box,.notice-box{background:#fff;padding:24px;border-radius:16px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
 .disc-buttons,.notice-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
 .disc-text,.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
 .notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
 .notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
-#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;}
+#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;box-shadow:0 4px 10px rgba(230,126,34,0.3);}
+#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;z-index:9998;display:none;box-shadow:0 4px 10px rgba(231,76,60,0.3);}
+
+/* ===== 首頁卡片網格 ===== */
+#homePage{max-width:1000px;margin:0 auto;animation:fadeIn 0.5s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.home-stat{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;padding:24px 20px;border-radius:20px;
+  display:flex;justify-content:space-around;flex-wrap:wrap;gap:14px;
+  box-shadow:0 10px 25px rgba(102,126,234,0.3);margin-bottom:24px;
+}
+.home-stat-item{text-align:center;}
+.home-stat-num{font-size:28px;font-weight:bold;display:block;text-shadow:0 2px 4px rgba(0,0,0,0.1);}
+.home-stat-label{font-size:13px;opacity:0.9;margin-top:4px;}
+#homeGrid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;padding:0 0 20px;
+}
+.module-card{
+  background:#fff;border-radius:16px;padding:24px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  display:flex;flex-direction:column;
+  transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+  border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden;
+}
+.module-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#667eea,#764ba2);opacity:0;transition:opacity 0.3s;
+}
+.module-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 25px rgba(102,126,234,0.2);
+  border-color:rgba(102,126,234,0.3);
+}
+.module-card:hover::before{opacity:1;}
+.module-card:active{transform:translateY(-2px) scale(0.98);}
+.card-icon{font-size:36px;margin-bottom:12px;}
+.card-title{font-size:18px;font-weight:bold;color:#2c3e50;margin-bottom:6px;}
+.card-desc{font-size:13px;color:#888;line-height:1.5;margin-bottom:16px;flex:1;}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.tag{background:#eef4ff;color:#667eea;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:bold;}
+.card-btn{
+  margin-top:auto;align-self:flex-end;
+  background:#667eea;color:#fff;border:none;padding:8px 20px;
+  border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;
+  transition:background 0.2s;
+}
+.card-btn:hover{background:#5a6fd6;}
+
+/* ===== 模塊視圖 ===== */
+#moduleView{display:none;max-width:900px;margin:0 auto;animation:slideUp 0.4s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+#backHomeBtn{
+  display:none;margin-bottom:16px;padding:10px 18px;
+  background:#fff;color:#667eea;border:1px solid #dde2fc;border-radius:10px;
+  cursor:pointer;font-size:14px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.04);
+  transition:all 0.2s;
+}
+#backHomeBtn:hover{background:#eef4ff;transform:translateX(-3px);}
+.box-wrap{margin-bottom:18px;background:#fff;padding:22px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);display:none;}
+.box-wrap.show{display:block;}
+
+/* ===== 生詞池 & 練習題 ===== */
 .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
-.word-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #667eea;}
+.word-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #667eea;transition:transform 0.2s;}
+.word-card:hover{transform:translateY(-3px);}
 .word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;flex-wrap:wrap;}
 .word-num{width:24px;height:24px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .word-en{font-weight:bold;font-size:17px;color:#2c3e50;}
@@ -35,97 +103,104 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:21px;}
 .syn{background:#f0f4ff;padding:3px 6px;border-radius:4px;color:#4a69bd;}
 .syn-speaker{cursor:pointer;color:#4a69bd;margin-left:4px;}
 .tip{color:#27ae60;margin-top:6px;font-size:14px;}
-.table-container{margin-top:16px;}
-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;}
-th,td{border:1px solid #ddd;padding:8px 6px;word-break:break-word;vertical-align:middle;}
-th{background:#667eea;color:#fff;}
-.range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.table-container{margin-top:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px;}
+th,td{border:1px solid #e0e0e0;padding:10px 8px;word-break:break-word;vertical-align:middle;}
+th{background:#667eea;color:#fff;font-weight:bold;}
+tr:nth-child(even){background:#f9faff;}
+
+/* ===== 練習題內部 ===== */
+.range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;font-size:14px;}
+.range-input-area input[type="text"],.range-input-area input[type="number"]{padding:8px;border:1px solid #ccc;border-radius:6px;font-size:14px;outline:none;}
+.range-input-area input:focus{border-color:#667eea;}
 .check-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;}
-.mode-select-group{margin:12px 0;padding:14px;background:#f4f7ff;border-radius:8px;font-size:14px;}
-.btn{padding:8px 14px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer;font-size:15px;}
-.btn-finish{background:#27ae60;}
-.btn-clear-wrong{background:#e74c3c;}
-.btn-download{background:#4a69bd;}
-.exercise-item{margin:16px 0;}
-.q-num{font-weight:bold;margin-right:4px;}
-.q-syn-info{font-size:14px;color:#444;margin-bottom:10px;}
-.user-display{width:100%;padding:10px;border:1px solid #bbb;border-radius:6px;font-size:16px;min-height:44px;background:#fafafa;margin-bottom:10px;user-select:text;}
-.feedback{margin-top:8px;font-size:15px;}
+.mode-select-group{margin:12px 0;padding:16px;background:#f4f7ff;border-radius:12px;font-size:14px;line-height:2;}
+.exercise-item{margin:18px 0;padding:16px;background:#fafbff;border-radius:12px;border:1px solid #eef4ff;}
+.q-num{font-weight:bold;margin-right:4px;font-size:15px;}
+.q-syn-info{font-size:14px;color:#666;margin-bottom:10px;}
+.user-display{width:100%;padding:12px;border:2px solid #dde2fc;border-radius:10px;font-size:16px;background:#fff;margin-bottom:10px;outline:none;transition:border-color 0.2s;user-select:text;}
+.user-display:focus{border-color:#667eea;}
+.feedback{margin-top:8px;font-size:15px;font-weight:bold;}
 .ok{color:#27ae60;}
-.half{color:#f39c12;font-weight:bold;}
+.half{color:#f39c12;}
 .err{color:#e74c3c;}
-.result-page{margin-top:20px;padding:20px;background:#f0f8ff;border-radius:10px;display:none;}
-.result-item{padding:10px;margin:8px 0;border-radius:6px;background:#fff;font-size:14px;}
+.result-page{margin-top:20px;padding:20px;background:#f0f8ff;border-radius:12px;display:none;border:1px solid #dde2fc;}
+.result-item{padding:10px;margin:8px 0;border-radius:8px;background:#fff;font-size:14px;}
 .score-text{font-size:20px;font-weight:bold;text-align:center;margin:14px 0;white-space:pre-line;line-height:1.6;}
-.finish-area{margin:16px 0;text-align:center;}
-.lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:8px;margin-bottom:14px;font-weight:bold;font-size:14px;}
-#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;z-index:9998;display:none;}
-.record-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fff;border-left:5px solid #667eea;border-radius:10px;margin:10px 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-.record-card-left{flex:1;min-width:0;}
-.record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
-.record-meta{font-size:13px;color:#666;margin:3px 0;}
-.record-card-right{text-align:center;min-width:110px;padding-left:14px;border-left:1px dashed #ddd;flex-shrink:0;}
-.record-percent{font-size:26px;font-weight:bold;}
-.record-percent-label{font-size:12px;color:#999;}
-.record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
-.cloze-sentence-trigger{cursor:pointer;padding:10px 12px;background:#f8f9fb;border-radius:8px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;user-select:none;}
-.cloze-sentence{flex:1;font-weight:bold;line-height:1.55;color:#2c3e50;font-size:15px;}
-.cloze-toggle-icon{color:#667eea;font-size:12px;margin-top:5px;}
-.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:3px solid #f39c12;border-radius:6px;margin-bottom:10px;}
-.cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
-.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:14px;font-size:13px;cursor:pointer;}
-.cloze-speaker{background:#667eea;color:#fff;border:none;padding:5px 14px;border-radius:14px;font-size:13px;cursor:pointer;}
-.key-cn{color:#555;font-size:14px;}
-.cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:6px;font-size:14px;color:#444;line-height:1.65;border:1px dashed #e0e0e0;}
-.drag-bank{background:#f4f7ff;padding:14px;border-radius:10px;margin-bottom:18px;border:1px dashed #a9b7e8;}
-.bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:10px;}
+.finish-area{margin:20px 0;text-align:center;}
+.lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:10px;margin-bottom:16px;font-weight:bold;font-size:14px;}
+.drag-bank{background:#f4f7ff;padding:16px;border-radius:12px;margin-bottom:20px;border:2px dashed #a9b7e8;}
+.bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:12px;}
 .bank-words{display:flex;flex-wrap:wrap;gap:8px;}
-.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:7px 14px;border-radius:18px;cursor:grab;font-size:14px;}
-.drag-word.selected{background:#667eea;color:#fff;}
+.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:8px 16px;border-radius:20px;cursor:grab;font-size:14px;font-weight:bold;transition:all 0.2s;}
+.drag-word.selected{background:#667eea;color:#fff;transform:scale(1.05);}
 .drag-word.used{opacity:0.3;cursor:not-allowed;border-style:dashed;}
-.drop-zone{display:inline-block;min-width:100px;padding:3px 12px;border:2px dashed #a9b7e8;border-radius:6px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;margin:0 4px;}
+.drop-zone{display:inline-block;min-width:100px;padding:4px 14px;border:2px dashed #a9b7e8;border-radius:8px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;margin:0 4px;transition:all 0.2s;}
 .drop-zone.filled{background:#e8f0ff;border-style:solid;border-color:#667eea;color:#2c3e50;font-weight:bold;}
 .zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;}
 .zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;}
 .zone-err{border-color:#e74c3c !important;background:#fdecea !important;}
-.drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
-.reading-passage{line-height:1.9;font-size:15px;color:#333;background:#fafbff;padding:16px;border-radius:8px;margin:12px 0;user-select:text;}
-.reading-passage p{margin-bottom:12px;}
-.reading-word{cursor:pointer;padding:0 2px;border-radius:3px;}
+.drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;font-weight:bold;}
+.cloze-sentence-trigger{cursor:pointer;padding:12px;background:#f8f9fb;border-radius:10px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;transition:background 0.2s;}
+.cloze-sentence-trigger:hover{background:#eef4ff;}
+.cloze-sentence{flex:1;font-weight:bold;line-height:1.6;color:#2c3e50;font-size:15px;}
+.cloze-toggle-icon{color:#667eea;font-size:12px;margin-top:5px;}
+.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:4px solid #f39c12;border-radius:8px;margin-bottom:10px;}
+.cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 12px;border-radius:16px;font-size:13px;cursor:pointer;}
+.cloze-speaker{background:#667eea;color:#fff;border:none;padding:6px 16px;border-radius:16px;font-size:13px;cursor:pointer;transition:background 0.2s;}
+.cloze-speaker:hover{background:#5a6fd6;}
+.key-cn{color:#555;font-size:14px;}
+.cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:8px;font-size:14px;color:#444;line-height:1.7;border:1px dashed #e0e0e0;}
+
+/* ===== 閱讀理解 ===== */
+.reading-passage{line-height:2;font-size:15px;color:#333;background:#fafbff;padding:20px;border-radius:12px;margin:14px 0;user-select:text;border:1px solid #eef4ff;}
+.reading-passage p{margin-bottom:14px;}
+.reading-word{cursor:pointer;padding:0 3px;border-radius:4px;transition:background 0.2s;}
 .reading-word:hover{background:#fff3cd;}
-#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;z-index:99999;display:none;pointer-events:none;max-width:200px;text-align:center;}
-.reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:10px;font-size:14px;}
-.reading-choice .choice-opt{display:block;padding:6px 10px;margin:4px 0;border-radius:6px;cursor:pointer;}
+#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:99999;display:none;pointer-events:none;max-width:220px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:12px;font-size:14px;transition:all 0.2s;}
+.reading-choice .choice-opt{display:block;padding:8px 12px;margin:6px 0;border-radius:8px;cursor:pointer;transition:background 0.2s;}
 .reading-choice .choice-opt:hover{background:#f0f4ff;}
-.reading-choice .choice-opt.selected{background:#e8f0ff;font-weight:bold;}
+.reading-choice .choice-opt.selected{background:#e8f0ff;font-weight:bold;border:1px solid #667eea;}
 .reading-choice .choice-opt.correct{background:#e8f9ee;color:#1e8449;font-weight:bold;}
 .reading-choice .choice-opt.wrong{background:#fdecea;color:#c0392b;font-weight:bold;}
-.reading-intro{background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;font-weight:bold;}
-.tense-card{background:#f8f9fb;border-radius:10px;padding:14px;margin-bottom:10px;border-left:4px solid #667eea;}
+.reading-intro{background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:14px;font-weight:bold;}
+
+/* ===== 語法 ===== */
+.tense-card{background:#f8f9fb;border-radius:12px;padding:16px;margin-bottom:10px;border-left:4px solid #667eea;transition:transform 0.2s;}
+.tense-card:hover{transform:translateX(4px);}
 .tense-en{font-weight:bold;color:#2c3e50;font-size:15px;}
 .tense-cn{color:#888;font-size:13px;margin-left:6px;}
-.tense-struct{color:#e74c3c;font-size:14px;margin-top:6px;font-family:monospace;}
-#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s;}
+.tense-struct{color:#e74c3c;font-size:14px;margin-top:8px;font-family:monospace;background:#fff;padding:8px;border-radius:6px;border:1px solid #eee;}
+
+/* ===== 錯題本 ===== */
+.record-card{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:#fff;border-left:5px solid #667eea;border-radius:12px;margin:12px 0;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:all 0.2s;}
+.record-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(102,126,234,0.15);}
+.record-card-left{flex:1;min-width:0;}
+.record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
+.record-meta{font-size:13px;color:#666;margin:3px 0;}
+.record-card-right{text-align:center;min-width:110px;padding-left:14px;border-left:1px dashed #ddd;flex-shrink:0;}
+.record-percent{font-size:28px;font-weight:bold;}
+.record-percent-label{font-size:12px;color:#999;}
+.record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
+
+/* ===== 護眼提醒 ===== */
+#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
 #eyeCareBanner.show{transform:translateY(0);}
 #eyeCareBanner.green{background:#27ae60;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
-#whaleCanvas{position:fixed;bottom:100px;right:20px;width:120px;height:130px;z-index:9999;cursor:grab;user-select:none;filter:drop-shadow(0 8px 16px rgba(102,126,234,0.4));display:none;}
-#whaleCanvas:active{transform:scale(0.95);}
-#whaleCanvas.jump{animation:whaleJump 0.5s ease-out;}
-@keyframes whaleJump{0%{transform:translateY(0) scale(1);}30%{transform:translateY(-25px) scale(1.08);}60%{transform:translateY(0) scale(0.95);}100%{transform:translateY(0) scale(1);}}
-#whaleBubble{position:fixed;background:#fff;color:#2c3e50;padding:8px 14px;border-radius:16px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;z-index:10000;max-width:180px;pointer-events:none;border:2px solid #667eea;}
-#whaleChat{position:fixed;bottom:260px;right:20px;width:320px;max-width:calc(100vw - 40px);height:420px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25);display:none;flex-direction:column;z-index:10001;overflow:hidden;}
-#whaleChatHeader{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 16px;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
-#whaleChatHeader span:last-child{cursor:pointer;font-size:18px;}
-#whaleChatBody{flex:1;padding:12px;overflow-y:auto;font-size:14px;color:#333;background:#f8f9fa;}
-.ai-msg{max-width:80%;padding:8px 12px;border-radius:12px;margin-bottom:8px;line-height:1.5;word-wrap:break-word;}
-.ai-msg-bot{background:#fff;color:#333;border:1px solid #e0e0e0;border-bottom-left-radius:4px;}
-.ai-msg-user{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;margin-left:auto;border-bottom-right-radius:4px;}
-.ai-msg-loading{color:#999;font-style:italic;}
-#whaleChatFooter{padding:10px;border-top:1px solid #eee;display:flex;gap:8px;}
-#whaleChatInput{flex:1;padding:8px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;outline:none;}
-#whaleChatSend{padding:8px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;}
+
+/* ===== 手機適配 ===== */
+@media (max-width:600px){
+  #homeGrid{gap:12px;}
+  .module-card{padding:18px;border-radius:14px;}
+  .home-stat{padding:16px;border-radius:16px;}
+  .home-stat-num{font-size:22px;}
+  .box-wrap{padding:16px;border-radius:12px;}
+  .reading-passage{padding:14px;}
+}
 </style>
 </head>
 <body oncontextmenu="return false;">
@@ -135,6 +210,7 @@ th{background:#667eea;color:#fff;}
 <div id="wordPopup"></div>
 <button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
 
+<!-- 公告彈窗 -->
 <div id="noticeModal">
   <div class="notice-box">
     <div class="notice-title" id="noticeTitle">公告</div>
@@ -144,6 +220,7 @@ th{background:#667eea;color:#fff;}
   </div>
 </div>
 
+<!-- 免責聲明彈窗 -->
 <div id="disclaimerModal">
   <div class="disc-box">
     <h3 style="text-align:center">公告｜免責聲明</h3>
@@ -157,104 +234,100 @@ th{background:#667eea;color:#fff;}
   </div>
 </div>
 
+<!-- 主體內容 -->
 <div id="mainContent" style="display:none;">
-<h1>英語練習系統</h1>
-<div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
-<div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
+  <h1>英語練習系統</h1>
+  <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
+  <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
 
-<div class="top-nav">
-  <button class="top-btn" onclick="showRoot('vocabPool')">📚 生詞池</button>
-  <button class="top-btn" onclick="showRoot('exerciseRoot')">📝 練習題</button>
-  <button class="top-btn" onclick="openGrammarRoot()">📖 語法</button>
-  <button class="top-btn" onclick="openReadingRoot()">📘 閱讀理解</button>
-  <button class="top-btn" onclick="openWrongBook()">📒 錯題本</button>
-</div>
-
-<div id="vocabPool" class="box-wrap show">
-  <h2>📚 生詞池</h2>
-  <p style="margin:10px 0;">請選擇單元：</p>
-  <button class="unit-btn" onclick="openVocabUnit('第三單元')">第三單元</button>
-</div>
-
-<div id="vocabUnit3" class="box-wrap">
-  <h2 id="vocabUnitTitle">生詞池</h2>
-  <p style="margin:10px 0;">選擇模塊：</p>
-  <button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button>
-  <button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button>
-  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回生詞池</button>
-  <div id="cardPanel" style="margin-top:18px;"></div>
-  <div id="tablePanel" style="margin-top:18px;"></div>
-</div>
-
-<div id="exerciseRoot" class="box-wrap">
-  <h2>📝 練習題</h2>
-  <p style="margin:10px 0;">請選擇單元：</p>
-  <button class="unit-btn" onclick="openExerciseUnit('第三單元')">第三單元</button>
-</div>
-
-<div id="exerciseUnit3" class="box-wrap">
-  <h2 id="exerciseUnitTitle">練習題</h2>
-  <p style="margin:10px 0;">請選擇練習類型：</p>
-  <button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button>
-  <button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button>
-  <button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button>
-  <button class="sub-btn" onclick="showRoot('exerciseRoot')">← 返回練習題</button>
-  <div id="writePanel" style="margin-top:18px;display:none;"></div>
-  <div id="clozePanel" style="margin-top:18px;display:none;"></div>
-  <div id="choicePanel" style="margin-top:18px;display:none;"></div>
-</div>
-
-<div id="grammarRoot" class="box-wrap">
-  <h2>📖 語法</h2>
-  <p style="margin:10px 0;">請選擇模塊：</p>
-  <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
-  <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
-  <button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button>
-  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
-  <div id="grammarPanel" style="margin-top:18px;"></div>
-</div>
-
-<div id="readingRoot" class="box-wrap">
-  <h2>📘 閱讀理解</h2>
-  <p style="margin:10px 0;">請選擇測驗：</p>
-  <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
-  <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
-  <div id="readingPanel" style="margin-top:18px;"></div>
-</div>
-
-<div id="wrongBookPanel" class="box-wrap">
-  <h2>📒 錯題本</h2>
-  <p style="margin:8px 0;font-size:14px;">點擊下方紀錄進入對應錯題重做</p>
-  <div class="record-list" id="recordList"></div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button>
+  <!-- 首頁視圖 -->
+  <div id="homePage">
+    <div class="home-stat">
+      <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
+      <div class="home-stat-item"><span class="home-stat-num" id="statCloze">0</span><span class="home-stat-label">完形句</span></div>
+      <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
+      <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀篇章</span></div>
+    </div>
+    <div id="homeGrid"></div>
   </div>
-  <button class="sub-btn" onclick="backToMainRoot()" style="margin-top:16px;">← 返回首頁分類</button>
-</div>
 
-<div id="wrongRedoPanel" class="box-wrap">
-  <h2>🔁 錯題重做</h2>
-  <div id="wrongRedoSetting"></div>
-  <div id="wrongRedoArea"></div>
-  <div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div>
-  <div class="result-page" id="wrongRedoResultPage"></div>
-  <button class="sub-btn" onclick="openWrongBook()" style="margin-top:16px;">← 返回錯題本列表</button>
-</div>
-</div>
+  <!-- 模塊視圖 -->
+  <div id="moduleView">
+    <button id="backHomeBtn" onclick="goHome()">← 返回首頁</button>
 
-<canvas id="whaleCanvas" width="192" height="208"></canvas>
-<div id="whaleBubble"></div>
-<div id="whaleChat">
-  <div id="whaleChatHeader">
-    <span>🐋 小鲸鱼助手</span>
-    <span onclick="closeWhaleChat()">×</span>
-  </div>
-  <div id="whaleChatBody">
-    <div class="ai-msg ai-msg-bot">你好呀～我是小鲸鱼，有什么可以帮你的？</div>
-  </div>
-  <div id="whaleChatFooter">
-    <input id="whaleChatInput" placeholder="問我問題..." onkeydown="if(event.key==='Enter')sendAIMessage()">
-    <button id="whaleChatSend" onclick="sendAIMessage()">發送</button>
+    <!-- 生詞池 -->
+    <div id="vocabPool" class="box-wrap">
+      <h2>📚 生詞池</h2>
+      <p style="margin:10px 0;color:#666;">請選擇單元：</p>
+      <div id="vocabUnitButtons"></div>
+    </div>
+    <div id="vocabUnit" class="box-wrap">
+      <h2 id="vocabUnitTitle">生詞池</h2>
+      <p style="margin:10px 0;color:#666;">選擇模塊：</p>
+      <button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button>
+      <button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button>
+      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回生詞池</button>
+      <div id="cardPanel" style="margin-top:18px;"></div>
+      <div id="tablePanel" style="margin-top:18px;"></div>
+    </div>
+
+    <!-- 練習題 -->
+    <div id="exerciseRoot" class="box-wrap">
+      <h2>📝 練習題</h2>
+      <p style="margin:10px 0;color:#666;">請選擇單元：</p>
+      <div id="exerciseUnitButtons"></div>
+    </div>
+    <div id="exerciseUnit" class="box-wrap">
+      <h2 id="exerciseUnitTitle">練習題</h2>
+      <p style="margin:10px 0;color:#666;">請選擇練習類型：</p>
+      <button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button>
+      <button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button>
+      <button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button>
+      <button class="sub-btn" onclick="showRoot('exerciseRoot')">← 返回練習題</button>
+      <div id="writePanel" style="margin-top:18px;display:none;"></div>
+      <div id="clozePanel" style="margin-top:18px;display:none;"></div>
+      <div id="choicePanel" style="margin-top:18px;display:none;"></div>
+    </div>
+
+    <!-- 語法 -->
+    <div id="grammarRoot" class="box-wrap">
+      <h2>📖 語法</h2>
+      <p style="margin:10px 0;color:#666;">請選擇模塊：</p>
+      <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
+      <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
+      <button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button>
+      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
+      <div id="grammarPanel" style="margin-top:18px;"></div>
+    </div>
+
+    <!-- 閱讀理解 -->
+    <div id="readingRoot" class="box-wrap">
+      <h2>📘 閱讀理解</h2>
+      <p style="margin:10px 0;color:#666;">請選擇測驗：</p>
+      <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
+      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
+      <div id="readingPanel" style="margin-top:18px;"></div>
+    </div>
+
+    <!-- 錯題本 -->
+    <div id="wrongBookPanel" class="box-wrap">
+      <h2>📒 錯題本</h2>
+      <p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p>
+      <div class="record-list" id="recordList"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+        <button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button>
+      </div>
+      <button class="sub-btn" onclick="backToMainRoot()" style="margin-top:16px;">← 返回首頁分類</button>
+    </div>
+
+    <div id="wrongRedoPanel" class="box-wrap">
+      <h2>🔁 錯題重做</h2>
+      <div id="wrongRedoSetting"></div>
+      <div id="wrongRedoArea"></div>
+      <div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div>
+      <div class="result-page" id="wrongRedoResultPage"></div>
+      <button class="sub-btn" onclick="openWrongBook()" style="margin-top:16px;">← 返回錯題本列表</button>
+    </div>
   </div>
 </div>
 
@@ -265,7 +338,7 @@ th{background:#667eea;color:#fff;}
 <script src="irregular_verbs.js"></script>
 <script src="reading.js"></script>
 <script>
-/* ================== 全局变量 ================== */
+/* ================== 全局變量 ================== */
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList = [];
@@ -273,14 +346,14 @@ let quizType = "";
 let exerciseStartTime = 0;
 let currentWrongRecordIndex = -1;
 let speakToken = 0;
-let currentUnitName = "第三單元";
+let currentUnitName = "";
 let currentReadingUnit = "";
 let currentReadingSub = "";
 
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
 
-/* ================== 字符归一化 ================== */
+/* ================== 字符歸一化 ================== */
 function normalizePunctuation(str){
   if(!str) return "";
   return String(str)
@@ -335,8 +408,7 @@ document.getElementById("discOk").onclick = function(){
   document.getElementById("disclaimerModal").style.display="none";
   document.getElementById("mainContent").style.display="block";
   document.getElementById("noticeFloatBtn").style.display="block";
-  document.getElementById("whaleCanvas").style.display="block";
-  showRoot("vocabPool");
+  goHome();
   renderRecordList();
   showNoticeIfAny();
 };
@@ -370,12 +442,92 @@ function showNoticeIfAny(){
   }, 30000);
 })();
 
-/* ================== 導航 ================== */
+/* ================== 首頁卡片 ================== */
+function renderHomeGrid(){
+  const grid = document.getElementById("homeGrid");
+  if(!grid) return;
+  const cards = [
+    {icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽，同義詞發音，可下載 CSV", tags:["發音","表格","下載"], target:"vocabPool"},
+    {icon:"📝", title:"練習題", desc:"默寫、完形填空、拖拽選擇，三種題型", tags:["默寫","完形","拖拽"], target:"exerciseRoot"},
+    {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","200題"], target:"grammarRoot"},
+    {icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，長按查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot"},
+    {icon:"📒", title:"錯題本", desc:"保存每次成績，可重做錯題", tags:["記錄","重做","複習"], target:"wrongBookPanel"}
+  ];
+  grid.innerHTML = "";
+  cards.forEach(c=>{
+    const card = document.createElement("div");
+    card.className = "module-card";
+    card.innerHTML = `
+      <div class="card-icon">${c.icon}</div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+      <button class="card-btn">進入 →</button>`;
+    card.onclick = ()=>{
+      if(c.target === "wrongBookPanel"){ openWrongBook(); }
+      else { showRoot(c.target); }
+    };
+    grid.appendChild(card);
+  });
+}
+
+function updateHomeStats(){
+  try{
+    const wc = Object.values(WORD_UNITS).reduce((sum,arr)=>sum+arr.length,0);
+    const cc = Object.values(CLOZE_UNITS).reduce((sum,arr)=>sum+arr.length,0);
+    const gc = (typeof GRAMMAR_BANK !== "undefined") ? GRAMMAR_BANK.length : 0;
+    const rc = (typeof READING_UNITS !== "undefined") ? Object.keys(READING_UNITS).length : 0;
+    document.getElementById("statWords").innerText = wc;
+    document.getElementById("statCloze").innerText = cc;
+    document.getElementById("statGrammar").innerText = gc;
+    document.getElementById("statReading").innerText = rc;
+  }catch(e){ console.warn(e); }
+}
+
+function goHome(){
+  hideAllBox();
+  document.getElementById("homePage").style.display = "block";
+  document.getElementById("moduleView").style.display = "none";
+  document.getElementById("backHomeBtn").style.display = "none";
+  renderHomeGrid();
+  updateHomeStats();
+}
+
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
   if(!guardNavigation()) return;
   hideAllBox();
+  document.getElementById("homePage").style.display = "none";
+  document.getElementById("moduleView").style.display = "block";
+  document.getElementById("backHomeBtn").style.display = "block";
+  if(id === "vocabPool") renderVocabUnits();
+  if(id === "exerciseRoot") renderExerciseUnits();
   document.getElementById(id).classList.add("show");
+}
+function backToMainRoot(){ goHome(); }
+
+/* ================== 單元按鈕動態生成 ================== */
+function renderVocabUnits(){
+  const wrap = document.getElementById("vocabUnitButtons");
+  wrap.innerHTML = "";
+  Object.keys(WORD_UNITS).forEach(unit => {
+    const btn = document.createElement("button");
+    btn.className = "unit-btn";
+    btn.innerText = unit;
+    btn.onclick = () => openVocabUnit(unit);
+    wrap.appendChild(btn);
+  });
+}
+function renderExerciseUnits(){
+  const wrap = document.getElementById("exerciseUnitButtons");
+  wrap.innerHTML = "";
+  Object.keys(CLOZE_UNITS).forEach(unit => {
+    const btn = document.createElement("button");
+    btn.className = "unit-btn";
+    btn.innerText = unit;
+    btn.onclick = () => openExerciseUnit(unit);
+    wrap.appendChild(btn);
+  });
 }
 
 /* ================== 生詞池 ================== */
@@ -383,7 +535,7 @@ function openVocabUnit(unit){
   if(!guardNavigation()) return;
   currentUnitName = unit;
   hideAllBox();
-  document.getElementById("vocabUnit3").classList.add("show");
+  document.getElementById("vocabUnit").classList.add("show");
   document.getElementById("vocabUnitTitle").innerText = unit + "｜生詞池";
   document.getElementById("cardPanel").innerHTML="";
   document.getElementById("tablePanel").innerHTML="";
@@ -445,7 +597,7 @@ function openExerciseUnit(unit){
   if(!guardNavigation()) return;
   currentUnitName = unit;
   hideAllBox();
-  document.getElementById("exerciseUnit3").classList.add("show");
+  document.getElementById("exerciseUnit").classList.add("show");
   document.getElementById("exerciseUnitTitle").innerText = unit + "｜練習題";
   ["writePanel","clozePanel","choicePanel"].forEach(id=>{
     const el = document.getElementById(id);
@@ -764,6 +916,7 @@ function startClozeQuiz(){
 }
 function showClozeResult(){
   let score=0, wrongSentences=[];
+  let fullCount=0, halfCount=0, zeroCount=0;
   const total = currentQuizList.length;
   const resultListDom = document.getElementById("clozeResultList");
   resultListDom.innerHTML="";
@@ -772,33 +925,37 @@ function showClozeResult(){
     const feedback = dom.querySelector(".feedback");
     const ans = input.dataset.ans;
     const sen = input.dataset.sentence;
-    const userAns = input.value.trim().toLowerCase();
-    const isCorrect = userAns === ans.toLowerCase();
-    if(isCorrect) score++; else wrongSentences.push(sen);
-    feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${ans}</span>` : `<span class="err">❌錯誤，答案：${ans}</span>`;
-    resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${isCorrect?"✅":"❌"} ${ans}，你的答案：${userAns||"（未作答）"}</div>`;
+    const userAns = input.value.trim();
+    const level = judgeAnswer(userAns, ans);
+    if(level === "full"){ score += 1; fullCount++; }
+    else if(level === "half"){ score += 0.5; halfCount++; }
+    else { zeroCount++; wrongSentences.push(sen); }
+    if(level === "full") feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`;
+    else if(level === "half") feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`;
+    else feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`;
+    resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${level === "full" ? "✅" : (level === "half" ? "⚠️" : "❌")} ${ans}，你的答案：${userAns||"（未作答）"}</div>`;
   });
   const percent = Number((score/total*100).toFixed(2));
-  document.getElementById("clozeScoreText").innerText = `得分：${score}/${total}（${percent}%）`;
+  document.getElementById("clozeScoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
   document.getElementById("clozeResultPage").style.display="block";
-  window._clozeScore = {score,total,wrongSentences};
+  window._clozeScore = {score,total,wrongSentences, fullCount, halfCount, zeroCount};
   stopTimer();
 }
 function saveClozeRecord(){
-  const {score,total,wrongSentences} = window._clozeScore;
+  const s = window._clozeScore;
   const costMs = Date.now() - exerciseStartTime;
   const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const rec = {
     type: "完形填空", unit: currentUnitName,
     finishTime: new Date().toLocaleString(), costTime: timeStr,
-    score: score, total: total,
-    fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongSentences: wrongSentences,
-    percent: Number((score / total * 100).toFixed(2))
+    score: s.score, total: s.total,
+    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
+    wrongSentences: s.wrongSentences,
+    percent: Number((s.score / s.total * 100).toFixed(2))
   };
   exerciseRecords.push(rec);
   localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score:score, total:total, time:Date.now()});
+  attemptStats.push({score:s.score, total:s.total, time:Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
   alert("✅已保存練習紀錄");
@@ -1024,12 +1181,6 @@ function saveChoiceRecord(){
 }
 
 /* ================== 語法 ================== */
-function openGrammarRoot(){
-  if(!guardNavigation()) return;
-  hideAllBox();
-  document.getElementById("grammarRoot").classList.add("show");
-  document.getElementById("grammarPanel").innerHTML = "";
-}
 function openVerbTable(){
   if(!guardNavigation()) return;
   hideAllBox();
@@ -1038,7 +1189,7 @@ function openVerbTable(){
   let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">核心 62 個不規則動詞</h3>`;
   html += `<div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`;
   IRREGULAR_VERBS.forEach(v=>{ html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`; });
-  html += `</tbody></table></div><br><button class="sub-btn" onclick="openGrammarRoot()">← 返回語法</button>`;
+  html += `</tbody></table></div><br><button class="sub-btn" onclick="showRoot('grammarRoot')">← 返回語法</button>`;
   p.innerHTML = html;
 }
 function openTenseStructure(){
@@ -1054,7 +1205,7 @@ function openTenseStructure(){
   ];
   let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">4 種時態結構</h3>`;
   tenses.forEach(t=>{ html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`; });
-  html += `<button class="sub-btn" onclick="openGrammarRoot()">← 返回語法</button>`;
+  html += `<button class="sub-btn" onclick="showRoot('grammarRoot')">← 返回語法</button>`;
   p.innerHTML = html;
 }
 function openGrammarQuizRoot(){
@@ -1080,7 +1231,7 @@ function openGrammarQuizRoot(){
       <div id="grammarResultList"></div>
       <div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div>
     </div>
-    <button class="sub-btn" onclick="openGrammarRoot()" style="margin-top:16px;">← 返回語法</button>`;
+    <button class="sub-btn" onclick="showRoot('grammarRoot')" style="margin-top:16px;">← 返回語法</button>`;
   renderGrammarFilters();
   document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
   document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
@@ -1167,6 +1318,82 @@ function saveGrammarRecord(){
   renderRecordList();
   alert("✅已保存練習紀錄");
 }
+
+/* ================== 錯題本 ================== */
+function openWrongBook(){
+  showRoot("wrongBookPanel");
+  renderRecordList();
+}
+function renderRecordList(){
+  const wrap = document.getElementById("recordList");
+  wrap.innerHTML="";
+  if(exerciseRecords.length===0){
+    wrap.innerHTML = "<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>";
+    return;
+  }
+  exerciseRecords.slice().reverse().forEach((rec,revIdx)=>{
+    const idx = exerciseRecords.length - 1 - revIdx;
+    const percent = rec.percent;
+    let color = "#27ae60";
+    if(percent < 60) color = "#e74c3c";
+    else if(percent < 85) color = "#f39c12";
+    const fullCount = rec.fullCount !== undefined ? rec.fullCount : rec.score;
+    const halfCount = rec.halfCount || 0;
+    const zeroCount = rec.zeroCount !== undefined ? rec.zeroCount : (rec.total - rec.score);
+    const card = document.createElement("div");
+    card.className = "record-card";
+    card.innerHTML = `
+      <div class="record-card-left">
+        <div class="record-type">📝 ${rec.type}${rec.unit ? "（" + rec.unit + "）" : ""}</div>
+        <div class="record-meta">📅 ${rec.finishTime}</div>
+        <div class="record-meta">⏱ 耗時：${rec.costTime}｜共 ${rec.total} 題</div>
+        <div class="record-meta">
+          <span style="color:#27ae60;">🟢 全對 ${fullCount}</span> ｜
+          <span style="color:#f39c12;">🟡 半對 ${halfCount}</span> ｜
+          <span style="color:#e74c3c;">🔴 全錯 ${zeroCount}</span>
+        </div>
+      </div>
+      <div class="record-card-right">
+        <div class="record-percent" style="color:${color}">${percent}%</div>
+        <div class="record-percent-label">分數：${rec.score} / ${rec.total}</div>
+        <div class="record-enter">點擊複習 →</div>
+      </div>`;
+    card.onclick = ()=>openWrongRedo(idx);
+    wrap.appendChild(card);
+  });
+}
+document.getElementById("clearAllRecords").onclick = function(){
+  if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return;
+  exerciseRecords=[];
+  localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));
+  renderRecordList();
+};
+function openWrongRedo(idx){
+  if(!guardNavigation()) return;
+  currentWrongRecordIndex = idx;
+  const rec = exerciseRecords[idx];
+  hideAllBox();
+  document.getElementById("wrongRedoPanel").classList.add("show");
+  const settingDom = document.getElementById("wrongRedoSetting");
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  const resPage = document.getElementById("wrongRedoResultPage");
+  areaDom.innerHTML="";
+  finishBtn.style.display="none";
+  resPage.style.display="none";
+  const isWrite = rec.type === "看同義詞默寫" || rec.type === "默寫刷題練習";
+  const isChoice = rec.type === "拖拽選擇練習";
+  const isGrammar = rec.type === "語法填空";
+  if(isGrammar){
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`;
+  }else if(isWrite){
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做默寫錯題｜選擇提示</h4><label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label><br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button></div>`;
+  }else if(isChoice){
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`;
+  }else{
+    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`;
+  }
+}
 function startWrongGrammar(){
   startTimer();
   const rec = exerciseRecords[currentWrongRecordIndex];
@@ -1200,6 +1427,132 @@ function startWrongGrammar(){
     stopTimer();
   };
 }
+function startWrongWrite(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const showTargetCn = document.getElementById("rwShowTargetCn") ? document.getElementById("rwShowTargetCn").checked : false;
+  const showSynCn = document.getElementById("rwShowSynCn") ? document.getElementById("rwShowSynCn").checked : false;
+  let wrongWords = [];
+  const list = getWordList();
+  if(rec.wrongEns && rec.wrongEns.length){ wrongWords = rec.wrongEns.map(en => list.find(w=>w.en===en)).filter(Boolean); }
+  else { wrongWords = list.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no)); }
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  areaDom.innerHTML="";
+  if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+  wrongWords.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="exercise-item";
+    let hintParts=[item.syn||""];
+    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
+    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
+    div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
+    areaDom.appendChild(div);
+  });
+  finishBtn.style.display="block";
+  finishBtn.onclick = function(){
+    let score=0;
+    const total = wrongWords.length;
+    const resPage = document.getElementById("wrongRedoResultPage");
+    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
+      const inp = dom.querySelector(".user-display");
+      const fb = dom.querySelector(".feedback");
+      const ans = inp.dataset.ans;
+      const ok = judgeAnswer(inp.value, ans) !== "zero";
+      if(ok) score++;
+      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
+    });
+    const percent = Number((score / total * 100).toFixed(2));
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+function startWrongCloze(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const bank = getClozeBank();
+  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+  const areaDom = document.getElementById("wrongRedoArea");
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  areaDom.innerHTML="";
+  if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>";stopTimer();return;}
+  wrongQ.forEach((item,idx)=>{
+    const div=document.createElement("div");
+    div.className="exercise-item cloze-item";
+    div.innerHTML=`
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
+        <span class="q-num">${idx+1}.</span>
+        <span class="cloze-sentence">${item.sentence}</span>
+        <span class="cloze-toggle-icon">▼</span>
+      </div>
+      <div class="q-syn-info">（同義詞提示：${item.syn}）</div>
+      <div class="cloze-detail" style="display:none;">
+        <div class="cloze-toolbar">
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
+          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
+          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
+        </div>
+        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
+        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
+      </div>
+      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
+      <div class="feedback"></div>`;
+    areaDom.appendChild(div);
+  });
+  finishBtn.style.display="block";
+  finishBtn.onclick = function(){
+    let score=0;
+    const total = wrongQ.length;
+    const resPage = document.getElementById("wrongRedoResultPage");
+    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
+      const inp = dom.querySelector(".user-display");
+      const fb = dom.querySelector(".feedback");
+      const ans = inp.dataset.ans;
+      const level = judgeAnswer(inp.value, ans);
+      if(level === "full") score += 1;
+      else if(level === "half") score += 0.5;
+      if(level === "full") fb.innerHTML = `<span class="ok">✅${ans}</span>`;
+      else if(level === "half") fb.innerHTML = `<span class="half">⚠️ 詞形錯誤：${ans}</span>`;
+      else fb.innerHTML = `<span class="err">❌答案：${ans}</span>`;
+    });
+    const percent = Number((score / total * 100).toFixed(2));
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+function startWrongChoice(){
+  startTimer();
+  const rec = exerciseRecords[currentWrongRecordIndex];
+  const bank = getClozeBank();
+  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  if(wrongQ.length===0){ document.getElementById("wrongRedoArea").innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+  renderChoiceQuestions(wrongQ, "wrongRedoArea");
+  finishBtn.style.display = "block";
+  finishBtn.onclick = function(){
+    let score=0;
+    const total = wrongQ.length;
+    const area = document.getElementById("wrongRedoArea");
+    area.querySelectorAll(".drop-zone").forEach((zone)=>{
+      const ans = zone.dataset.ans;
+      const userAns = zone.dataset.filledWord || "";
+      const level = judgeAnswer(userAns, ans);
+      if(level === "full") score++;
+      else if(level === "half") score += 0.5;
+      zone.classList.remove("zone-ok","zone-half","zone-err");
+      zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
+      if(!userAns) zone.textContent = "（未填）";
+    });
+    const percent = Number((score / total * 100).toFixed(2));
+    const resPage = document.getElementById("wrongRedoResultPage");
+    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
+    resPage.style.display="block";
+    stopTimer();
+  };
+}
+
 /* ================== 閱讀理解 ================== */
 function openReadingRoot(){
   if(!guardNavigation()) return;
@@ -1215,7 +1568,7 @@ function openReadingUnit(unitName){
     <h3 style="color:#2c3e50;margin-bottom:12px;">${unitName}</h3>
     <button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button>
     <button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button>
-    <button class="sub-btn" onclick="openReadingRoot()">← 返回閱讀理解</button>
+    <button class="sub-btn" onclick="showRoot('readingRoot')">← 返回閱讀理解</button>
     <div id="readingSubPanel" style="margin-top:18px;"></div>`;
 }
 function openReadingSub(subName){
@@ -1466,7 +1819,7 @@ function startReadingCloze(sub){
   let itemsHtml = "";
   sub.items.forEach((item, idx) => {
     let opts = "";
-    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:6px 12px;margin:4px;border-radius:6px;cursor:pointer;border:1px solid #ddd;background:#fff;">${letter}. ${item.opts[i]}</span>`; });
+    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:8px 14px;margin:4px;border-radius:8px;cursor:pointer;border:1px solid #ddd;background:#fff;transition:all 0.2s;">${letter}. ${item.opts[i]}</span>`; });
     itemsHtml += `<div class="exercise-item" data-idx="${idx}"><div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div></div>`;
   });
   area.innerHTML = passageHtml + `<hr style="margin:16px 0;">` + itemsHtml;
@@ -1528,385 +1881,6 @@ function submitReadingCloze(){
   stopTimer();
   document.getElementById("submitReadingClozeBtn").style.display = "none";
 }
-
-/* ================== 錯題本 ================== */
-function openWrongBook(){
-  showRoot("wrongBookPanel");
-  renderRecordList();
-}
-function backToMainRoot(){ showRoot("vocabPool"); }
-function renderRecordList(){
-  const wrap = document.getElementById("recordList");
-  wrap.innerHTML="";
-  if(exerciseRecords.length===0){
-    wrap.innerHTML = "<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>";
-    return;
-  }
-  exerciseRecords.slice().reverse().forEach((rec,revIdx)=>{
-    const idx = exerciseRecords.length - 1 - revIdx;
-    const percent = rec.percent;
-    let color = "#27ae60";
-    if(percent < 60) color = "#e74c3c";
-    else if(percent < 85) color = "#f39c12";
-    const fullCount = rec.fullCount !== undefined ? rec.fullCount : rec.score;
-    const halfCount = rec.halfCount || 0;
-    const zeroCount = rec.zeroCount !== undefined ? rec.zeroCount : (rec.total - rec.score);
-    const card = document.createElement("div");
-    card.className = "record-card";
-    card.innerHTML = `
-      <div class="record-card-left">
-        <div class="record-type">📝 ${rec.type}${rec.unit ? "（" + rec.unit + "）" : ""}</div>
-        <div class="record-meta">📅 ${rec.finishTime}</div>
-        <div class="record-meta">⏱ 耗時：${rec.costTime}｜共 ${rec.total} 題</div>
-        <div class="record-meta">
-          <span style="color:#27ae60;">🟢 全對 ${fullCount}</span> ｜
-          <span style="color:#f39c12;">🟡 半對 ${halfCount}</span> ｜
-          <span style="color:#e74c3c;">🔴 全錯 ${zeroCount}</span>
-        </div>
-      </div>
-      <div class="record-card-right">
-        <div class="record-percent" style="color:${color}">${percent}%</div>
-        <div class="record-percent-label">分數：${rec.score} / ${rec.total}</div>
-        <div class="record-enter">點擊複習 →</div>
-      </div>`;
-    card.onclick = ()=>openWrongRedo(idx);
-    wrap.appendChild(card);
-  });
-}
-document.getElementById("clearAllRecords").onclick = function(){
-  if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return;
-  exerciseRecords=[];
-  localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));
-  renderRecordList();
-};
-function openWrongRedo(idx){
-  if(!guardNavigation()) return;
-  currentWrongRecordIndex = idx;
-  const rec = exerciseRecords[idx];
-  hideAllBox();
-  document.getElementById("wrongRedoPanel").classList.add("show");
-  const settingDom = document.getElementById("wrongRedoSetting");
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  const resPage = document.getElementById("wrongRedoResultPage");
-  areaDom.innerHTML="";
-  finishBtn.style.display="none";
-  resPage.style.display="none";
-  const isWrite = rec.type === "看同義詞默寫" || rec.type === "默寫刷題練習";
-  const isChoice = rec.type === "拖拽選擇練習";
-  const isGrammar = rec.type === "語法填空";
-  if(isGrammar){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`;
-  }else if(isWrite){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做默寫錯題｜選擇提示</h4><label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label><br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button></div>`;
-  }else if(isChoice){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`;
-  }else{
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`;
-  }
-}
-function startWrongWrite(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const showTargetCn = document.getElementById("rwShowTargetCn") ? document.getElementById("rwShowTargetCn").checked : false;
-  const showSynCn = document.getElementById("rwShowSynCn") ? document.getElementById("rwShowSynCn").checked : false;
-  let wrongWords = [];
-  const list = getWordList();
-  if(rec.wrongEns && rec.wrongEns.length){ wrongWords = rec.wrongEns.map(en => list.find(w=>w.en===en)).filter(Boolean); }
-  else { wrongWords = list.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no)); }
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  areaDom.innerHTML="";
-  if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
-  wrongWords.forEach((item,idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item";
-    let hintParts=[item.syn||""];
-    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
-    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
-    div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
-    areaDom.appendChild(div);
-  });
-  finishBtn.style.display="block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongWords.length;
-    const resPage = document.getElementById("wrongRedoResultPage");
-    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
-      const inp = dom.querySelector(".user-display");
-      const fb = dom.querySelector(".feedback");
-      const ans = inp.dataset.ans;
-      const ok = judgeAnswer(inp.value, ans) !== "zero";
-      if(ok) score++;
-      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
-}
-function startWrongCloze(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const bank = getClozeBank();
-  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  areaDom.innerHTML="";
-  if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>";stopTimer();return;}
-  wrongQ.forEach((item,idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item cloze-item";
-    div.innerHTML=`
-      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
-        <span class="q-num">${idx+1}.</span>
-        <span class="cloze-sentence">${item.sentence}</span>
-        <span class="cloze-toggle-icon">▼</span>
-      </div>
-      <div class="q-syn-info">（同義詞提示：${item.syn}）</div>
-      <div class="cloze-detail" style="display:none;">
-        <div class="cloze-toolbar">
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
-          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
-        </div>
-        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
-        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
-      </div>
-      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
-      <div class="feedback"></div>`;
-    areaDom.appendChild(div);
-  });
-  finishBtn.style.display="block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongQ.length;
-    const resPage = document.getElementById("wrongRedoResultPage");
-    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
-      const inp = dom.querySelector(".user-display");
-      const fb = dom.querySelector(".feedback");
-      const ans = inp.dataset.ans;
-      const ok = inp.value.trim().toLowerCase() === ans.toLowerCase();
-      if(ok) score++;
-      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
-}
-function startWrongChoice(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const bank = getClozeBank();
-  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  if(wrongQ.length===0){ document.getElementById("wrongRedoArea").innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
-  renderChoiceQuestions(wrongQ, "wrongRedoArea");
-  finishBtn.style.display = "block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongQ.length;
-    const area = document.getElementById("wrongRedoArea");
-    area.querySelectorAll(".drop-zone").forEach((zone)=>{
-      const ans = zone.dataset.ans;
-      const userAns = zone.dataset.filledWord || "";
-      const level = judgeAnswer(userAns, ans);
-      if(level === "full") score++;
-      else if(level === "half") score += 0.5;
-      zone.classList.remove("zone-ok","zone-half","zone-err");
-      zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
-      if(!userAns) zone.textContent = "（未填）";
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    const resPage = document.getElementById("wrongRedoResultPage");
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
-}
-
-/* ================== AI 桌宠 + 聊天 ================== */
-(function(){
-  const canvas = document.getElementById("whaleCanvas");
-  if(!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const bubble = document.getElementById("whaleBubble");
-  const chat = document.getElementById("whaleChat");
-
-  const SHEET = { src: "spritesheet.webp", frameW: 192, frameH: 208 };
-  const FPS = 8;
-  const ROWS = 11;
-  const ROW_FRAMES = [7, 8, 8, 5, 5, 5, 6, 6, 6, 8, 8];
-
-  const img = new Image();
-  img.src = SHEET.src;
-
-  let currentRow = 0, currentFrame = 0, lastTime = 0, returnToIdleTimer = null;
-
-  function draw(t){
-    if(img.complete && img.naturalWidth > 0){
-      if(t - lastTime > 1000 / FPS){
-        currentFrame = (currentFrame + 1) % ROW_FRAMES[currentRow];
-        lastTime = t;
-      }
-      const sx = currentFrame * SHEET.frameW;
-      const sy = currentRow * SHEET.frameH;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, sx, sy, SHEET.frameW, SHEET.frameH, 0, 0, canvas.width, canvas.height);
-    }
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
-
-  function switchRow(row, duration){
-    currentRow = row; currentFrame = 0;
-    clearTimeout(returnToIdleTimer);
-    if(duration){ returnToIdleTimer = setTimeout(() => { currentRow = 0; currentFrame = 0; }, duration); }
-  }
-
-  const lines = [
-    "今天也要加油哦～", "加油！你可以的！", "累了就休息一下吧～",
-    "我又来陪你了！", "有问题随时问我哦～", "呜哇～今天学了多少呀？",
-    "嘿嘿～在做题吗？", "我在这儿陪着你～", "别忘了休息眼睛哦！",
-    "干得漂亮！继续保持～"
-  ];
-
-  let gestureMode = "none", longPressTriggered = false;
-  let startX = 0, startY = 0, petX = 0, petY = 0;
-  let lastX = 0, lastY = 0, velX = 0, velY = 0;
-  let pressTimer = null;
-  const MOVE_THRESHOLD = 8;
-  const LONG_PRESS_TIME = 600;
-
-  function getPos(e){
-    if(e.touches && e.touches[0]) return {x: e.touches[0].clientX, y: e.touches[0].clientY};
-    return {x: e.clientX, y: e.clientY};
-  }
-
-  function onStart(e){
-    gestureMode = "pressing"; longPressTriggered = false;
-    const pos = getPos(e);
-    startX = pos.x; startY = pos.y;
-    lastX = pos.x; lastY = pos.y;
-    velX = 0; velY = 0;
-    const rect = canvas.getBoundingClientRect();
-    petX = rect.left; petY = rect.top;
-    canvas.style.right = "auto"; canvas.style.bottom = "auto";
-    canvas.style.left = petX + "px"; canvas.style.top = petY + "px";
-    clearTimeout(pressTimer);
-    pressTimer = setTimeout(() => {
-      if(gestureMode === "pressing"){ longPressTriggered = true; window.openWhaleChat(); }
-    }, LONG_PRESS_TIME);
-  }
-
-  function onMove(e){
-    if(gestureMode === "none") return;
-    const pos = getPos(e);
-    const dx = pos.x - startX, dy = pos.y - startY;
-    if(gestureMode === "pressing" && (Math.abs(dx) > MOVE_THRESHOLD || Math.abs(dy) > MOVE_THRESHOLD)){
-      gestureMode = "dragging";
-      clearTimeout(pressTimer);
-      canvas.style.cursor = "grabbing";
-    }
-    if(gestureMode === "dragging"){
-      if(e.cancelable) e.preventDefault();
-      velX = pos.x - lastX; velY = pos.y - lastY;
-      lastX = pos.x; lastY = pos.y;
-      canvas.style.left = (petX + dx) + "px"; canvas.style.top = (petY + dy) + "px";
-    }
-  }
-
-  function onEnd(){
-    clearTimeout(pressTimer);
-    canvas.style.cursor = "grab";
-    if(gestureMode === "pressing" && !longPressTriggered){
-      canvas.classList.add("jump");
-      setTimeout(()=>{ canvas.classList.remove("jump"); }, 500);
-      switchRow(1 + Math.floor(Math.random() * (ROWS - 1)), 1500);
-      showBubble();
-    }
-    if(gestureMode === "dragging"){
-      let curX = parseFloat(canvas.style.left);
-      let curY = parseFloat(canvas.style.top);
-      function inertia(){
-        velX *= 0.92; velY *= 0.92;
-        curX += velX; curY += velY;
-        if(Math.abs(velX) < 0.5 && Math.abs(velY) < 0.5) return;
-        const maxX = window.innerWidth - canvas.offsetWidth;
-        const maxY = window.innerHeight - canvas.offsetHeight;
-        curX = Math.max(0, Math.min(curX, maxX));
-        curY = Math.max(0, Math.min(curY, maxY));
-        canvas.style.left = curX + "px"; canvas.style.top = curY + "px";
-        requestAnimationFrame(inertia);
-      }
-      inertia();
-    }
-    gestureMode = "none"; startX = 0; startY = 0;
-  }
-
-  canvas.addEventListener("mousedown", onStart);
-  document.addEventListener("mousemove", onMove);
-  document.addEventListener("mouseup", onEnd);
-  canvas.addEventListener("touchstart", onStart, {passive: true});
-  document.addEventListener("touchmove", onMove, {passive: false});
-  document.addEventListener("touchend", onEnd);
-
-  function showBubble(){
-    const line = lines[Math.floor(Math.random() * lines.length)];
-    bubble.innerText = line;
-    const rect = canvas.getBoundingClientRect();
-    bubble.style.display = "block";
-    bubble.style.left = Math.max(10, rect.left - 60) + "px";
-    bubble.style.top = (rect.top - 50) + "px";
-    setTimeout(() => { bubble.style.display = "none"; }, 2500);
-  }
-
-  setInterval(() => {
-    if(gestureMode !== "none") return;
-    if(Math.random() < 0.4){ switchRow(1 + Math.floor(Math.random() * (ROWS - 1)), 1500); }
-  }, 10000);
-
-  window.openWhaleChat = function(){ chat.style.display = "flex"; };
-  window.closeWhaleChat = function(){ chat.style.display = "none"; };
-
-  window.sendAIMessage = async function(){
-    const input = document.getElementById("whaleChatInput");
-    const text = input.value.trim();
-    if(!text) return;
-    input.value = "";
-    const body = document.getElementById("whaleChatBody");
-    const userMsg = document.createElement("div");
-    userMsg.className = "ai-msg ai-msg-user";
-    userMsg.innerText = text;
-    body.appendChild(userMsg);
-    body.scrollTop = body.scrollHeight;
-
-    const loading = document.createElement("div");
-    loading.className = "ai-msg ai-msg-bot ai-msg-loading";
-    loading.innerText = "🐋 思考中...";
-    body.appendChild(loading);
-    body.scrollTop = body.scrollHeight;
-
-    try {
-      const res = await fetch("https://whale-ai-proxy.teddy66674594.workers.dev", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [{ role: "user", content: text }] })
-      });
-      const data = await res.json();
-      const reply = data.choices?.[0]?.message?.content || "抱歉，我没听清楚～";
-      loading.classList.remove("ai-msg-loading");
-      loading.innerText = reply;
-    } catch (err) {
-      loading.classList.remove("ai-msg-loading");
-      loading.innerText = "出错啦：" + err.message;
-    }
-    body.scrollTop = body.scrollHeight;
-  };
-})();
 </script>
 </body>
 </html>
