@@ -153,7 +153,69 @@ tr:nth-child(even){background:#f9faff;}
 .key-cn{color:#555;font-size:14px;}
 .cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:8px;font-size:14px;color:#444;line-height:1.7;border:1px dashed #e0e0e0;}
 
-/* ===== 閱讀理解 ===== */
+/* ===== 閱讀理解分屏模式 ===== */
+.reading-split-container {
+  display: flex;
+  flex-direction: column;
+  height: 78vh;
+  gap: 12px;
+  margin-top: 12px;
+}
+.reading-split-top {
+  flex: 1.2;
+  overflow-y: auto;
+  background: #fafbff;
+  border: 1px solid #eef4ff;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 150px;
+}
+.reading-split-top .reading-passage {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  user-select: text;
+}
+.reading-split-bottom {
+  flex: 1;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #eef4ff;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 200px;
+}
+.reading-split-bottom .exercise-item {
+  margin: 10px 0;
+  padding: 12px;
+}
+.split-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: #eef4ff;
+  border: none;
+  border-radius: 6px;
+  color: #667eea;
+  cursor: pointer;
+  font-weight: bold;
+}
+@media (max-width: 600px) {
+  .reading-split-container { height: 72vh; }
+  .reading-split-top { padding: 12px; }
+  .reading-split-bottom { padding: 12px; }
+}
+.reading-word.active { background: #ffe68a; font-weight: bold; }
+
+/* ===== 屏蔽浏览器自带的长按选择、翻译、复制等菜单 ===== */
+.reading-passage, .reading-word {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* ===== 閱讀理解其他樣式 ===== */
 .reading-passage{line-height:2;font-size:15px;color:#333;background:#fafbff;padding:20px;border-radius:12px;margin:14px 0;user-select:text;border:1px solid #eef4ff;}
 .reading-passage p{margin-bottom:14px;}
 .reading-word{cursor:pointer;padding:0 3px;border-radius:4px;transition:background 0.2s;}
@@ -253,7 +315,7 @@ tr:nth-child(even){background:#f9faff;}
 
   <!-- 模塊視圖 -->
   <div id="moduleView">
-    <button id="backHomeBtn" onclick="goHome()">← 返回首頁</button>
+    <button id="backHomeBtn" onclick="goHomeWithGuard()">← 返回首頁</button>
 
     <!-- 生詞池 -->
     <div id="vocabPool" class="box-wrap">
@@ -349,6 +411,7 @@ let speakToken = 0;
 let currentUnitName = "";
 let currentReadingUnit = "";
 let currentReadingSub = "";
+let homeScrollY = 0; // 记录首页滚动位置
 
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
@@ -443,6 +506,11 @@ function showNoticeIfAny(){
 })();
 
 /* ================== 首頁卡片 ================== */
+function goHomeWithGuard(){
+  if(!guardNavigation()) return;
+  goHome();
+}
+
 function renderHomeGrid(){
   const grid = document.getElementById("homeGrid");
   if(!grid) return;
@@ -450,7 +518,7 @@ function renderHomeGrid(){
     {icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽，同義詞發音，可下載 CSV", tags:["發音","表格","下載"], target:"vocabPool"},
     {icon:"📝", title:"練習題", desc:"默寫、完形填空、拖拽選擇，三種題型", tags:["默寫","完形","拖拽"], target:"exerciseRoot"},
     {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","200題"], target:"grammarRoot"},
-    {icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，長按查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot"},
+    {icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，點擊查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot"},
     {icon:"📒", title:"錯題本", desc:"保存每次成績，可重做錯題", tags:["記錄","重做","複習"], target:"wrongBookPanel"}
   ];
   grid.innerHTML = "";
@@ -491,11 +559,15 @@ function goHome(){
   document.getElementById("backHomeBtn").style.display = "none";
   renderHomeGrid();
   updateHomeStats();
+  setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10); // 恢复首页滚动位置
 }
 
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
   if(!guardNavigation()) return;
+  if(document.getElementById("homePage").style.display !== "none"){
+    homeScrollY = window.scrollY; // 记录进入模块前的位置
+  }
   hideAllBox();
   document.getElementById("homePage").style.display = "none";
   document.getElementById("moduleView").style.display = "block";
@@ -503,8 +575,33 @@ function showRoot(id){
   if(id === "vocabPool") renderVocabUnits();
   if(id === "exerciseRoot") renderExerciseUnits();
   document.getElementById(id).classList.add("show");
+  setTimeout(() => { window.scrollTo(0, 0); }, 10); // 进入模块回到顶部
 }
 function backToMainRoot(){ goHome(); }
+
+/* ========== 拖拽時自動滾屏（鼠标 + 手指） ========== */
+document.addEventListener('dragover', function(e) {
+    if (!draggingWordEl) return;
+    e.preventDefault(); 
+    const y = e.clientY;
+    const threshold = 120; 
+    const speed = 15;      
+    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } 
+    else if (y < threshold) { window.scrollBy(0, -speed); }
+});
+document.addEventListener('touchmove', function(e) {
+    if (!draggingWordEl) return;
+    const y = e.touches[0].clientY;
+    const threshold = 120;
+    const speed = 15;
+    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } 
+    else if (y < threshold) { window.scrollBy(0, -speed); }
+}, { passive: false });
+
+/* ========== 屏蔽浏览器自带长按菜单 ========== */
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
 
 /* ================== 單元按鈕動態生成 ================== */
 function renderVocabUnits(){
@@ -649,6 +746,7 @@ function shuffleArray(arr){
   }
   return copy;
 }
+
 /* ================== 默寫 ================== */
 function showWriteExercise(){
   const p=document.getElementById("writePanel");
@@ -1578,39 +1676,49 @@ function openReadingSub(subName){
   const p = document.getElementById("readingSubPanel");
   if(subName === "文章一"){
     p.innerHTML = `
-      <div class="reading-intro">${sub.intro}</div>
-      <div style="margin-bottom:12px;"><button class="btn" id="togglePassageBtn">📖 顯示文章原文</button></div>
-      <div id="passageBox" style="display:none;"><div class="reading-passage" id="passageContent"></div></div>
-      <hr style="margin:16px 0;">
-      <h4 style="color:#2c3e50;margin-bottom:8px;">📝 選擇題（每次抽 5 道）</h4>
-      <button class="btn" id="startReadingChoiceBtn">開始選擇題</button>
-      <div id="readingChoiceArea"></div>
-      <div id="readingChoiceResult" class="result-page"></div>
-      <hr style="margin:16px 0;">
-      <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 填空題（每次抽 6 道）</h4>
-      <button class="btn" id="startReadingBlankBtn">開始填空題</button>
-      <div id="readingBlankArea"></div>
-      <div id="readingBlankResult" class="result-page"></div>`;
+      <div class="reading-intro" style="margin-bottom:8px;">💡 點擊下方文章中的任意英文單詞，可查看中文意思。</div>
+      <div class="reading-split-container">
+        <div class="reading-split-top" id="splitTopBox">
+          <div class="reading-passage" id="passageContent"></div>
+        </div>
+        <div class="reading-split-bottom">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="color:#2c3e50;margin:0;font-size:15px;">📝 答題區</h4>
+            <button class="split-btn" id="togglePassageBtn">📕 隱藏文章</button>
+          </div>
+          <hr style="margin:10px 0; border: none; border-top: 1px dashed #ddd;">
+          <h4 style="color:#2c3e50;margin-bottom:8px;">選擇題（每次抽 5 道）</h4>
+          <button class="btn" id="startReadingChoiceBtn">開始選擇題</button>
+          <div id="readingChoiceArea"></div>
+          <div id="readingChoiceResult" class="result-page"></div>
+          <hr style="margin:16px 0;">
+          <h4 style="color:#2c3e50;margin-bottom:8px;">填空題（每次抽 6 道）</h4>
+          <button class="btn" id="startReadingBlankBtn">開始填空題</button>
+          <div id="readingBlankArea"></div>
+          <div id="readingBlankResult" class="result-page"></div>
+        </div>
+      </div>`;
+    
     const passageBox = document.getElementById("passageContent");
     const paras = sub.passage.split(/\n\n+/);
     let html = "";
     paras.forEach(par=>{
-      const words = par.split(/(\s+|[.,!?;:()"—–])/);
-      let line = "";
-      words.forEach(w=>{
-        const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
-        if(clean && sub.vocab[clean]){ line += `<span class="reading-word" data-word="${clean}" data-cn="${sub.vocab[clean]}">${w}</span>`; }
-        else { line += w; }
+      let line = par.replace(/([a-zA-Z\-']+)/g, function(word){
+        const clean = word.toLowerCase();
+        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : "暫無釋義";
+        return `<span class="reading-word" data-word="${clean}" data-cn="${cn}">${word}</span>`;
       });
       html += `<p>${line}</p>`;
     });
     passageBox.innerHTML = html;
+
     document.getElementById("togglePassageBtn").onclick = function(){
-      const box = document.getElementById("passageBox");
-      if(box.style.display === "none"){ box.style.display = "block"; this.innerText = "📕 隱藏文章原文"; }
-      else { box.style.display = "none"; this.innerText = "📖 顯示文章原文"; }
+      const topBox = document.getElementById("splitTopBox");
+      if(topBox.style.display === "none"){ topBox.style.display = "block"; this.innerText = "📕 隱藏文章"; }
+      else { topBox.style.display = "none"; this.innerText = "📖 顯示文章"; }
     };
-    bindReadingWordLongPress(sub.vocab);
+
+    bindReadingWordClick();
     document.getElementById("startReadingChoiceBtn").onclick = function(){ startReadingChoice(sub); };
     document.getElementById("startReadingBlankBtn").onclick = function(){ startReadingBlank(sub); };
   }else{
@@ -1642,34 +1750,57 @@ function openReadingSub(subName){
       if(box.style.display === "none"){ box.style.display = "block"; this.innerText = "📕 隱藏完整對話/段落"; }
       else { box.style.display = "none"; this.innerText = "📖 顯示完整對話/段落"; }
     };
-    bindReadingWordLongPress(sub.vocab);
+    bindReadingWordClick();
     document.getElementById("startReadingClozeBtn").onclick = function(){ startReadingCloze(sub); };
   }
 }
-function bindReadingWordLongPress(vocab){
+function bindReadingWordClick(){
   document.querySelectorAll(".reading-word").forEach(el=>{
-    let pressTimer = null;
-    const showPopup = function(e){
-      const word = el.dataset.word;
-      const cn = el.dataset.cn;
+    el.onclick = function(e){
+      e.stopPropagation();
+      const word = this.dataset.word;
+      const cn = this.dataset.cn;
       const popup = document.getElementById("wordPopup");
+
+      // 点击同一个词，如果已经显示，则关闭
+      if (popup.dataset.activeWord === word && popup.style.display === "block") {
+        popup.style.display = "none";
+        popup.dataset.activeWord = "";
+        this.classList.remove("active");
+        return;
+      }
+
+      document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
+      this.classList.add("active");
+
       popup.innerText = word + "：" + cn;
       popup.style.display = "block";
-      let x = 0, y = 0;
-      if(e.touches && e.touches[0]){ x = e.touches[0].clientX; y = e.touches[0].clientY; }
-      else { x = e.clientX || 0; y = e.clientY || 0; }
-      popup.style.left = Math.min(x, window.innerWidth - 180) + "px";
-      popup.style.top = (y - 50) + "px";
-      setTimeout(()=>{ popup.style.display = "none"; }, 2000);
+      popup.dataset.activeWord = word;
+
+      let x = e.clientX || 0;
+      let y = e.clientY || 0;
+      if (e.touches && e.touches[0]) {
+        x = e.touches[0].clientX;
+        y = e.touches[0].clientY;
+      }
+      const popupWidth = 200;
+      let left = x - popupWidth / 2;
+      if (left < 10) left = 10;
+      if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
+
+      popup.style.left = left + "px";
+      popup.style.top = (y + 20) + "px";
     };
-    el.addEventListener("touchstart", function(e){ pressTimer = setTimeout(()=>{ showPopup(e); }, 400); });
-    el.addEventListener("touchend", function(){ clearTimeout(pressTimer); });
-    el.addEventListener("touchmove", function(){ clearTimeout(pressTimer); });
-    el.addEventListener("mousedown", function(e){ pressTimer = setTimeout(()=>{ showPopup(e); }, 400); });
-    el.addEventListener("mouseup", function(){ clearTimeout(pressTimer); });
-    el.addEventListener("mouseleave", function(){ clearTimeout(pressTimer); });
-    el.addEventListener("click", function(e){ showPopup(e); });
   });
+
+  document.onclick = function(e) {
+    const popup = document.getElementById("wordPopup");
+    if (popup.style.display === "block" && !e.target.classList.contains("reading-word")) {
+      popup.style.display = "none";
+      popup.dataset.activeWord = "";
+      document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
+    }
+  };
 }
 function startReadingChoice(sub){
   startTimer();
@@ -1823,7 +1954,7 @@ function startReadingCloze(sub){
     itemsHtml += `<div class="exercise-item" data-idx="${idx}"><div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div></div>`;
   });
   area.innerHTML = passageHtml + `<hr style="margin:16px 0;">` + itemsHtml;
-  bindReadingWordLongPress(sub.vocab);
+  bindReadingWordClick();
   area.querySelectorAll(".choice-opt").forEach(opt=>{
     opt.onclick = function(){
       const siblings = this.parentElement.querySelectorAll(".choice-opt");
