@@ -29,6 +29,19 @@ h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:22px;}
 #noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;box-shadow:0 4px 10px rgba(230,126,34,0.3);}
 #timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:"Courier New",monospace;z-index:9998;display:none;box-shadow:0 4px 10px rgba(231,76,60,0.3);}
 
+/* ===== 小提示欄 ===== */
+.tip-box {
+  background: #fff9d6;
+  border-left: 4px solid #f39c12;
+  color: #7a5b00;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 10px 0;
+}
+.tip-box strong { color: #e67e22; }
+
 /* ===== 首頁卡片網格 ===== */
 #homePage{max-width:1000px;margin:0 auto;animation:fadeIn 0.5s ease-out;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -157,18 +170,22 @@ tr:nth-child(even){background:#f9faff;}
 .reading-split-container {
   display: flex;
   flex-direction: column;
-  height: 78vh;
-  gap: 12px;
-  margin-top: 12px;
+  height: 72vh;
+  min-height: 400px;
+  gap: 10px;
+  margin-top: 10px;
+  border: 1px solid #eef4ff;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
 }
 .reading-split-top {
   flex: 1.2;
   overflow-y: auto;
-  background: #fafbff;
-  border: 1px solid #eef4ff;
-  border-radius: 12px;
   padding: 16px;
-  min-height: 150px;
+  background: #fafbff;
+  border-bottom: 2px dashed #dde2fc;
+  position: relative;
 }
 .reading-split-top .reading-passage {
   background: transparent;
@@ -180,47 +197,31 @@ tr:nth-child(even){background:#f9faff;}
 .reading-split-bottom {
   flex: 1;
   overflow-y: auto;
-  background: #fff;
-  border: 1px solid #eef4ff;
-  border-radius: 12px;
   padding: 16px;
-  min-height: 200px;
+  background: #fff;
 }
 .reading-split-bottom .exercise-item {
   margin: 10px 0;
   padding: 12px;
 }
-.split-btn {
+.split-hint {
+  text-align: center;
   font-size: 12px;
-  padding: 4px 10px;
-  background: #eef4ff;
-  border: none;
+  color: #999;
+  padding: 4px;
+  background: #f4f5f9;
   border-radius: 6px;
-  color: #667eea;
-  cursor: pointer;
-  font-weight: bold;
-}
-@media (max-width: 600px) {
-  .reading-split-container { height: 72vh; }
-  .reading-split-top { padding: 12px; }
-  .reading-split-bottom { padding: 12px; }
-}
-.reading-word.active { background: #ffe68a; font-weight: bold; }
-
-/* ===== 屏蔽浏览器自带的长按选择、翻译、复制等菜单 ===== */
-.reading-passage, .reading-word {
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -webkit-touch-callout: none !important;
-  -webkit-tap-highlight-color: transparent !important;
+  margin-bottom: 8px;
 }
 
 /* ===== 閱讀理解其他樣式 ===== */
 .reading-passage{line-height:2;font-size:15px;color:#333;background:#fafbff;padding:20px;border-radius:12px;margin:14px 0;user-select:text;border:1px solid #eef4ff;}
 .reading-passage p{margin-bottom:14px;}
 .reading-word{cursor:pointer;padding:0 3px;border-radius:4px;transition:background 0.2s;}
-.reading-word:hover{background:#fff3cd;}
-#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:99999;display:none;pointer-events:none;max-width:220px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.reading-word.active { background: #ffe68a !important; font-weight: bold; }
+.reading-word.has-cn { background: #fff3cd; }
+.reading-word.has-cn:hover{background:#ffe68a;}
+#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:99999;display:none;pointer-events:auto;max-width:220px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.2);cursor:pointer;}
 .reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:12px;font-size:14px;transition:all 0.2s;}
 .reading-choice .choice-opt{display:block;padding:8px 12px;margin:6px 0;border-radius:8px;cursor:pointer;transition:background 0.2s;}
 .reading-choice .choice-opt:hover{background:#f0f4ff;}
@@ -253,6 +254,14 @@ tr:nth-child(even){background:#f9faff;}
 #eyeCareBanner.green{background:#27ae60;color:#fff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
+
+/* ===== 屏蔽浏览器自带的长按选择、翻译、复制等菜单 ===== */
+.reading-passage, .reading-word {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
 
 /* ===== 手機適配 ===== */
 @media (max-width:600px){
@@ -310,25 +319,28 @@ tr:nth-child(even){background:#f9faff;}
       <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
       <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀篇章</span></div>
     </div>
+    <div class="tip-box">💡 <strong>新手提示：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角「← 返回首頁」可以隨時回來。</div>
     <div id="homeGrid"></div>
   </div>
 
   <!-- 模塊視圖 -->
   <div id="moduleView">
-    <button id="backHomeBtn" onclick="goHomeWithGuard()">← 返回首頁</button>
+    <!-- 全局唯一返回按鈕 -->
+    <button id="backHomeBtn" onclick="goBack()">← 返回首頁</button>
 
     <!-- 生詞池 -->
     <div id="vocabPool" class="box-wrap">
       <h2>📚 生詞池</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>先選一個單元，進去後可以看單詞卡片或完整表格，表格可以下載成 CSV 檔案。</div>
       <p style="margin:10px 0;color:#666;">請選擇單元：</p>
       <div id="vocabUnitButtons"></div>
     </div>
     <div id="vocabUnit" class="box-wrap">
       <h2 id="vocabUnitTitle">生詞池</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。點🔊可以聽發音。</div>
       <p style="margin:10px 0;color:#666;">選擇模塊：</p>
       <button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button>
       <button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button>
-      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回生詞池</button>
       <div id="cardPanel" style="margin-top:18px;"></div>
       <div id="tablePanel" style="margin-top:18px;"></div>
     </div>
@@ -336,16 +348,20 @@ tr:nth-child(even){background:#f9faff;}
     <!-- 練習題 -->
     <div id="exerciseRoot" class="box-wrap">
       <h2>📝 練習題</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>先選一個單元，進去後有三種練習可以選。建議先做「默寫」，再做「完形填空」，最後做「拖拽選擇」。</div>
       <p style="margin:10px 0;color:#666;">請選擇單元：</p>
       <div id="exerciseUnitButtons"></div>
     </div>
     <div id="exerciseUnit" class="box-wrap">
       <h2 id="exerciseUnitTitle">練習題</h2>
+      <div class="tip-box">💡 <strong>三種練習的區別：</strong><br>
+      ① 看同義詞默寫：看同義詞，自己拼寫英文單詞。<br>
+      ② 完形填空測驗：看句子，填入缺少的單詞。<br>
+      ③ 拖拽選擇練習：把單詞拖到對應的空格上。</div>
       <p style="margin:10px 0;color:#666;">請選擇練習類型：</p>
       <button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button>
       <button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button>
       <button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button>
-      <button class="sub-btn" onclick="showRoot('exerciseRoot')">← 返回練習題</button>
       <div id="writePanel" style="margin-top:18px;display:none;"></div>
       <div id="clozePanel" style="margin-top:18px;display:none;"></div>
       <div id="choicePanel" style="margin-top:18px;display:none;"></div>
@@ -354,41 +370,41 @@ tr:nth-child(even){background:#f9faff;}
     <!-- 語法 -->
     <div id="grammarRoot" class="box-wrap">
       <h2>📖 語法</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>建議先看「動詞表」和「時態結構」熟悉語法規則，再去「測驗」做題。</div>
       <p style="margin:10px 0;color:#666;">請選擇模塊：</p>
       <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
       <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
       <button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button>
-      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
       <div id="grammarPanel" style="margin-top:18px;"></div>
     </div>
 
     <!-- 閱讀理解 -->
     <div id="readingRoot" class="box-wrap">
       <h2>📘 閱讀理解</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。點擊文章裡有黃色背景的單詞可以查中文意思。</div>
       <p style="margin:10px 0;color:#666;">請選擇測驗：</p>
       <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
-      <button class="sub-btn" onclick="showRoot('vocabPool')">← 返回首頁</button>
       <div id="readingPanel" style="margin-top:18px;"></div>
     </div>
 
     <!-- 錯題本 -->
     <div id="wrongBookPanel" class="box-wrap">
       <h2>📒 錯題本</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>做完練習並保存成績後，這裡會顯示記錄。點擊記錄可以重做錯題。點「清空全部」可以清除所有紀錄。</div>
       <p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p>
       <div class="record-list" id="recordList"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
         <button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button>
       </div>
-      <button class="sub-btn" onclick="backToMainRoot()" style="margin-top:16px;">← 返回首頁分類</button>
     </div>
 
     <div id="wrongRedoPanel" class="box-wrap">
       <h2>🔁 錯題重做</h2>
+      <div class="tip-box">💡 <strong>怎麼玩：</strong>點擊下方按鈕載入錯題，重新作答。作答完畢後會顯示重做得分。</div>
       <div id="wrongRedoSetting"></div>
       <div id="wrongRedoArea"></div>
       <div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div>
       <div class="result-page" id="wrongRedoResultPage"></div>
-      <button class="sub-btn" onclick="openWrongBook()" style="margin-top:16px;">← 返回錯題本列表</button>
     </div>
   </div>
 </div>
@@ -411,7 +427,7 @@ let speakToken = 0;
 let currentUnitName = "";
 let currentReadingUnit = "";
 let currentReadingSub = "";
-let homeScrollY = 0; // 记录首页滚动位置
+let homeScrollY = 0;
 
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
@@ -505,19 +521,52 @@ function showNoticeIfAny(){
   }, 30000);
 })();
 
-/* ================== 首頁卡片 ================== */
+/* ================== 通用返回邏輯 ================== */
 function goHomeWithGuard(){
   if(!guardNavigation()) return;
   goHome();
 }
+function goBack(){
+  if(!guardNavigation()) return;
+  
+  if (document.getElementById("readingSubPanel").innerHTML.trim() !== "") {
+    document.getElementById("readingSubPanel").innerHTML = "";
+    openReadingUnit(currentReadingUnit);
+    return;
+  }
+  if (document.getElementById("readingPanel").innerHTML.trim() !== "") {
+    document.getElementById("readingPanel").innerHTML = "";
+    showRoot('readingRoot');
+    return;
+  }
+  if (document.getElementById("vocabUnit").classList.contains("show")) {
+    showRoot('vocabPool');
+    return;
+  }
+  if (document.getElementById("exerciseUnit").classList.contains("show")) {
+    showRoot('exerciseRoot');
+    return;
+  }
+  if (document.getElementById("grammarPanel").innerHTML.trim() !== "") {
+    document.getElementById("grammarPanel").innerHTML = "";
+    showRoot('grammarRoot');
+    return;
+  }
+  if (document.getElementById("wrongRedoPanel").classList.contains("show")) {
+    showRoot('wrongBookPanel');
+    return;
+  }
+  goHome();
+}
 
+/* ================== 首頁卡片 ================== */
 function renderHomeGrid(){
   const grid = document.getElementById("homeGrid");
   if(!grid) return;
   const cards = [
     {icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽，同義詞發音，可下載 CSV", tags:["發音","表格","下載"], target:"vocabPool"},
     {icon:"📝", title:"練習題", desc:"默寫、完形填空、拖拽選擇，三種題型", tags:["默寫","完形","拖拽"], target:"exerciseRoot"},
-    {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","200題"], target:"grammarRoot"},
+    {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","400題"], target:"grammarRoot"},
     {icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，點擊查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot"},
     {icon:"📒", title:"錯題本", desc:"保存每次成績，可重做錯題", tags:["記錄","重做","複習"], target:"wrongBookPanel"}
   ];
@@ -559,14 +608,14 @@ function goHome(){
   document.getElementById("backHomeBtn").style.display = "none";
   renderHomeGrid();
   updateHomeStats();
-  setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10); // 恢复首页滚动位置
+  setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10);
 }
 
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
   if(!guardNavigation()) return;
   if(document.getElementById("homePage").style.display !== "none"){
-    homeScrollY = window.scrollY; // 记录进入模块前的位置
+    homeScrollY = window.scrollY;
   }
   hideAllBox();
   document.getElementById("homePage").style.display = "none";
@@ -575,11 +624,11 @@ function showRoot(id){
   if(id === "vocabPool") renderVocabUnits();
   if(id === "exerciseRoot") renderExerciseUnits();
   document.getElementById(id).classList.add("show");
-  setTimeout(() => { window.scrollTo(0, 0); }, 10); // 进入模块回到顶部
+  setTimeout(() => { window.scrollTo(0, 0); }, 10);
 }
 function backToMainRoot(){ goHome(); }
 
-/* ========== 拖拽時自動滾屏（鼠标 + 手指） ========== */
+/* ========== 拖拽時自動滾屏 ========== */
 document.addEventListener('dragover', function(e) {
     if (!draggingWordEl) return;
     e.preventDefault(); 
@@ -757,6 +806,7 @@ function showWriteExercise(){
   const maxNo = list.length ? Math.max(...list.map(w=>w.no)) : 0;
   p.innerHTML=`
   <div class="exercise-box">
+    <div class="tip-box">💡 <strong>怎麼玩：</strong>輸入練習範圍（例如 1-10），設定抽題數量，點「開始練習」。看同義詞寫出英文單詞，拼寫對但詞形錯會給一半分。</div>
     <div class="range-input-area">
       <span>練習範圍（生字池 1-${maxNo}）：</span>
       <input type="text" id="rangeText" placeholder="例如1-10，留空預設全部">
@@ -919,6 +969,7 @@ function showClozeExercise(){
   const total = bank.length;
   p.innerHTML=`
   <div class="exercise-box">
+    <div class="tip-box">💡 <strong>怎麼玩：</strong>輸入範圍和抽題數量，選擇提示模式（推薦模式1或模式2），點「開始完形測驗」。填寫時注意詞形變化。</div>
     <div class="lock-tip">⚠️ 本篇章句子為生字池的例句，並非正式考題。</div>
     <div class="range-input-area">
       <span>練習範圍（生字池共 ${total} 題）：</span>
@@ -1069,6 +1120,7 @@ function showChoiceExercise(){
   const total = bank.length;
   p.innerHTML=`
   <div class="exercise-box">
+    <div class="tip-box">💡 <strong>怎麼玩：</strong>手機端建議先點上方詞庫裡的單詞選中，再點下方句子中的空格填入。電腦端可以直接拖拽。</div>
     <div class="lock-tip">🧩 把上方詞庫裡的單詞拖到下方對應的空格上（也可以點單詞後再點空格）。</div>
     <div class="range-input-area">
       <span>練習範圍（生字池共 ${total} 題）：</span>
@@ -1313,6 +1365,7 @@ function openGrammarQuizRoot(){
   const p = document.getElementById("grammarPanel");
   p.innerHTML = `
     <h3 style="color:#2c3e50;margin-bottom:12px;">語法測驗</h3>
+    <div class="tip-box">💡 <strong>怎麼玩：</strong>選擇想練的時態（可多選），設定抽題數量，點「開始練習」。答題時填入正確的動詞形式。</div>
     <p style="font-size:14px;margin-bottom:8px;">選擇要練的時態（可多選）：</p>
     <div id="grammarTopicFilter" style="margin-bottom:12px;"></div>
     <label style="display:block;margin:10px 0;font-size:14px;"><input type="checkbox" id="grammarShowTopic"> 顯示時態提示</label>
@@ -1666,7 +1719,6 @@ function openReadingUnit(unitName){
     <h3 style="color:#2c3e50;margin-bottom:12px;">${unitName}</h3>
     <button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button>
     <button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button>
-    <button class="sub-btn" onclick="showRoot('readingRoot')">← 返回閱讀理解</button>
     <div id="readingSubPanel" style="margin-top:18px;"></div>`;
 }
 function openReadingSub(subName){
@@ -1676,7 +1728,8 @@ function openReadingSub(subName){
   const p = document.getElementById("readingSubPanel");
   if(subName === "文章一"){
     p.innerHTML = `
-      <div class="reading-intro" style="margin-bottom:8px;">💡 點擊下方文章中的任意英文單詞，可查看中文意思。</div>
+      <div class="reading-intro" style="margin-bottom:8px;">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。點同一個詞或點彈窗上的中文，可以關閉彈窗。</div>
+      <div class="split-hint">⬆️ 上方文章區域可獨立上下滑動 ⬇️</div>
       <div class="reading-split-container">
         <div class="reading-split-top" id="splitTopBox">
           <div class="reading-passage" id="passageContent"></div>
@@ -1704,9 +1757,13 @@ function openReadingSub(subName){
     let html = "";
     paras.forEach(par=>{
       let line = par.replace(/([a-zA-Z\-']+)/g, function(word){
-        const clean = word.toLowerCase();
-        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : "暫無釋義";
-        return `<span class="reading-word" data-word="${clean}" data-cn="${cn}">${word}</span>`;
+        const clean = word.toLowerCase().replace(/[^a-z\-]/g,"");
+        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
+        if(cn){
+          return `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${word}</span>`;
+        } else {
+          return `<span class="reading-word">${word}</span>`;
+        }
       });
       html += `<p>${line}</p>`;
     });
@@ -1723,7 +1780,7 @@ function openReadingSub(subName){
     document.getElementById("startReadingBlankBtn").onclick = function(){ startReadingBlank(sub); };
   }else{
     p.innerHTML = `
-      <div class="reading-intro">${sub.intro}</div>
+      <div class="reading-intro">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。</div>
       <div style="margin-bottom:12px;"><button class="btn" id="togglePassageBtn">📖 顯示完整對話/段落</button></div>
       <div id="passageBox" style="display:none;"><div class="reading-passage" id="passageContent"></div></div>
       <hr style="margin:16px 0;">
@@ -1739,8 +1796,12 @@ function openReadingSub(subName){
       let line = "";
       words.forEach(w=>{
         const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
-        if(clean && sub.vocab[clean]){ line += `<span class="reading-word" data-word="${clean}" data-cn="${sub.vocab[clean]}">${w}</span>`; }
-        else { line += w; }
+        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
+        if(cn){
+          line += `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`;
+        } else {
+          line += `<span class="reading-word">${w}</span>`;
+        }
       });
       html += `<p>${line}</p>`;
     });
@@ -1755,46 +1816,81 @@ function openReadingSub(subName){
   }
 }
 function bindReadingWordClick(){
-  document.querySelectorAll(".reading-word").forEach(el=>{
-    el.onclick = function(e){
-      e.stopPropagation();
-      const word = this.dataset.word;
-      const cn = this.dataset.cn;
-      const popup = document.getElementById("wordPopup");
-
-      // 点击同一个词，如果已经显示，则关闭
-      if (popup.dataset.activeWord === word && popup.style.display === "block") {
-        popup.style.display = "none";
-        popup.dataset.activeWord = "";
-        this.classList.remove("active");
-        return;
-      }
-
-      document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
-      this.classList.add("active");
-
-      popup.innerText = word + "：" + cn;
-      popup.style.display = "block";
-      popup.dataset.activeWord = word;
-
-      let x = e.clientX || 0;
-      let y = e.clientY || 0;
-      if (e.touches && e.touches[0]) {
-        x = e.touches[0].clientX;
-        y = e.touches[0].clientY;
-      }
-      const popupWidth = 200;
-      let left = x - popupWidth / 2;
-      if (left < 10) left = 10;
-      if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
-
-      popup.style.left = left + "px";
-      popup.style.top = (y + 20) + "px";
-    };
+  document.querySelectorAll(".reading-word.has-cn").forEach(el=>{
+    let touchStartX = 0, touchStartY = 0, touchMoved = false;
+    
+    el.addEventListener("touchstart", function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchMoved = false;
+    }, { passive: true });
+    
+    el.addEventListener("touchmove", function(e) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY);
+      if (dx > 10 || dy > 10) touchMoved = true;
+    }, { passive: true });
+    
+    el.addEventListener("touchend", function(e) {
+      if (touchMoved) return; // 滑动超过10px，不触发查词
+      e.preventDefault();
+      handleWordClick(this, e);
+    });
+    
+    el.addEventListener("click", function(e) {
+      if (e.isTrusted && e.pointerType === "touch") return;
+      handleWordClick(this, e);
+    });
   });
 
-  document.onclick = function(e) {
+  function handleWordClick(el, e) {
+    e.stopPropagation();
+    const word = el.dataset.word;
+    const cn = el.dataset.cn;
     const popup = document.getElementById("wordPopup");
+
+    if (popup.dataset.activeWord === word && popup.style.display === "block") {
+      popup.style.display = "none";
+      popup.dataset.activeWord = "";
+      el.classList.remove("active");
+      return;
+    }
+
+    document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
+    el.classList.add("active");
+
+    popup.innerText = word + "：" + cn;
+    popup.style.display = "block";
+    popup.dataset.activeWord = word;
+
+    let x = e.clientX || 0;
+    let y = e.clientY || 0;
+    if (e.touches && e.touches[0]) {
+      x = e.touches[0].clientX;
+      y = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches[0]) {
+      x = e.changedTouches[0].clientX;
+      y = e.changedTouches[0].clientY;
+    }
+    const popupWidth = 200;
+    let left = x - popupWidth / 2;
+    if (left < 10) left = 10;
+    if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
+
+    popup.style.left = left + "px";
+    popup.style.top = (y + 30) + "px";
+  }
+
+  // 點彈窗上的中文也可以關閉
+  const popup = document.getElementById("wordPopup");
+  popup.onclick = function() {
+    popup.style.display = "none";
+    popup.dataset.activeWord = "";
+    document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
+  };
+
+  // 點空白處關閉
+  document.onclick = function(e) {
     if (popup.style.display === "block" && !e.target.classList.contains("reading-word")) {
       popup.style.display = "none";
       popup.dataset.activeWord = "";
@@ -1941,8 +2037,12 @@ function startReadingCloze(sub){
     let line = "";
     words.forEach(w=>{
       const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
-      if(clean && sub.vocab[clean]){ line += `<span class="reading-word" data-word="${clean}" data-cn="${sub.vocab[clean]}">${w}</span>`; }
-      else { line += w; }
+      const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
+      if(cn){
+        line += `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`;
+      } else {
+        line += `<span class="reading-word">${w}</span>`;
+      }
     });
     passageHtml += `<p>${line}</p>`;
   });
