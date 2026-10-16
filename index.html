@@ -156,6 +156,11 @@ tr:nth-child(even){background:#f9faff;}
 #eyeCareBanner.yellow{background:#f39c12;color:#fff;}
 #eyeCareBanner.red{background:#e74c3c;color:#fff;}
 .reading-passage, .reading-word {user-select: none !important;-webkit-user-select: none !important;-webkit-touch-callout: none !important;-webkit-tap-highlight-color: transparent !important;}
+.choice-opt {display:inline-block; padding:10px 16px; margin:6px; border:2px solid #dde2fc; border-radius:8px; cursor:pointer; font-size:15px; background:#fff; transition:all 0.2s;}
+.choice-opt:hover {background:#f0f4ff;}
+.choice-opt.selected {background:#e8f0ff; border-color:#667eea; font-weight:bold;}
+.choice-opt.correct {background:#e8f9ee; border-color:#27ae60; color:#1e8449; font-weight:bold;}
+.choice-opt.wrong {background:#fdecea; border-color:#e74c3c; color:#c0392b; font-weight:bold;}
 @media (max-width:600px){
   #homeGrid{gap:12px;}
   .module-card{padding:18px;border-radius:14px;}
@@ -176,7 +181,6 @@ tr:nth-child(even){background:#f9faff;}
 <div id="wordPopup"></div>
 <button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
 
-<!-- 公告彈窗 -->
 <div id="noticeModal">
   <div class="notice-box">
     <div class="notice-title" id="noticeTitle">公告</div>
@@ -186,7 +190,6 @@ tr:nth-child(even){background:#f9faff;}
   </div>
 </div>
 
-<!-- 免責聲明彈窗 -->
 <div id="disclaimerModal">
   <div class="disc-box">
     <h3 style="text-align:center">公告｜免責聲明</h3>
@@ -200,13 +203,11 @@ tr:nth-child(even){background:#f9faff;}
   </div>
 </div>
 
-<!-- 主體內容 -->
 <div id="mainContent" style="display:none;">
   <h1>英語練習系統</h1>
   <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
   <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
 
-  <!-- 首頁視圖 -->
   <div id="homePage">
     <div class="home-stat">
       <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
@@ -214,25 +215,22 @@ tr:nth-child(even){background:#f9faff;}
       <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
       <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀篇章</span></div>
     </div>
-    <div class="tip-box">💡 <strong>新手提示：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角按鈕可以隨時返回。</div>
+    <div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角按鈕可以隨時返回。</div>
     <div id="homeGrid"></div>
   </div>
 
-  <!-- 模塊視圖 -->
   <div id="moduleView">
-    <!-- 全局唯一返回按鈕 -->
     <button id="backHomeBtn" onclick="goBack()">← 返回首頁</button>
 
-    <!-- 生詞池 -->
     <div id="vocabPool" class="box-wrap">
       <h2>📚 生詞池</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>先選一個單元，進去後可以看單詞卡片或完整表格，表格可以下載成 CSV 檔案。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後可以看單詞卡片或完整表格，表格可以下載成 CSV 檔案。</div>
       <p style="margin:10px 0;color:#666;">請選擇單元：</p>
       <div id="vocabUnitButtons"></div>
     </div>
     <div id="vocabUnit" class="box-wrap">
       <h2 id="vocabUnitTitle">生詞池</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。點🔊可以聽發音。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。點🔊可以聽發音。</div>
       <p style="margin:10px 0;color:#666;">選擇模塊：</p>
       <button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button>
       <button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button>
@@ -240,19 +238,15 @@ tr:nth-child(even){background:#f9faff;}
       <div id="tablePanel" style="margin-top:18px;"></div>
     </div>
 
-    <!-- 練習題 -->
     <div id="exerciseRoot" class="box-wrap">
       <h2>📝 練習題</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>先選一個單元，進去後有三種練習可以選。建議先做「默寫」，再做「完形填空」，最後做「拖拽選擇」。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後有三種練習可以選。建議先做「默寫」，再做「完形填空」，最後做「拖拽選擇」。</div>
       <p style="margin:10px 0;color:#666;">請選擇單元：</p>
       <div id="exerciseUnitButtons"></div>
     </div>
     <div id="exerciseUnit" class="box-wrap">
       <h2 id="exerciseUnitTitle">練習題</h2>
-      <div class="tip-box">💡 <strong>三種練習的區別：</strong><br>
-      ① 看同義詞默寫：看同義詞，自己拼寫英文單詞。<br>
-      ② 完形填空測驗：看句子，填入缺少的單詞。<br>
-      ③ 拖拽選擇練習：把單詞拖到對應的空格上。</div>
+      <div class="tip-box">💡 <strong>三種練習的區別：</strong><br>① 看同義詞默寫：看同義詞，自己拼寫英文單詞。<br>② 完形填空測驗：看句子，填入缺少的單詞。<br>③ 拖拽選擇練習：把單詞拖到對應的空格上。</div>
       <p style="margin:10px 0;color:#666;">請選擇練習類型：</p>
       <button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button>
       <button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button>
@@ -262,10 +256,9 @@ tr:nth-child(even){background:#f9faff;}
       <div id="choicePanel" style="margin-top:18px;display:none;"></div>
     </div>
 
-    <!-- 語法 -->
     <div id="grammarRoot" class="box-wrap">
       <h2>📖 語法</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>建議先看「動詞表」和「時態結構」熟悉語法規則，再去「測驗」做題。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>建議先看「動詞表」和「時態結構」熟悉語法規則，再去「測驗」做題。</div>
       <p style="margin:10px 0;color:#666;">請選擇模塊：</p>
       <button class="unit-btn" onclick="openVerbTable()">①動詞表</button>
       <button class="unit-btn" onclick="openTenseStructure()">②時態結構</button>
@@ -273,19 +266,17 @@ tr:nth-child(even){background:#f9faff;}
       <div id="grammarPanel" style="margin-top:18px;"></div>
     </div>
 
-    <!-- 閱讀理解 -->
     <div id="readingRoot" class="box-wrap">
       <h2>📘 閱讀理解</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。點擊文章裡有黃色背景的單詞可以查中文意思。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。點擊文章裡有黃色背景的單詞可以查中文意思。</div>
       <p style="margin:10px 0;color:#666;">請選擇測驗：</p>
       <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
       <div id="readingPanel" style="margin-top:18px;"></div>
     </div>
 
-    <!-- 錯題本 -->
     <div id="wrongBookPanel" class="box-wrap">
       <h2>📒 錯題本</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>做完練習並保存成績後，這裡會顯示記錄。點擊記錄可以重做錯題。點「清空全部」可以清除所有紀錄。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>做完練習並保存成績後，這裡會顯示記錄。點擊記錄可以重做錯題。點「清空全部」可以清除所有紀錄。</div>
       <p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p>
       <div class="record-list" id="recordList"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
@@ -295,7 +286,7 @@ tr:nth-child(even){background:#f9faff;}
 
     <div id="wrongRedoPanel" class="box-wrap">
       <h2>🔁 錯題重做</h2>
-      <div class="tip-box">💡 <strong>怎麼玩：</strong>點擊下方按鈕載入錯題，重新作答。作答完畢後會顯示重做得分。</div>
+      <div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方按鈕載入錯題，重新作答。作答完畢後會顯示重做得分。</div>
       <div id="wrongRedoSetting"></div>
       <div id="wrongRedoArea"></div>
       <div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div>
@@ -310,7 +301,6 @@ tr:nth-child(even){background:#f9faff;}
 <script src="irregular_verbs.js"></script>
 <script src="reading.js"></script>
 <script>
-/* ================== 全局變量 ================== */
 let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList = [];
@@ -325,32 +315,17 @@ let homeScrollY = 0;
 
 function getWordList(){ return WORD_UNITS[currentUnitName] || []; }
 function getClozeBank(){ return CLOZE_UNITS[currentUnitName] || []; }
-
 function normalizePunctuation(str){
   if(!str) return "";
-  return String(str)
-    .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\uFE58\uFE63\uFF0D]/g, "-")
-    .replace(/[\u2018\u2019\u201A\u201B\u2032\uFF07]/g, "'")
-    .replace(/[\u201C\u201D\u201E\u201F\u2033\uFF02]/g, '"')
-    .replace(/[\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u3000]/g, " ")
-    .replace(/[\u2026]/g, "...")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
+  return String(str).replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\uFE58\uFE63\uFF0D]/g, "-").replace(/[\u2018\u2019\u201A\u201B\u2032\uFF07]/g, "'").replace(/[\u201C\u201D\u201E\u201F\u2033\uFF02]/g, '"').replace(/[\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u3000]/g, " ").replace(/[\u2026]/g, "...").replace(/\s+/g, " ").trim().toLowerCase();
 }
-
 let isPracticing = false;
 let timerInterval = null;
 let timerStartTime = 0;
-
 function startTimer(){
-  isPracticing = true;
-  timerStartTime = Date.now();
-  exerciseStartTime = timerStartTime;
-  document.getElementById("timerBadge").style.display = "block";
-  updateTimerDisplay();
-  clearInterval(timerInterval);
-  timerInterval = setInterval(updateTimerDisplay, 1000);
+  isPracticing = true; timerStartTime = Date.now(); exerciseStartTime = timerStartTime;
+  document.getElementById("timerBadge").style.display = "block"; updateTimerDisplay();
+  clearInterval(timerInterval); timerInterval = setInterval(updateTimerDisplay, 1000);
 }
 function updateTimerDisplay(){
   const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
@@ -359,21 +334,13 @@ function updateTimerDisplay(){
   document.getElementById("timerBadge").innerText = `⏱ ${m}:${s}`;
 }
 function stopTimer(){
-  isPracticing = false;
-  clearInterval(timerInterval);
-  timerInterval = null;
+  isPracticing = false; clearInterval(timerInterval); timerInterval = null;
   document.getElementById("timerBadge").style.display = "none";
 }
-
-// 核心：退出警告 + 自动保存
 function guardNavigation(){
   if(!isPracticing) return true;
   const ok = confirm("⚠️ 練習進行中，離開將丟失本次進度。\n\n點擊『確定』：自動保存本次成績並退出\n點擊『取消』：繼續練習");
-  if(ok){ 
-    saveCurrentQuizSilently(); // 自动保存成绩
-    stopTimer(); 
-    return true; 
-  }
+  if(ok){ saveCurrentQuizSilently(); stopTimer(); return true; }
   return false;
 }
 function saveCurrentQuizSilently(){
@@ -384,21 +351,15 @@ function saveCurrentQuizSilently(){
     else if (quizType === "grammar" && window._grammarScore) saveGrammarRecord(true);
   } catch(e) { console.error("Auto-save failed:", e); }
 }
-
 document.getElementById("disclaimerModal").style.display = "flex";
-
 document.getElementById("discOk").onclick = function(){
   if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}
   document.getElementById("disclaimerModal").style.display="none";
   document.getElementById("mainContent").style.display="block";
   document.getElementById("noticeFloatBtn").style.display="block";
-  goHome();
-  renderRecordList();
-  showNoticeIfAny();
+  goHome(); renderRecordList(); showNoticeIfAny();
 };
-document.getElementById("noticeOk").onclick = function(){
-  document.getElementById("noticeModal").style.display="none";
-};
+document.getElementById("noticeOk").onclick = function(){ document.getElementById("noticeModal").style.display="none"; };
 function showNoticeIfAny(){
   if(typeof NOTICE !== "undefined"){
     document.getElementById("noticeTitle").innerText = NOTICE.title || "公告";
@@ -407,16 +368,11 @@ function showNoticeIfAny(){
     document.getElementById("noticeModal").style.display = "flex";
   }
 }
-
 (function eyeCareReminder(){
   const banner = document.getElementById("eyeCareBanner");
   let s15=false, s30=false, s60=false;
   const start = Date.now();
-  function show(text, cls){
-    banner.innerText = text;
-    banner.className = "show " + cls;
-    setTimeout(()=>{ banner.classList.remove("show"); }, 6000);
-  }
+  function show(text, cls){ banner.innerText = text; banner.className = "show " + cls; setTimeout(()=>{ banner.classList.remove("show"); }, 6000); }
   setInterval(function(){
     const minutes = Math.floor((Date.now()-start)/60000);
     if(minutes>=15 && !s15){ s15=true; show("👀 已看 15 分鐘，勞逸結合，看看遠處放鬆一下眼睛吧～","green"); }
@@ -424,23 +380,18 @@ function showNoticeIfAny(){
     if(minutes>=60 && !s60){ s60=true; show("❤️ 已看 1 小時，該休息了！長時間看屏幕對眼睛不好，請先關掉頁面休息一下。","red"); }
   }, 30000);
 })();
-
 function goHome(){
   hideAllBox();
   document.getElementById("homePage").style.display = "block";
   document.getElementById("moduleView").style.display = "none";
   document.getElementById("backHomeBtn").style.display = "none";
-  renderHomeGrid();
-  updateHomeStats();
+  renderHomeGrid(); updateHomeStats();
   setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10);
 }
-
 function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
 function showRoot(id){
   if(!guardNavigation()) return;
-  if(document.getElementById("homePage").style.display !== "none"){
-    homeScrollY = window.scrollY;
-  }
+  if(document.getElementById("homePage").style.display !== "none"){ homeScrollY = window.scrollY; }
   hideAllBox();
   document.getElementById("homePage").style.display = "none";
   document.getElementById("moduleView").style.display = "block";
@@ -451,55 +402,36 @@ function showRoot(id){
   document.getElementById(id).classList.add("show");
   setTimeout(() => { window.scrollTo(0, 0); }, 10);
 }
-
 function goBack(){
   if(!guardNavigation()) return;
-  
   const backBtn = document.getElementById("backHomeBtn");
-  
   if (document.getElementById("readingSubPanel").innerHTML.trim() !== "") {
-    document.getElementById("readingSubPanel").innerHTML = "";
-    openReadingUnit(currentReadingUnit);
-    backBtn.innerText = "← 返回首頁";
-    return;
+    document.getElementById("readingSubPanel").innerHTML = ""; openReadingUnit(currentReadingUnit); backBtn.innerText = "← 返回首頁"; return;
   }
   if (document.getElementById("readingPanel").innerHTML.trim() !== "") {
-    document.getElementById("readingPanel").innerHTML = "";
-    showRoot('readingRoot');
-    backBtn.innerText = "← 返回首頁";
-    return;
+    document.getElementById("readingPanel").innerHTML = ""; showRoot('readingRoot'); backBtn.innerText = "← 返回首頁"; return;
   }
   if (document.getElementById("vocabUnit").classList.contains("show")) {
-    showRoot('vocabPool');
-    backBtn.innerText = "← 返回首頁";
-    return;
+    showRoot('vocabPool'); backBtn.innerText = "← 返回首頁"; return;
   }
   if (document.getElementById("exerciseUnit").classList.contains("show")) {
-    showRoot('exerciseRoot');
-    backBtn.innerText = "← 返回首頁";
-    return;
+    showRoot('exerciseRoot'); backBtn.innerText = "← 返回首頁"; return;
   }
   if (document.getElementById("grammarPanel").innerHTML.trim() !== "") {
-    document.getElementById("grammarPanel").innerHTML = "";
-    showRoot('grammarRoot');
-    backBtn.innerText = "← 返回首頁";
-    return;
+    document.getElementById("grammarPanel").innerHTML = ""; showRoot('grammarRoot'); backBtn.innerText = "← 返回首頁"; return;
   }
   if (document.getElementById("wrongRedoPanel").classList.contains("show")) {
-    showRoot('wrongBookPanel');
-    backBtn.innerText = "← 返回首頁";
-    return;
+    showRoot('wrongBookPanel'); backBtn.innerText = "← 返回首頁"; return;
   }
   goHome();
 }
-
 function renderHomeGrid(){
   const grid = document.getElementById("homeGrid");
   if(!grid) return;
   const cards = [
     {icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽，同義詞發音，可下載 CSV", tags:["發音","表格","下載"], target:"vocabPool"},
     {icon:"📝", title:"練習題", desc:"默寫、完形填空、拖拽選擇，三種題型", tags:["默寫","完形","拖拽"], target:"exerciseRoot"},
-    {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","400題"], target:"grammarRoot"},
+    {icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","選擇題"], target:"grammarRoot"},
     {icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，點擊查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot"},
     {icon:"📒", title:"錯題本", desc:"保存每次成績，可重做錯題", tags:["記錄","重做","複習"], target:"wrongBookPanel"}
   ];
@@ -507,20 +439,11 @@ function renderHomeGrid(){
   cards.forEach(c=>{
     const card = document.createElement("div");
     card.className = "module-card";
-    card.innerHTML = `
-      <div class="card-icon">${c.icon}</div>
-      <div class="card-title">${c.title}</div>
-      <div class="card-desc">${c.desc}</div>
-      <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
-      <button class="card-btn">進入 →</button>`;
-    card.onclick = ()=>{
-      if(c.target === "wrongBookPanel"){ openWrongBook(); }
-      else { showRoot(c.target); }
-    };
+    card.innerHTML = `<div class="card-icon">${c.icon}</div><div class="card-title">${c.title}</div><div class="card-desc">${c.desc}</div><div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><button class="card-btn">進入 →</button>`;
+    card.onclick = ()=>{ if(c.target === "wrongBookPanel"){ openWrongBook(); } else { showRoot(c.target); } };
     grid.appendChild(card);
   });
 }
-
 function updateHomeStats(){
   try{
     const wc = Object.values(WORD_UNITS).reduce((sum,arr)=>sum+arr.length,0);
@@ -533,129 +456,70 @@ function updateHomeStats(){
     document.getElementById("statReading").innerText = rc;
   }catch(e){ console.warn(e); }
 }
-
 document.addEventListener('dragover', function(e) {
-    if (!draggingWordEl) return;
-    e.preventDefault(); 
-    const y = e.clientY;
-    const threshold = 120; 
-    const speed = 15;      
-    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } 
-    else if (y < threshold) { window.scrollBy(0, -speed); }
+    if (!draggingWordEl) return; e.preventDefault(); const y = e.clientY; const threshold = 120; const speed = 15;
+    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } else if (y < threshold) { window.scrollBy(0, -speed); }
 });
 document.addEventListener('touchmove', function(e) {
-    if (!draggingWordEl) return;
-    const y = e.touches[0].clientY;
-    const threshold = 120;
-    const speed = 15;
-    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } 
-    else if (y < threshold) { window.scrollBy(0, -speed); }
+    if (!draggingWordEl) return; const y = e.touches[0].clientY; const threshold = 120; const speed = 15;
+    if (y > window.innerHeight - threshold) { window.scrollBy(0, speed); } else if (y < threshold) { window.scrollBy(0, -speed); }
 }, { passive: false });
-
-document.addEventListener('contextmenu', function(e) {
-  e.preventDefault();
-});
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 
 function renderVocabUnits(){
-  const wrap = document.getElementById("vocabUnitButtons");
-  wrap.innerHTML = "";
+  const wrap = document.getElementById("vocabUnitButtons"); wrap.innerHTML = "";
   Object.keys(WORD_UNITS).forEach(unit => {
-    const btn = document.createElement("button");
-    btn.className = "unit-btn";
-    btn.innerText = unit;
-    btn.onclick = () => openVocabUnit(unit);
-    wrap.appendChild(btn);
+    const btn = document.createElement("button"); btn.className = "unit-btn"; btn.innerText = unit; btn.onclick = () => openVocabUnit(unit); wrap.appendChild(btn);
   });
 }
 function renderExerciseUnits(){
-  const wrap = document.getElementById("exerciseUnitButtons");
-  wrap.innerHTML = "";
+  const wrap = document.getElementById("exerciseUnitButtons"); wrap.innerHTML = "";
   Object.keys(CLOZE_UNITS).forEach(unit => {
-    const btn = document.createElement("button");
-    btn.className = "unit-btn";
-    btn.innerText = unit;
-    btn.onclick = () => openExerciseUnit(unit);
-    wrap.appendChild(btn);
+    const btn = document.createElement("button"); btn.className = "unit-btn"; btn.innerText = unit; btn.onclick = () => openExerciseUnit(unit); wrap.appendChild(btn);
   });
 }
-
 function openVocabUnit(unit){
   if(!guardNavigation()) return;
-  currentUnitName = unit;
-  hideAllBox();
-  document.getElementById("vocabUnit").classList.add("show");
+  currentUnitName = unit; hideAllBox(); document.getElementById("vocabUnit").classList.add("show");
   document.getElementById("vocabUnitTitle").innerText = unit + "｜生詞池";
-  document.getElementById("cardPanel").innerHTML="";
-  document.getElementById("tablePanel").innerHTML="";
+  document.getElementById("cardPanel").innerHTML=""; document.getElementById("tablePanel").innerHTML="";
   document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function speakWord(word){
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(word);
-  u.lang = "en-US";
-  speechSynthesis.speak(u);
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(word); u.lang = "en-US"; speechSynthesis.speak(u);
 }
 function showVocabCard(){
-  const wrap=document.getElementById("cardPanel");
-  document.getElementById("tablePanel").innerHTML="";
-  wrap.innerHTML='<div class="word-grid"></div>';
-  const g=wrap.querySelector(".word-grid");
+  const wrap=document.getElementById("cardPanel"); document.getElementById("tablePanel").innerHTML="";
+  wrap.innerHTML='<div class="word-grid"></div>'; const g=wrap.querySelector(".word-grid");
   getWordList().forEach(w=>{
-    const div=document.createElement("div");
-    div.className="word-card";
-    div.innerHTML=`
-    <div class="word-header">
-      <span class="word-num">${w.no}</span>
-      <div><span class="word-en">${w.en}</span><span class="speaker" data-word="${w.en}">🔊</span></div>
-      <span class="word-pos">${w.pos||""}</span>
-    </div>
-    <div class="word-cn">${w.cn||""}</div>
-    <div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span><span class="syn-speaker" data-word="${w.syn||""}">🔊</span></div>
-    <div class="tip">備註：${w.memo||""}</div>`;
+    const div=document.createElement("div"); div.className="word-card";
+    div.innerHTML=`<div class="word-header"><span class="word-num">${w.no}</span><div><span class="word-en">${w.en}</span><span class="speaker" data-word="${w.en}">🔊</span></div><span class="word-pos">${w.pos||""}</span></div><div class="word-cn">${w.cn||""}</div><div><span class="label">同義詞：</span><span class="syn">${w.syn||""}</span><span class="syn-speaker" data-word="${w.syn||""}">🔊</span></div><div class="tip">備註：${w.memo||""}</div>`;
     g.appendChild(div);
-    div.querySelectorAll(".speaker,.syn-speaker").forEach(sp=>{
-      sp.onclick = function(){ speakWord(this.dataset.word); };
-    });
+    div.querySelectorAll(".speaker,.syn-speaker").forEach(sp=>{ sp.onclick = function(){ speakWord(this.dataset.word); }; });
   });
 }
 function showVocabTable(){
-  const wrap=document.getElementById("tablePanel");
-  document.getElementById("cardPanel").innerHTML="";
+  const wrap=document.getElementById("tablePanel"); document.getElementById("cardPanel").innerHTML="";
   const list = getWordList();
-  wrap.innerHTML = `<div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button></div>
-    <div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>`;
+  wrap.innerHTML = `<div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button></div><div class="table-container"><table><thead><tr><th style="width:8%">序號</th><th style="width:24%">單詞</th><th style="width:14%">詞性</th><th style="width:26%">同義詞</th><th style="width:28%">中文</th></tr></thead><tbody></tbody></table></div>`;
   const tb=wrap.querySelector("tbody");
-  list.forEach(w=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${w.no}</td><td>${w.en}</td><td>${w.pos||""}</td><td>${w.syn||""}</td><td>${w.cn||""}</td>`;
-    tb.appendChild(tr);
-  });
+  list.forEach(w=>{ const tr=document.createElement("tr"); tr.innerHTML=`<td>${w.no}</td><td>${w.en}</td><td>${w.pos||""}</td><td>${w.syn||""}</td><td>${w.cn||""}</td>`; tb.appendChild(tr); });
   document.getElementById("downloadWordTableBtn").onclick = function(){
     let txt = "序號,單詞,詞性,同義詞,中文\n";
     list.forEach(w=>{ txt += `${w.no},${w.en},${w.pos||""},${w.syn||""},${w.cn||""}\n`; });
-    const blob = new Blob(["\uFEFF"+txt], {type:"text/csv;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = currentUnitName + "_生詞表.csv"; a.click();
-    URL.revokeObjectURL(url);
+    const blob = new Blob(["\uFEFF"+txt], {type:"text/csv;charset=utf-8"}); const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = currentUnitName + "_生詞表.csv"; a.click(); URL.revokeObjectURL(url);
   };
 }
-
 function openExerciseUnit(unit){
   if(!guardNavigation()) return;
-  currentUnitName = unit;
-  hideAllBox();
-  document.getElementById("exerciseUnit").classList.add("show");
+  currentUnitName = unit; hideAllBox(); document.getElementById("exerciseUnit").classList.add("show");
   document.getElementById("exerciseUnitTitle").innerText = unit + "｜練習題";
   document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
-  ["writePanel","clozePanel","choicePanel"].forEach(id=>{
-    const el = document.getElementById(id);
-    el.innerHTML=""; el.style.display="none";
-  });
+  ["writePanel","clozePanel","choicePanel"].forEach(id=>{ const el = document.getElementById(id); el.innerHTML=""; el.style.display="none"; });
 }
 function normalizeWord(w){
-  let x = w.toLowerCase();
-  const suffixes = ["ing","ied","ed","es","s","d"];
+  let x = w.toLowerCase(); const suffixes = ["ing","ied","ed","es","s","d"];
   for(const suf of suffixes){
     if(x.endsWith(suf) && x.length > suf.length + 2){
       let base = x.slice(0, -suf.length);
@@ -670,64 +534,37 @@ function isWordFormMatch(a, b){
   const na = normalizeWord(a), nb = normalizeWord(b);
   if(na === nb && na.length >= 3) return true;
   if(na + "e" === nb || nb + "e" === na) return true;
-  if(a.startsWith(b) || b.startsWith(a)){
-    if(Math.abs(a.length - b.length) <= 3) return true;
-  }
+  if(a.startsWith(b) || b.startsWith(a)){ if(Math.abs(a.length - b.length) <= 3) return true; }
   return false;
 }
 function judgeAnswer(userAns, realAns){
-  const u = normalizePunctuation(userAns);
-  const r = normalizePunctuation(realAns);
+  const u = normalizePunctuation(userAns), r = normalizePunctuation(realAns);
   if(u === r) return "full";
   if(!u) return "zero";
   const uW = u.split(" "), rW = r.split(" ");
   if(uW.length === rW.length){
     let allMatch = true;
-    for(let i=0;i<uW.length;i++){
-      if(!isWordFormMatch(uW[i], rW[i])){ allMatch = false; break; }
-    }
+    for(let i=0;i<uW.length;i++){ if(!isWordFormMatch(uW[i], rW[i])){ allMatch = false; break; } }
     if(allMatch) return "half";
   }
   return "zero";
 }
 function shuffleArray(arr){
   const copy=[...arr];
-  for(let i=copy.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]] = [copy[j],copy[i]];
-  }
+  for(let i=copy.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [copy[i],copy[j]] = [copy[j],copy[i]]; }
   return copy;
 }
-
 function showWriteExercise(){
-  const p=document.getElementById("writePanel");
-  document.getElementById("clozePanel").style.display="none";
-  document.getElementById("choicePanel").style.display="none";
-  p.style.display="block";
-  const list = getWordList();
-  const maxNo = list.length ? Math.max(...list.map(w=>w.no)) : 0;
+  const p=document.getElementById("writePanel"); document.getElementById("clozePanel").style.display="none"; document.getElementById("choicePanel").style.display="none"; p.style.display="block";
+  const list = getWordList(); const maxNo = list.length ? Math.max(...list.map(w=>w.no)) : 0;
   p.innerHTML=`
   <div class="exercise-box">
-    <div class="tip-box">💡 <strong>怎麼玩：</strong>輸入練習範圍（例如 1-10），設定抽題數量，點「開始練習」。看同義詞寫出英文單詞，拼寫對但詞形錯會給一半分。</div>
-    <div class="range-input-area">
-      <span>練習範圍（生字池 1-${maxNo}）：</span>
-      <input type="text" id="rangeText" placeholder="例如1-10，留空預設全部">
-      <span>抽題數量：</span>
-      <input type="number" id="pickCount" placeholder="預設10題" min="1">
-      <button class="btn" id="startExercise">開始練習</button>
-    </div>
-    <div class="check-group">
-      <label><input type="checkbox" id="showTargetCn">顯示目標單詞的中文釋義</label>
-      <label><input type="checkbox" id="showSynCn">顯示同義詞的中文釋義</label>
-    </div>
+    <div class="tip-box">💡 <strong>怎麼做：</strong>輸入練習範圍（例如 1-10），設定抽題數量，點「開始練習」。看同義詞寫出英文單詞，拼寫對但詞形錯會給一半分。</div>
+    <div class="range-input-area"><span>練習範圍（生字池 1-${maxNo}）：</span><input type="text" id="rangeText" placeholder="例如1-10，留空預設全部"><span>抽題數量：</span><input type="number" id="pickCount" placeholder="預設10題" min="1"><button class="btn" id="startExercise">開始練習</button></div>
+    <div class="check-group"><label><input type="checkbox" id="showTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="showSynCn">顯示同義詞的中文釋義</label></div>
     <div id="exerciseArea"></div>
     <div class="finish-area"><button class="btn btn-finish" id="finishAllBtn" style="display:none;">✅全部作答完畢，查看成績</button></div>
-    <div class="result-page" id="resultPage">
-      <h2 style="text-align:center">📝本次練習成績</h2>
-      <div class="score-text" id="scoreText"></div>
-      <div id="resultList"></div>
-      <div style="margin-top:12px;text-align:center"><button class="btn" id="saveResultBtn">保存本次成績至紀錄+錯題本</button></div>
-    </div>
+    <div class="result-page" id="resultPage"><h2 style="text-align:center">📝本次練習成績</h2><div class="score-text" id="scoreText"></div><div id="resultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveResultBtn">保存本次成績至紀錄+錯題本</button></div></div>
   </div>`;
   document.getElementById("startExercise").onclick = startWriteQuiz;
   document.getElementById("finishAllBtn").onclick = showWriteResult;
@@ -735,573 +572,260 @@ function showWriteExercise(){
 }
 function startWriteQuiz(){
   startTimer();
-  const rangeText = document.getElementById("rangeText").value.trim();
-  const pickCount = Number(document.getElementById("pickCount").value);
-  const showTargetCn = document.getElementById("showTargetCn").checked;
-  const showSynCn = document.getElementById("showSynCn").checked;
-  const area = document.getElementById("exerciseArea");
-  const finishBtn = document.getElementById("finishAllBtn");
-  document.getElementById("resultPage").style.display="none";
-  finishBtn.style.display="none";
-  area.innerHTML="";
-  const list = getWordList();
-  const maxNo = list.length ? Math.max(...list.map(w=>w.no)) : 0;
+  const rangeText = document.getElementById("rangeText").value.trim(), pickCount = Number(document.getElementById("pickCount").value);
+  const showTargetCn = document.getElementById("showTargetCn").checked, showSynCn = document.getElementById("showSynCn").checked;
+  const area = document.getElementById("exerciseArea"), finishBtn = document.getElementById("finishAllBtn");
+  document.getElementById("resultPage").style.display="none"; finishBtn.style.display="none"; area.innerHTML="";
+  const list = getWordList(); const maxNo = list.length ? Math.max(...list.map(w=>w.no)) : 0;
   let start=1,end=maxNo;
   if(rangeText){ const parts = rangeText.split(/[–\-]/); if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);} }
   const pool = list.filter(w=>w.no>=start&&w.no<=end);
   if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
-  currentQuizList = shuffleArray([...pool]).slice(0,pickCount&&pickCount>0?pickCount:10);
-  quizType="write";
+  currentQuizList = shuffleArray([...pool]).slice(0,pickCount&&pickCount>0?pickCount:10); quizType="write";
   currentQuizList.forEach((item,idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item";
-    let hintParts=[item.syn||""];
-    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
-    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
+    const div=document.createElement("div"); div.className="exercise-item";
+    let hintParts=[item.syn||""]; if(showSynCn) hintParts.push(`(${item.synCn||""})`); if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
     div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" data-no="${item.no}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
     area.appendChild(div);
   });
   finishBtn.style.display="block";
 }
 function showWriteResult(){
-  let fullCount=0, halfCount=0, zeroCount=0;
-  let wrongItems=[], halfItems=[];
-  const total = currentQuizList.length;
-  const resultListDom = document.getElementById("resultList");
-  resultListDom.innerHTML="";
+  let fullCount=0, halfCount=0, zeroCount=0, wrongItems=[], halfItems=[];
+  const total = currentQuizList.length, resultListDom = document.getElementById("resultList"); resultListDom.innerHTML="";
   document.querySelectorAll("#exerciseArea .exercise-item").forEach((dom,idx)=>{
-    const input = dom.querySelector(".user-display");
-    const feedback = dom.querySelector(".feedback");
-    const ans = input.dataset.ans;
-    const no = Number(input.dataset.no);
-    const userAns = input.value;
-    const level = judgeAnswer(userAns, ans);
-    if(level === "full"){
-      fullCount++;
-      feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`;
-      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ✅ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`;
-    }else if(level === "half"){
-      halfCount++; wrongItems.push(no); halfItems.push(no);
-      feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`;
-      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ⚠️ ${ans}（半分），你的答案：${userAns.trim()}</div>`;
-    }else{
-      zeroCount++; wrongItems.push(no);
-      feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`;
-      resultListDom.innerHTML += `<div class="result-item">${idx+1}. ❌ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`;
-    }
+    const input = dom.querySelector(".user-display"), feedback = dom.querySelector(".feedback"), ans = input.dataset.ans, no = Number(input.dataset.no), userAns = input.value, level = judgeAnswer(userAns, ans);
+    if(level === "full"){ fullCount++; feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`; resultListDom.innerHTML += `<div class="result-item">${idx+1}. ✅ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`; }
+    else if(level === "half"){ halfCount++; wrongItems.push(no); halfItems.push(no); feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`; resultListDom.innerHTML += `<div class="result-item">${idx+1}. ⚠️ ${ans}（半分），你的答案：${userAns.trim()}</div>`; }
+    else { zeroCount++; wrongItems.push(no); feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`; resultListDom.innerHTML += `<div class="result-item">${idx+1}. ❌ ${ans}，你的答案：${userAns.trim()||"（未作答）"}</div>`; }
   });
-  const score = fullCount + halfCount * 0.5;
-  const percent = Number((score / total * 100).toFixed(2));
+  const score = fullCount + halfCount * 0.5, percent = Number((score / total * 100).toFixed(2));
   document.getElementById("scoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
-  document.getElementById("resultPage").style.display="block";
-  window._writeScore = {score,total,fullCount,halfCount,zeroCount,wrongItems,halfItems};
-  stopTimer();
+  document.getElementById("resultPage").style.display="block"; window._writeScore = {score,total,fullCount,halfCount,zeroCount,wrongItems,halfItems}; stopTimer();
 }
 function saveWriteRecord(silent = false){
-  const s = window._writeScore;
-  const costMs = Date.now() - exerciseStartTime;
-  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
+  const s = window._writeScore, costMs = Date.now() - exerciseStartTime, timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
   const list = getWordList();
   const wrongEns = s.wrongItems.map(no => { const w = list.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
   const halfEns = s.halfItems.map(no => { const w = list.find(x=>x.no===no); return w ? w.en : null; }).filter(Boolean);
-  const rec = {
-    type: "看同義詞默寫", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(), costTime: timeStr,
-    score: s.score, total: s.total,
-    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
-    wrongNos: s.wrongItems, halfNos: s.halfItems,
-    wrongEns: wrongEns, halfEns: halfEns,
-    percent: Number((s.score / s.total * 100).toFixed(2))
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: s.score, total: s.total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  if (!silent) alert("✅已保存練習紀錄");
+  const rec = { type: "看同義詞默寫", unit: currentUnitName, finishTime: new Date().toLocaleString(), costTime: timeStr, score: s.score, total: s.total, fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount, wrongNos: s.wrongItems, halfNos: s.halfItems, wrongEns: wrongEns, halfEns: halfEns, percent: Number((s.score / s.total * 100).toFixed(2)) };
+  exerciseRecords.push(rec); localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: s.score, total: s.total, time: Date.now()}); localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList(); if (!silent) alert("✅已保存練習紀錄");
 }
-
-function toggleClozeDetail(trigger){
-  const item = trigger.closest(".cloze-item");
-  const detail = item.querySelector(".cloze-detail");
-  const expanded = item.classList.toggle("expanded");
-  detail.style.display = expanded ? "block" : "none";
-}
-function toggleClozeCn(cb, type){
-  const item = cb.closest(".cloze-item");
-  if(type === "keyCn"){ item.querySelector(".key-cn").style.display = cb.checked ? "inline" : "none"; }
-  else { item.querySelector(".cloze-sentence-cn").style.display = cb.checked ? "block" : "none"; }
-}
+function toggleClozeDetail(trigger){ const item = trigger.closest(".cloze-item"), detail = item.querySelector(".cloze-detail"), expanded = item.classList.toggle("expanded"); detail.style.display = expanded ? "block" : "none"; }
+function toggleClozeCn(cb, type){ const item = cb.closest(".cloze-item"); if(type === "keyCn"){ item.querySelector(".key-cn").style.display = cb.checked ? "inline" : "none"; } else { item.querySelector(".cloze-sentence-cn").style.display = cb.checked ? "block" : "none"; } }
 function speakParts(parts){
-  if(!parts || parts.length === 0) return;
-  const myToken = ++speakToken;
-  speechSynthesis.cancel();
-  let idx = 0;
-  function next(){
-    if(myToken !== speakToken) return;
-    if(idx >= parts.length) return;
-    const u = new SpeechSynthesisUtterance(parts[idx]);
-    u.lang = "en-US"; u.rate = 0.9;
-    idx++;
-    u.onend = () => { if(myToken !== speakToken) return; if(idx < parts.length) setTimeout(next, 450); };
-    speechSynthesis.speak(u);
-  }
-  next();
+  if(!parts || parts.length === 0) return; const myToken = ++speakToken; speechSynthesis.cancel(); let idx = 0;
+  function next(){ if(myToken !== speakToken) return; if(idx >= parts.length) return; const u = new SpeechSynthesisUtterance(parts[idx]); u.lang = "en-US"; u.rate = 0.9; idx++; u.onend = () => { if(myToken !== speakToken) return; if(idx < parts.length) setTimeout(next, 450); }; speechSynthesis.speak(u); } next();
 }
-function speakClozeSentenceFromTrigger(btn){
-  const item = btn.closest(".cloze-item");
-  const sentence = item.querySelector(".cloze-sentence-trigger").dataset.sentence;
-  if(!sentence) return;
-  const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p);
-  speakParts(parts);
-}
-function speakClozeSentence(btn){
-  const item = btn.closest(".cloze-item");
-  const sentence = item.querySelector(".user-display").dataset.sentence;
-  const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p);
-  speakParts(parts);
-}
+function speakClozeSentenceFromTrigger(btn){ const item = btn.closest(".cloze-item"), sentence = item.querySelector(".cloze-sentence-trigger").dataset.sentence; if(!sentence) return; const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p); speakParts(parts); }
+function speakClozeSentence(btn){ const item = btn.closest(".cloze-item"), sentence = item.querySelector(".user-display").dataset.sentence; const parts = sentence.split(/（\s*_+\s*）|\(\s*_+\s*\)|_+/).map(p=>p.trim()).filter(p=>p); speakParts(parts); }
 function showClozeExercise(){
-  const p=document.getElementById("clozePanel");
-  document.getElementById("writePanel").style.display="none";
-  document.getElementById("choicePanel").style.display="none";
-  p.style.display="block";
-  const bank = getClozeBank();
-  const total = bank.length;
+  const p=document.getElementById("clozePanel"); document.getElementById("writePanel").style.display="none"; document.getElementById("choicePanel").style.display="none"; p.style.display="block";
+  const bank = getClozeBank(), total = bank.length;
   p.innerHTML=`
   <div class="exercise-box">
-    <div class="tip-box">💡 <strong>怎麼玩：</strong>輸入範圍和抽題數量，選擇提示模式（推薦模式1或模式2），點「開始完形測驗」。填寫時注意詞形變化。</div>
+    <div class="tip-box">💡 <strong>怎麼做：</strong>輸入範圍和抽題數量，選擇提示模式（推薦模式1或模式2），點「開始完形測驗」。填寫時注意詞形變化。</div>
     <div class="lock-tip">⚠️ 本篇章句子為生字池的例句，並非正式考題。</div>
-    <div class="range-input-area">
-      <span>練習範圍（生字池共 ${total} 題）：</span>
-      <input type="text" id="clozeRangeText" placeholder="例如1-10，留空預設全部">
-      <span>抽題數量：</span>
-      <input type="number" id="clozePickCount" min="1" placeholder="預設10題" value="10">
-      <button class="btn" id="startClozeExercise">開始完形測驗</button>
-    </div>
-    <div class="mode-select-group">
-      <div>選擇提示模式：</div>
-      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="initial" checked>模式1：全部給首字母提示</label>
-      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="syn">模式2：全部給同義詞提示</label>
-      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label>
-      <label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="percent">模式4：自訂兩種提示比例</label>
-      <div style="margin:8px 0;"><span>首字母提示佔比：</span><input type="number" id="clozePercentInitial" min="0" max="100" value="40"><span>%</span></div>
-      <div style="margin:8px 0;"><span>同義詞提示佔比：</span><input type="number" id="clozePercentSyn" min="0" max="100" value="40"><span>%</span></div>
-    </div>
+    <div class="range-input-area"><span>練習範圍（生字池共 ${total} 題）：</span><input type="text" id="clozeRangeText" placeholder="例如1-10，留空預設全部"><span>抽題數量：</span><input type="number" id="clozePickCount" min="1" placeholder="預設10題" value="10"><button class="btn" id="startClozeExercise">開始完形測驗</button></div>
+    <div class="mode-select-group"><div>選擇提示模式：</div><label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="initial" checked>模式1：全部給首字母提示</label><label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="syn">模式2：全部給同義詞提示</label><label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label><label style="display:block;margin:6px 0;"><input type="radio" name="clozeMode" value="percent">模式4：自訂兩種提示比例</label><div style="margin:8px 0;"><span>首字母提示佔比：</span><input type="number" id="clozePercentInitial" min="0" max="100" value="40"><span>%</span></div><div style="margin:8px 0;"><span>同義詞提示佔比：</span><input type="number" id="clozePercentSyn" min="0" max="100" value="40"><span>%</span></div></div>
     <div id="clozeExerciseArea"></div>
     <div class="finish-area"><button class="btn btn-finish" id="clozeFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div>
-    <div class="result-page" id="clozeResultPage">
-      <h2 style="text-align:center">📝完形測驗成績</h2>
-      <div class="score-text" id="clozeScoreText"></div>
-      <div id="clozeResultList"></div>
-      <div style="margin-top:12px;text-align:center"><button class="btn" id="saveClozeResultBtn">保存本次成績至紀錄+錯題本</button></div>
-    </div>
+    <div class="result-page" id="clozeResultPage"><h2 style="text-align:center">📝完形測驗成績</h2><div class="score-text" id="clozeScoreText"></div><div id="clozeResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveClozeResultBtn">保存本次成績至紀錄+錯題本</button></div></div>
   </div>`;
-  document.getElementById("startClozeExercise").onclick = startClozeQuiz;
-  document.getElementById("clozeFinishBtn").onclick = showClozeResult;
-  document.getElementById("saveClozeResultBtn").onclick = saveClozeRecord;
+  document.getElementById("startClozeExercise").onclick = startClozeQuiz; document.getElementById("clozeFinishBtn").onclick = showClozeResult; document.getElementById("saveClozeResultBtn").onclick = saveClozeRecord;
 }
 function startClozeQuiz(){
   startTimer();
-  const bank = getClozeBank();
-  const rangeText = document.getElementById("clozeRangeText").value.trim();
-  const pickNum = Number(document.getElementById("clozePickCount").value) || 10;
+  const bank = getClozeBank(), rangeText = document.getElementById("clozeRangeText").value.trim(), pickNum = Number(document.getElementById("clozePickCount").value) || 10;
   let start=1,end=bank.length;
   if(rangeText){ const parts = rangeText.split(/[–\-]/); if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);} }
   const pool = bank.map((it,i)=>({...it, no:i+1})).filter(w=>w.no>=start&&w.no<=end);
   if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
-  currentQuizList = shuffleArray([...pool]).slice(0,pickNum);
-  quizType = "cloze";
-  const area = document.getElementById("clozeExerciseArea");
-  const finishBtn = document.getElementById("clozeFinishBtn");
-  document.getElementById("clozeResultPage").style.display="none";
-  finishBtn.style.display="none";
-  area.innerHTML="";
-  const mode = document.querySelector('input[name="clozeMode"]:checked').value;
-  let pInitial=0, pSyn=0;
-  if(mode === "initial") pInitial = 100;
-  else if(mode === "syn") pSyn = 100;
-  else if(mode === "percent"){
-    pInitial = Number(document.getElementById("clozePercentInitial").value)||0;
-    pSyn = Number(document.getElementById("clozePercentSyn").value)||0;
+  currentQuizList = shuffleArray([...pool]).slice(0,pickNum); quizType = "cloze";
+  const area = document.getElementById("clozeExerciseArea"), finishBtn = document.getElementById("clozeFinishBtn");
+  document.getElementById("clozeResultPage").style.display="none"; finishBtn.style.display="none"; area.innerHTML="";
+  const mode = document.querySelector('input[name="clozeMode"]:checked').value; let pInitial=0, pSyn=0;
+  if(mode === "initial") pInitial = 100; else if(mode === "syn") pSyn = 100; else if(mode === "percent"){
+    pInitial = Number(document.getElementById("clozePercentInitial").value)||0; pSyn = Number(document.getElementById("clozePercentSyn").value)||0;
     if(pInitial + pSyn > 100){ alert("提示比例相加不可超過100%！"); stopTimer(); return; }
   }
-  const total = currentQuizList.length;
-  const initialCount = Math.round(total * pInitial / 100);
-  const synCount = Math.round(total * pSyn / 100);
+  const total = currentQuizList.length, initialCount = Math.round(total * pInitial / 100), synCount = Math.round(total * pSyn / 100);
   let typeArr = [];
-  for(let i=0;i<initialCount;i++) typeArr.push("initial");
-  for(let i=0;i<synCount;i++) typeArr.push("syn");
-  while(typeArr.length < total) typeArr.push("none");
-  typeArr = shuffleArray(typeArr);
+  for(let i=0;i<initialCount;i++) typeArr.push("initial"); for(let i=0;i<synCount;i++) typeArr.push("syn"); while(typeArr.length < total) typeArr.push("none"); typeArr = shuffleArray(typeArr);
   currentQuizList.forEach((item,idx)=>{
-    const hintType = typeArr[idx];
-    let hintText = "";
-    if(hintType === "initial") hintText = `（首字母提示：${item.answer[0]}...）`;
-    else if(hintType === "syn") hintText = `（同義詞提示：${item.syn}）`;
-    else hintText = "（無提示）";
-    const div=document.createElement("div");
-    div.className="exercise-item cloze-item";
+    const hintType = typeArr[idx]; let hintText = "";
+    if(hintType === "initial") hintText = `（首字母提示：${item.answer[0]}...）`; else if(hintType === "syn") hintText = `（同義詞提示：${item.syn}）`; else hintText = "（無提示）";
+    const div=document.createElement("div"); div.className="exercise-item cloze-item";
     div.innerHTML=`
-      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
-        <span class="q-num">${idx+1}.</span>
-        <span class="cloze-sentence">${item.sentence}</span>
-        <span class="cloze-toggle-icon">▼</span>
-      </div>
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}"><span class="q-num">${idx+1}.</span><span class="cloze-sentence">${item.sentence}</span><span class="cloze-toggle-icon">▼</span></div>
       <div class="q-syn-info">${hintText}</div>
-      <div class="cloze-detail" style="display:none;">
-        <div class="cloze-toolbar">
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
-          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
-        </div>
-        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
-        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
-      </div>
-      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
-      <div class="feedback"></div>`;
+      <div class="cloze-detail" style="display:none;"><div class="cloze-toolbar"><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label><button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button></div><div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div><div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div></div>
+      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞"><div class="feedback"></div>`;
     area.appendChild(div);
   });
   finishBtn.style.display="block";
 }
 function showClozeResult(){
-  let score=0, wrongSentences=[];
-  let fullCount=0, halfCount=0, zeroCount=0;
-  const total = currentQuizList.length;
-  const resultListDom = document.getElementById("clozeResultList");
-  resultListDom.innerHTML="";
+  let score=0, wrongSentences=[], fullCount=0, halfCount=0, zeroCount=0;
+  const total = currentQuizList.length, resultListDom = document.getElementById("clozeResultList"); resultListDom.innerHTML="";
   document.querySelectorAll("#clozeExerciseArea .exercise-item").forEach((dom,idx)=>{
-    const input = dom.querySelector(".user-display");
-    const feedback = dom.querySelector(".feedback");
-    const ans = input.dataset.ans;
-    const sen = input.dataset.sentence;
-    const userAns = input.value.trim();
-    const level = judgeAnswer(userAns, ans);
-    if(level === "full"){ score += 1; fullCount++; }
-    else if(level === "half"){ score += 0.5; halfCount++; }
-    else { zeroCount++; wrongSentences.push(sen); }
-    if(level === "full") feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`;
-    else if(level === "half") feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`;
-    else feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`;
+    const input = dom.querySelector(".user-display"), feedback = dom.querySelector(".feedback"), ans = input.dataset.ans, sen = input.dataset.sentence, userAns = input.value.trim(), level = judgeAnswer(userAns, ans);
+    if(level === "full"){ score += 1; fullCount++; } else if(level === "half"){ score += 0.5; halfCount++; } else { zeroCount++; wrongSentences.push(sen); }
+    if(level === "full") feedback.innerHTML = `<span class="ok">✅正確：${ans}</span>`; else if(level === "half") feedback.innerHTML = `<span class="half">⚠️ 詞形/時態錯誤（半分）：${ans}</span>`; else feedback.innerHTML = `<span class="err">❌錯誤，答案：${ans}</span>`;
     resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${level === "full" ? "✅" : (level === "half" ? "⚠️" : "❌")} ${ans}，你的答案：${userAns||"（未作答）"}</div>`;
   });
   const percent = Number((score/total*100).toFixed(2));
   document.getElementById("clozeScoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
-  document.getElementById("clozeResultPage").style.display="block";
-  window._clozeScore = {score,total,wrongSentences, fullCount, halfCount, zeroCount};
-  stopTimer();
+  document.getElementById("clozeResultPage").style.display="block"; window._clozeScore = {score,total,wrongSentences, fullCount, halfCount, zeroCount}; stopTimer();
 }
 function saveClozeRecord(silent = false){
-  const s = window._clozeScore;
-  const costMs = Date.now() - exerciseStartTime;
-  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
-  const rec = {
-    type: "完形填空", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(), costTime: timeStr,
-    score: s.score, total: s.total,
-    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
-    wrongSentences: s.wrongSentences,
-    percent: Number((s.score / s.total * 100).toFixed(2))
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score:s.score, total:s.total, time:Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  if (!silent) alert("✅已保存練習紀錄");
+  const s = window._clozeScore, costMs = Date.now() - exerciseStartTime, timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
+  const rec = { type: "完形填空", unit: currentUnitName, finishTime: new Date().toLocaleString(), costTime: timeStr, score: s.score, total: s.total, fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount, wrongSentences: s.wrongSentences, percent: Number((s.score / s.total * 100).toFixed(2)) };
+  exerciseRecords.push(rec); localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score:s.score, total:s.total, time:Date.now()}); localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList(); if (!silent) alert("✅已保存練習紀錄");
 }
-
 function showChoiceExercise(){
-  const p=document.getElementById("choicePanel");
-  document.getElementById("writePanel").style.display="none";
-  document.getElementById("clozePanel").style.display="none";
-  p.style.display="block";
-  const bank = getClozeBank();
-  const total = bank.length;
+  const p=document.getElementById("choicePanel"); document.getElementById("writePanel").style.display="none"; document.getElementById("clozePanel").style.display="none"; p.style.display="block";
+  const bank = getClozeBank(), total = bank.length;
   p.innerHTML=`
   <div class="exercise-box">
-    <div class="tip-box">💡 <strong>怎麼玩：</strong>手機端建議先點上方詞庫裡的單詞選中，再點下方句子中的空格填入。電腦端可以直接拖拽。</div>
+    <div class="tip-box">💡 <strong>怎麼做：</strong>手機端建議先點上方詞庫裡的單詞選中，再點下方句子中的空格填入。電腦端可以直接拖拽。</div>
     <div class="lock-tip">🧩 把上方詞庫裡的單詞拖到下方對應的空格上（也可以點單詞後再點空格）。</div>
-    <div class="range-input-area">
-      <span>練習範圍（生字池共 ${total} 題）：</span>
-      <input type="text" id="choiceRangeText" placeholder="例如1-10，留空預設全部">
-      <span>抽題數量：</span>
-      <input type="number" id="choicePickCount" min="1" placeholder="預設10題" value="10">
-      <button class="btn" id="startChoiceBtn">開始練習</button>
-    </div>
+    <div class="range-input-area"><span>練習範圍（生字池共 ${total} 題）：</span><input type="text" id="choiceRangeText" placeholder="例如1-10，留空預設全部"><span>抽題數量：</span><input type="number" id="choicePickCount" min="1" placeholder="預設10題" value="10"><button class="btn" id="startChoiceBtn">開始練習</button></div>
     <div id="choiceExerciseArea"></div>
     <div class="finish-area"><button class="btn btn-finish" id="choiceFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div>
-    <div class="result-page" id="choiceResultPage">
-      <h2 style="text-align:center">📝本次選擇成績</h2>
-      <div class="score-text" id="choiceScoreText"></div>
-      <div id="choiceResultList"></div>
-      <div style="margin-top:12px;text-align:center"><button class="btn" id="saveChoiceResultBtn">保存本次成績至紀錄+錯題本</button></div>
-    </div>
+    <div class="result-page" id="choiceResultPage"><h2 style="text-align:center">📝本次選擇成績</h2><div class="score-text" id="choiceScoreText"></div><div id="choiceResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveChoiceResultBtn">保存本次成績至紀錄+錯題本</button></div></div>
   </div>`;
-  document.getElementById("startChoiceBtn").onclick = startChoiceQuiz;
-  document.getElementById("choiceFinishBtn").onclick = showChoiceResult;
-  document.getElementById("saveChoiceResultBtn").onclick = saveChoiceRecord;
+  document.getElementById("startChoiceBtn").onclick = startChoiceQuiz; document.getElementById("choiceFinishBtn").onclick = showChoiceResult; document.getElementById("saveChoiceResultBtn").onclick = saveChoiceRecord;
 }
 function startChoiceQuiz(){
   startTimer();
-  const bank = getClozeBank();
-  const rangeText = document.getElementById("choiceRangeText").value.trim();
-  const pickCount = Number(document.getElementById("choicePickCount").value) || 10;
+  const bank = getClozeBank(), rangeText = document.getElementById("choiceRangeText").value.trim(), pickCount = Number(document.getElementById("choicePickCount").value) || 10;
   let start=1,end=bank.length;
   if(rangeText){ const parts = rangeText.split(/[–\-]/); if(parts.length===2){start=Number(parts[0]);end=Number(parts[1]);} }
   const pool = bank.map((it,i)=>({...it, no:i+1})).filter(w=>w.no>=start&&w.no<=end);
   if(pool.length===0){alert("請輸入有效範圍");stopTimer();return;}
-  currentQuizList = shuffleArray([...pool]).slice(0, pickCount);
-  quizType = "choice";
-  document.getElementById("choiceResultPage").style.display="none";
-  renderChoiceQuestions(currentQuizList, "choiceExerciseArea");
-  document.getElementById("choiceFinishBtn").style.display="block";
+  currentQuizList = shuffleArray([...pool]).slice(0, pickCount); quizType = "choice";
+  document.getElementById("choiceResultPage").style.display="none"; renderChoiceQuestions(currentQuizList, "choiceExerciseArea"); document.getElementById("choiceFinishBtn").style.display="block";
 }
 let selectedWordEl = null, draggingWordEl = null;
-function onDragStart(e){
-  if(this.classList.contains("used")){ e.preventDefault(); return; }
-  draggingWordEl = this;
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/plain", this.dataset.word);
-}
+function onDragStart(e){ if(this.classList.contains("used")){ e.preventDefault(); return; } draggingWordEl = this; e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", this.dataset.word); }
 function onWordChipClick(chip){
   if(chip.classList.contains("used")) return;
   if(chip === selectedWordEl){ chip.classList.remove("selected"); selectedWordEl = null; updateDragStatus(chip.closest(".drag-bank")); return; }
-  if(selectedWordEl) selectedWordEl.classList.remove("selected");
-  selectedWordEl = chip;
-  chip.classList.add("selected");
-  updateDragStatus(chip.closest(".drag-bank"), chip.dataset.word);
+  if(selectedWordEl) selectedWordEl.classList.remove("selected"); selectedWordEl = chip; chip.classList.add("selected"); updateDragStatus(chip.closest(".drag-bank"), chip.dataset.word);
 }
-function onZoneDrop(e, zone){
-  e.preventDefault();
-  zone.classList.remove("over");
-  if(!draggingWordEl) return;
-  placeWordToZone(zone, draggingWordEl);
-  draggingWordEl = null;
-}
+function onZoneDrop(e, zone){ e.preventDefault(); zone.classList.remove("over"); if(!draggingWordEl) return; placeWordToZone(zone, draggingWordEl); draggingWordEl = null; }
 function onZoneClick(zone){
-  if(selectedWordEl){
-    placeWordToZone(zone, selectedWordEl);
-    selectedWordEl.classList.remove("selected");
-    selectedWordEl = null;
-  }else if(zone.dataset.filled === "true"){
-    clearZone(zone);
-  }
+  if(selectedWordEl){ placeWordToZone(zone, selectedWordEl); selectedWordEl.classList.remove("selected"); selectedWordEl = null; }
+  else if(zone.dataset.filled === "true"){ clearZone(zone); }
   updateDragStatus(zone.closest(".box-wrap"));
 }
-function findAnyUsedChipByWord(word, zone){
-  const area = zone.closest(".box-wrap") || document;
-  const chips = area.querySelectorAll(`.drag-word.used`);
-  for(const chip of chips){ if(chip.dataset.word === word) return chip; }
-  return null;
-}
+function findAnyUsedChipByWord(word, zone){ const area = zone.closest(".box-wrap") || document; const chips = area.querySelectorAll(`.drag-word.used`); for(const chip of chips){ if(chip.dataset.word === word) return chip; } return null; }
 function placeWordToZone(zone, chip){
-  if(chip.classList.contains("used")) return;
-  if(zone.dataset.filled === "true") clearZone(zone);
-  const word = chip.dataset.word;
-  zone.dataset.filled = "true"; zone.dataset.filledWord = word;
-  zone.textContent = word; zone.classList.add("filled");
-  chip.classList.add("used"); chip.classList.remove("selected");
-  if(selectedWordEl === chip) selectedWordEl = null;
-  updateDragStatus(zone.closest(".box-wrap"));
+  if(chip.classList.contains("used")) return; if(zone.dataset.filled === "true") clearZone(zone);
+  const word = chip.dataset.word; zone.dataset.filled = "true"; zone.dataset.filledWord = word; zone.textContent = word; zone.classList.add("filled"); chip.classList.add("used"); chip.classList.remove("selected");
+  if(selectedWordEl === chip) selectedWordEl = null; updateDragStatus(zone.closest(".box-wrap"));
 }
 function clearZone(zone){
-  const word = zone.dataset.filledWord;
-  if(word){ const chip = findAnyUsedChipByWord(word, zone); if(chip) chip.classList.remove("used"); }
-  zone.dataset.filled = "false"; zone.dataset.filledWord = "";
-  zone.textContent = "拖到這裡";
-  zone.classList.remove("filled","zone-ok","zone-half","zone-err");
-  updateDragStatus(zone.closest(".box-wrap"));
+  const word = zone.dataset.filledWord; if(word){ const chip = findAnyUsedChipByWord(word, zone); if(chip) chip.classList.remove("used"); }
+  zone.dataset.filled = "false"; zone.dataset.filledWord = ""; zone.textContent = "拖到這裡"; zone.classList.remove("filled","zone-ok","zone-half","zone-err"); updateDragStatus(zone.closest(".box-wrap"));
 }
 function updateDragStatus(bankEl, selectedWord){
-  if(!bankEl) return;
-  const area = bankEl.closest(".box-wrap") || document;
-  const bar = area.querySelector(".drag-status");
-  if(!bar) return;
-  if(selectedWord){
-    bar.textContent = `✅ 已選中「${selectedWord}」，請點擊下方句子中的空格填入。`;
-    bar.style.background = "#e8f9ee"; bar.style.borderColor = "#a9e0bc"; bar.style.color = "#1e8449";
-  }else{
-    bar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。";
-    bar.style.background = "#fff9d6"; bar.style.borderColor = "#ffe68a"; bar.style.color = "#7a5b00";
-  }
+  if(!bankEl) return; const area = bankEl.closest(".box-wrap") || document; const bar = area.querySelector(".drag-status"); if(!bar) return;
+  if(selectedWord){ bar.textContent = `✅ 已選中「${selectedWord}」，請點擊下方句子中的空格填入。`; bar.style.background = "#e8f9ee"; bar.style.borderColor = "#a9e0bc"; bar.style.color = "#1e8449"; }
+  else { bar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。"; bar.style.background = "#fff9d6"; bar.style.borderColor = "#ffe68a"; bar.style.color = "#7a5b00"; }
 }
 function renderChoiceQuestions(list, containerId){
-  const area = document.getElementById(containerId);
-  area.innerHTML = "";
-  const statusBar = document.createElement("div");
-  statusBar.className = "drag-status";
-  statusBar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。";
-  area.appendChild(statusBar);
-  const freq = {};
-  list.forEach(it => { freq[it.answer] = (freq[it.answer] || 0) + 1; });
-  const bankWords = [];
-  Object.keys(freq).forEach(word => { for(let i=0;i<freq[word];i++){ bankWords.push({ wid: containerId + "_w" + bankWords.length, word: word }); } });
-  const shuffledBank = shuffleArray(bankWords);
-  const bankDiv = document.createElement("div");
-  bankDiv.className = "drag-bank";
+  const area = document.getElementById(containerId); area.innerHTML = "";
+  const statusBar = document.createElement("div"); statusBar.className = "drag-status"; statusBar.textContent = "💡 提示：點擊單詞選中，再點空格填入；也可以直接拖拽。"; area.appendChild(statusBar);
+  const freq = {}; list.forEach(it => { freq[it.answer] = (freq[it.answer] || 0) + 1; });
+  const bankWords = []; Object.keys(freq).forEach(word => { for(let i=0;i<freq[word];i++){ bankWords.push({ wid: containerId + "_w" + bankWords.length, word: word }); } });
+  const shuffledBank = shuffleArray(bankWords); const bankDiv = document.createElement("div"); bankDiv.className = "drag-bank";
   bankDiv.innerHTML = `<div class="bank-title">🧩 可選單詞（拖到對應空格，或點選後再點空格）</div><div class="bank-words"></div>`;
   const wordsWrap = bankDiv.querySelector(".bank-words");
   shuffledBank.forEach(b=>{
-    const chip = document.createElement("div");
-    chip.className = "drag-word"; chip.draggable = true;
-    chip.dataset.wid = b.wid; chip.dataset.word = b.word;
-    chip.textContent = b.word;
-    chip.ondragstart = onDragStart;
-    chip.onclick = () => onWordChipClick(chip);
-    wordsWrap.appendChild(chip);
+    const chip = document.createElement("div"); chip.className = "drag-word"; chip.draggable = true; chip.dataset.wid = b.wid; chip.dataset.word = b.word; chip.textContent = b.word;
+    chip.ondragstart = onDragStart; chip.onclick = () => onWordChipClick(chip); wordsWrap.appendChild(chip);
   });
   area.appendChild(bankDiv);
   list.forEach((item, idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item cloze-item";
+    const div=document.createElement("div"); div.className="exercise-item cloze-item";
     const sentenceHtml = item.sentence.replace(/（\s*_+\s*）|\(\s*_+\s*\)|_+/, `<span class="drop-zone" data-ans="${item.answer}" data-filled="false">拖到這裡</span>`);
     div.innerHTML=`
-      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
-        <span class="q-num">${idx+1}.</span>
-        <span class="cloze-sentence">${sentenceHtml}</span>
-        <span class="cloze-toggle-icon">▼</span>
-      </div>
-      <div class="cloze-detail" style="display:none;">
-        <div class="cloze-toolbar">
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
-          <button class="cloze-speaker" type="button" onclick="speakClozeSentenceFromTrigger(this)">🔊 朗讀整句</button>
-        </div>
-        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
-        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
-      </div>`;
+      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}"><span class="q-num">${idx+1}.</span><span class="cloze-sentence">${sentenceHtml}</span><span class="cloze-toggle-icon">▼</span></div>
+      <div class="cloze-detail" style="display:none;"><div class="cloze-toolbar"><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label><button class="cloze-speaker" type="button" onclick="speakClozeSentenceFromTrigger(this)">🔊 朗讀整句</button></div><div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div><div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div></div>`;
     area.appendChild(div);
     const zone = div.querySelector(".drop-zone");
-    if(zone){
-      zone.ondragover = (e) => { e.preventDefault(); zone.classList.add("over"); };
-      zone.ondragleave = () => zone.classList.remove("over");
-      zone.ondrop = (e) => onZoneDrop(e, zone);
-      zone.onclick = (e) => { e.stopPropagation(); onZoneClick(zone); };
-    }
+    if(zone){ zone.ondragover = (e) => { e.preventDefault(); zone.classList.add("over"); }; zone.ondragleave = () => zone.classList.remove("over"); zone.ondrop = (e) => onZoneDrop(e, zone); zone.onclick = (e) => { e.stopPropagation(); onZoneClick(zone); }; }
   });
 }
 function showChoiceResult(){
-  let fullCount=0, halfCount=0, zeroCount=0;
-  let wrongSentences=[];
-  const total = currentQuizList.length;
-  const area = document.getElementById("choiceExerciseArea");
-  const resultListDom = document.getElementById("choiceResultList");
-  resultListDom.innerHTML="";
+  let fullCount=0, halfCount=0, zeroCount=0, wrongSentences=[];
+  const total = currentQuizList.length, area = document.getElementById("choiceExerciseArea"), resultListDom = document.getElementById("choiceResultList"); resultListDom.innerHTML="";
   const zones = area.querySelectorAll(".drop-zone");
   zones.forEach((zone,idx)=>{
-    const ans = zone.dataset.ans;
-    const userAns = zone.dataset.filledWord || "";
-    const item = currentQuizList[idx];
-    const level = judgeAnswer(userAns, ans);
-    if(level === "full") fullCount++;
-    else if(level === "half"){ halfCount++; wrongSentences.push(item.sentence); }
-    else { zeroCount++; wrongSentences.push(item.sentence); }
-    zone.classList.remove("zone-ok","zone-half","zone-err");
-    zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
+    const ans = zone.dataset.ans, userAns = zone.dataset.filledWord || "", item = currentQuizList[idx], level = judgeAnswer(userAns, ans);
+    if(level === "full") fullCount++; else if(level === "half"){ halfCount++; wrongSentences.push(item.sentence); } else { zeroCount++; wrongSentences.push(item.sentence); }
+    zone.classList.remove("zone-ok","zone-half","zone-err"); zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
     if(!userAns) zone.textContent = "（未填）";
     const icon = level === "full" ? "✅" : (level === "half" ? "⚠️" : "❌");
     resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${icon} 正確答案：${ans}，你選的：${userAns || "（未填）"}</div>`;
   });
-  const score = fullCount + halfCount * 0.5;
-  const percent = Number((score / total * 100).toFixed(2));
+  const score = fullCount + halfCount * 0.5, percent = Number((score / total * 100).toFixed(2));
   document.getElementById("choiceScoreText").innerText = `得分：${score}/${total}（${percent}%）\n🟢 全對 ${fullCount} ｜ 🟡 半對 ${halfCount} ｜ 🔴 全錯 ${zeroCount}`;
-  document.getElementById("choiceResultPage").style.display="block";
-  window._choiceScore = {score,total,fullCount,halfCount,zeroCount,wrongSentences};
-  stopTimer();
+  document.getElementById("choiceResultPage").style.display="block"; window._choiceScore = {score,total,fullCount,halfCount,zeroCount,wrongSentences}; stopTimer();
 }
 function saveChoiceRecord(silent = false){
-  const s = window._choiceScore;
-  const costMs = Date.now() - exerciseStartTime;
-  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
-  const rec = {
-    type: "拖拽選擇練習", unit: currentUnitName,
-    finishTime: new Date().toLocaleString(), costTime: timeStr,
-    score: s.score, total: s.total,
-    fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount,
-    wrongSentences: s.wrongSentences,
-    percent: Number((s.score / s.total * 100).toFixed(2))
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: s.score, total: s.total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  if (!silent) alert("✅已保存練習紀錄");
+  const s = window._choiceScore, costMs = Date.now() - exerciseStartTime, timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
+  const rec = { type: "拖拽選擇練習", unit: currentUnitName, finishTime: new Date().toLocaleString(), costTime: timeStr, score: s.score, total: s.total, fullCount: s.fullCount, halfCount: s.halfCount, zeroCount: s.zeroCount, wrongSentences: s.wrongSentences, percent: Number((s.score / s.total * 100).toFixed(2)) };
+  exerciseRecords.push(rec); localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: s.score, total: s.total, time: Date.now()}); localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList(); if (!silent) alert("✅已保存練習紀錄");
 }
 </script>
 <script>
 function openVerbTable(){
-  if(!guardNavigation()) return;
-  hideAllBox();
-  document.getElementById("grammarRoot").classList.add("show");
-  const p = document.getElementById("grammarPanel");
-  let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">核心 62 個不規則動詞</h3>`;
-  html += `<div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`;
+  if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel");
+  let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">核心 62 個不規則動詞</h3><div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`;
   IRREGULAR_VERBS.forEach(v=>{ html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`; });
-  html += `</tbody></table></div>`;
-  p.innerHTML = html;
-  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
+  html += `</tbody></table></div>`; p.innerHTML = html; document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function openTenseStructure(){
-  if(!guardNavigation()) return;
-  hideAllBox();
-  document.getElementById("grammarRoot").classList.add("show");
-  const p = document.getElementById("grammarPanel");
-  const tenses = [
-    {en:"Present Perfect", cn:"現在完成時", struct:"have/has + 過去分詞"},
-    {en:"Present Perfect Continuous", cn:"現在完成進行時", struct:"have/has + been + 現在分詞"},
-    {en:"Past Perfect", cn:"過去完成時", struct:"had + 過去分詞"},
-    {en:"Past Perfect Continuous", cn:"過去完成進行時", struct:"had + been + 現在分詞"}
-  ];
+  if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel");
+  const tenses = [{en:"Present Perfect", cn:"現在完成時", struct:"have/has + 過去分詞"},{en:"Present Perfect Continuous", cn:"現在完成進行時", struct:"have/has + been + 現在分詞"},{en:"Past Perfect", cn:"過去完成時", struct:"had + 過去分詞"},{en:"Past Perfect Continuous", cn:"過去完成進行時", struct:"had + been + 現在分詞"}];
   let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">4 種時態結構</h3>`;
   tenses.forEach(t=>{ html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`; });
-  p.innerHTML = html;
-  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
+  p.innerHTML = html; document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function openGrammarQuizRoot(){
-  if(!guardNavigation()) return;
-  hideAllBox();
-  document.getElementById("grammarRoot").classList.add("show");
-  const p = document.getElementById("grammarPanel");
+  if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel");
   p.innerHTML = `
     <h3 style="color:#2c3e50;margin-bottom:12px;">語法測驗</h3>
-    <div class="tip-box">💡 <strong>怎麼玩：</strong>選擇想練的時態（可多選），設定抽題數量，點「開始練習」。答題時填入正確的動詞形式。</div>
-    <p style="font-size:14px;margin-bottom:8px;">選擇要練的時態（可多選）：</p>
+    <div class="tip-box">💡 <strong>怎麼做：</strong>選擇模式（填空或選擇題），設定抽題數量，選擇要練的時態（可多選），點「開始練習」。</div>
+    <div class="mode-select-group"><div>選擇模式：</div><label style="display:block;margin:6px 0;"><input type="radio" name="grammarMode" value="fill" checked>模式1：填空（寫出正確形式）</label><label style="display:block;margin:6px 0;"><input type="radio" name="grammarMode" value="choice">模式2：選擇題（4選1）</label></div>
+    <p style="font-size:14px;margin-bottom:8px;">選擇要練的時態（可多選 1-4 個）：</p>
     <div id="grammarTopicFilter" style="margin-bottom:12px;"></div>
-    <label style="display:block;margin:10px 0;font-size:14px;"><input type="checkbox" id="grammarShowTopic"> 顯示時態提示</label>
-    <div class="range-input-area">
-      <span>抽題數量：</span>
-      <input type="number" id="grammarPickCount" min="1" placeholder="留空 = 20 題">
-      <button class="btn" id="grammarStartBtn">開始練習</button>
-    </div>
+    <div class="range-input-area"><span>抽題數量：</span><input type="number" id="grammarPickCount" min="1" placeholder="留空 = 20 題"><button class="btn" id="grammarStartBtn">開始練習</button></div>
     <div id="grammarExerciseArea"></div>
     <div class="finish-area"><button class="btn btn-finish" id="grammarFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div>
-    <div class="result-page" id="grammarResultPage">
-      <h2 style="text-align:center">📝語法成績</h2>
-      <div class="score-text" id="grammarScoreText"></div>
-      <div id="grammarResultList"></div>
-      <div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div>
-    </div>`;
+    <div class="result-page" id="grammarResultPage"><h2 style="text-align:center">📝語法成績</h2><div class="score-text" id="grammarScoreText"></div><div id="grammarResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div></div>`;
   renderGrammarFilters();
-  document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
-  document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
-  document.getElementById("saveGrammarResultBtn").onclick = saveGrammarRecord;
+  document.getElementById("grammarStartBtn").onclick = startGrammarQuiz; document.getElementById("grammarFinishBtn").onclick = showGrammarResult; document.getElementById("saveGrammarResultBtn").onclick = saveGrammarRecord;
   document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function renderGrammarFilters(){
-  const wrap = document.getElementById("grammarTopicFilter");
-  if(!wrap) return;
-  wrap.innerHTML = "";
-  const topicSet = new Map();
-  GRAMMAR_BANK.forEach(item => { if(!topicSet.has(item.topic)) topicSet.set(item.topic, item.topicEn); });
-  topicSet.forEach((topicEn, topic) => {
-    const div = document.createElement("label");
-    div.style.display = "flex"; div.style.alignItems = "center";
-    div.style.padding = "12px 14px"; div.style.marginBottom = "8px";
-    div.style.background = "#f4f7ff"; div.style.borderRadius = "10px";
-    div.style.cursor = "pointer"; div.style.fontSize = "15px";
-    div.innerHTML = `<input type="checkbox" class="grammar-topic-cb" value="${topic}" checked style="margin-right:10px;transform:scale(1.2);"><span style="font-weight:bold;color:#2c3e50;">${topic}</span><span style="color:#888;font-size:13px;margin-left:8px;">（${topicEn}）</span>`;
+  const wrap = document.getElementById("grammarTopicFilter"); if(!wrap) return; wrap.innerHTML = "";
+  const topics = [
+    {topic:"現在完成時", topicEn:"Present Perfect"}, {topic:"現在完成進行時", topicEn:"Present Perfect Continuous"},
+    {topic:"過去完成時", topicEn:"Past Perfect"}, {topic:"過去完成進行時", topicEn:"Past Perfect Continuous"}
+  ];
+  topics.forEach(t => {
+    const div = document.createElement("label"); div.style.display = "flex"; div.style.alignItems = "center"; div.style.padding = "12px 14px"; div.style.marginBottom = "8px"; div.style.background = "#f4f7ff"; div.style.borderRadius = "10px"; div.style.cursor = "pointer"; div.style.fontSize = "15px";
+    div.innerHTML = `<input type="checkbox" class="grammar-topic-cb" value="${t.topic}" checked style="margin-right:10px;transform:scale(1.2);"><span style="font-weight:bold;color:#2c3e50;">${t.topic}</span><span style="color:#888;font-size:13px;margin-left:8px;">（${t.topicEn}）</span>`;
     wrap.appendChild(div);
   });
 }
@@ -1311,708 +835,124 @@ function startGrammarQuiz(){
   if(selTopics.length === 0){ alert("請至少勾選一個時態"); stopTimer(); return; }
   const pool = GRAMMAR_BANK.filter(item => selTopics.includes(item.topic));
   if(pool.length === 0){ alert("沒有符合條件的題目"); stopTimer(); return; }
-  let pickNum = Number(document.getElementById("grammarPickCount").value);
-  if(!pickNum || pickNum < 1) pickNum = 20;
-  if(pickNum > pool.length) pickNum = pool.length;
-  currentQuizList = shuffleArray([...pool]).slice(0, pickNum);
-  quizType = "grammar";
-  const showTopic = document.getElementById("grammarShowTopic").checked;
-  const area = document.getElementById("grammarExerciseArea");
-  const finishBtn = document.getElementById("grammarFinishBtn");
-  document.getElementById("grammarResultPage").style.display = "none";
-  finishBtn.style.display = "none";
-  area.innerHTML = "";
+  let pickNum = Number(document.getElementById("grammarPickCount").value); if(!pickNum || pickNum < 1) pickNum = 20; if(pickNum > pool.length) pickNum = pool.length;
+  currentQuizList = shuffleArray([...pool]).slice(0, pickNum); quizType = "grammar";
+  const mode = document.querySelector('input[name="grammarMode"]:checked').value;
+  const area = document.getElementById("grammarExerciseArea"), finishBtn = document.getElementById("grammarFinishBtn");
+  document.getElementById("grammarResultPage").style.display = "none"; finishBtn.style.display = "none"; area.innerHTML = "";
   currentQuizList.forEach((item, idx) => {
-    const div = document.createElement("div");
-    div.className = "exercise-item";
-    const topicTag = showTopic ? `<span style="color:#888;font-size:13px;">[${item.topic}]</span> ` : "";
-    div.innerHTML = `<div class="q-num">${idx + 1}. ${topicTag}${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`;
+    const div = document.createElement("div"); div.className = "exercise-item";
+    if(mode === "fill") { div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`; }
+    else {
+      const opts = [item.a];
+      while(opts.length < 4) { const rand = pool[Math.floor(Math.random()*pool.length)]; if(rand && rand.a && !opts.includes(rand.a)) opts.push(rand.a); }
+      const shuffledOpts = shuffleArray(opts);
+      let optsHtml = "";
+      shuffledOpts.forEach((opt, i) => { optsHtml += `<span class="choice-opt" data-val="${opt}" onclick="selectGrammarChoice(this, '${opt}', '${item.a}')">${String.fromCharCode(65+i)}. ${opt}</span>`; });
+      div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><div class="choice-options">${optsHtml}</div><div class="feedback"></div>`;
+    }
     area.appendChild(div);
   });
   finishBtn.style.display = "block";
 }
+function selectGrammarChoice(el, val, realAns) {
+  const parent = el.parentElement;
+  if (parent.dataset.answered === "true") return;
+  parent.dataset.answered = "true";
+  const feedback = parent.nextElementSibling;
+  if (val === realAns) { el.classList.add("correct"); feedback.innerHTML = `<span class="ok">✅正確</span>`; }
+  else { el.classList.add("wrong"); feedback.innerHTML = `<span class="err">❌錯誤，答案：${realAns}</span>`; }
+  // 自动滚动到下一题
+  const nextItem = parent.closest(".exercise-item").nextElementSibling;
+  if (nextItem) { setTimeout(() => { nextItem.scrollIntoView({behavior: "smooth", block: "center"}); }, 500); }
+}
 function showGrammarResult(){
-  let score = 0;
-  let wrongQuestions = [];
-  const total = currentQuizList.length;
-  const resultListDom = document.getElementById("grammarResultList");
-  resultListDom.innerHTML = "";
+  let score = 0, wrongQuestions = [];
+  const total = currentQuizList.length, resultListDom = document.getElementById("grammarResultList"); resultListDom.innerHTML = "";
   document.querySelectorAll("#grammarExerciseArea .exercise-item").forEach((dom, idx) => {
-    const input = dom.querySelector(".user-display");
-    const feedback = dom.querySelector(".feedback");
-    const ans = input.dataset.ans;
-    const userAns = input.value.trim().toLowerCase().replace(/\s+/g, " ");
-    const realAns = ans.toLowerCase().replace(/\s+/g, " ");
-    const isCorrect = userAns === realAns;
+    const mode = document.querySelector('input[name="grammarMode"]:checked').value;
+    let userAns = "", realAns = currentQuizList[idx].a;
+    if (mode === "fill") { const input = dom.querySelector(".user-display"); userAns = input.value.trim().toLowerCase().replace(/\s+/g, " "); }
+    else { const selected = dom.querySelector(".choice-opt.correct, .choice-opt.wrong"); if (selected) userAns = selected.dataset.val; else userAns = ""; }
+    const isCorrect = userAns === realAns.toLowerCase().replace(/\s+/g, " ");
     if(isCorrect) score++; else wrongQuestions.push(currentQuizList[idx].q);
-    feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${ans}</span>` : `<span class="err">❌錯誤，答案：${ans}</span><br><span style="color:#666;font-size:13px;">${currentQuizList[idx].exp}</span>`;
-    resultListDom.innerHTML += `<div class="result-item">${idx + 1}. ${isCorrect ? "✅" : "❌"} ${ans}，你的答案：${userAns || "（未作答）"}</div>`;
+    const feedback = dom.querySelector(".feedback");
+    if (mode === "fill") { feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${realAns}</span>` : `<span class="err">❌錯誤，答案：${realAns}</span><br><span style="color:#666;font-size:13px;">${currentQuizList[idx].exp}</span>`; }
+    resultListDom.innerHTML += `<div class="result-item">${idx + 1}. ${isCorrect ? "✅" : "❌"} ${realAns}，你的答案：${userAns || "（未作答）"}</div>`;
   });
   const percent = Number((score / total * 100).toFixed(2));
   document.getElementById("grammarScoreText").innerText = `得分：${score}/${total}（${percent}%）`;
-  document.getElementById("grammarResultPage").style.display = "block";
-  window._grammarScore = {score, total, wrongQuestions};
-  stopTimer();
+  document.getElementById("grammarResultPage").style.display = "block"; window._grammarScore = {score, total, wrongQuestions}; stopTimer();
 }
 function saveGrammarRecord(silent = false){
-  const {score, total, wrongQuestions} = window._grammarScore;
-  const costMs = Date.now() - exerciseStartTime;
-  const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
-  const rec = {
-    type: "語法填空", finishTime: new Date().toLocaleString(), costTime: timeStr,
-    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrongQuestions, percent: Number((score / total * 100).toFixed(2))
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: score, total: total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  if (!silent) alert("✅已保存練習紀錄");
+  const {score, total, wrongQuestions} = window._grammarScore, costMs = Date.now() - exerciseStartTime, timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
+  const rec = { type: "語法填空", finishTime: new Date().toLocaleString(), costTime: timeStr, score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score, wrongQuestions: wrongQuestions, percent: Number((score / total * 100).toFixed(2)) };
+  exerciseRecords.push(rec); localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
+  attemptStats.push({score: score, total: total, time: Date.now()}); localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
+  renderRecordList(); if (!silent) alert("✅已保存練習紀錄");
 }
-
-function openWrongBook(){
-  showRoot("wrongBookPanel");
-  renderRecordList();
-}
+function openWrongBook(){ showRoot("wrongBookPanel"); renderRecordList(); }
 function renderRecordList(){
-  const wrap = document.getElementById("recordList");
-  wrap.innerHTML="";
-  if(exerciseRecords.length===0){
-    wrap.innerHTML = "<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>";
-    return;
-  }
+  const wrap = document.getElementById("recordList"); wrap.innerHTML="";
+  if(exerciseRecords.length===0){ wrap.innerHTML = "<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>"; return; }
   exerciseRecords.slice().reverse().forEach((rec,revIdx)=>{
-    const idx = exerciseRecords.length - 1 - revIdx;
-    const percent = rec.percent;
-    let color = "#27ae60";
-    if(percent < 60) color = "#e74c3c";
-    else if(percent < 85) color = "#f39c12";
-    const fullCount = rec.fullCount !== undefined ? rec.fullCount : rec.score;
-    const halfCount = rec.halfCount || 0;
-    const zeroCount = rec.zeroCount !== undefined ? rec.zeroCount : (rec.total - rec.score);
-    const card = document.createElement("div");
-    card.className = "record-card";
-    card.innerHTML = `
-      <div class="record-card-left">
-        <div class="record-type">📝 ${rec.type}${rec.unit ? "（" + rec.unit + "）" : ""}</div>
-        <div class="record-meta">📅 ${rec.finishTime}</div>
-        <div class="record-meta">⏱ 耗時：${rec.costTime}｜共 ${rec.total} 題</div>
-        <div class="record-meta">
-          <span style="color:#27ae60;">🟢 全對 ${fullCount}</span> ｜
-          <span style="color:#f39c12;">🟡 半對 ${halfCount}</span> ｜
-          <span style="color:#e74c3c;">🔴 全錯 ${zeroCount}</span>
-        </div>
-      </div>
-      <div class="record-card-right">
-        <div class="record-percent" style="color:${color}">${percent}%</div>
-        <div class="record-percent-label">分數：${rec.score} / ${rec.total}</div>
-        <div class="record-enter">點擊複習 →</div>
-      </div>`;
-    card.onclick = ()=>openWrongRedo(idx);
-    wrap.appendChild(card);
+    const idx = exerciseRecords.length - 1 - revIdx, percent = rec.percent; let color = "#27ae60"; if(percent < 60) color = "#e74c3c"; else if(percent < 85) color = "#f39c12";
+    const fullCount = rec.fullCount !== undefined ? rec.fullCount : rec.score, halfCount = rec.halfCount || 0, zeroCount = rec.zeroCount !== undefined ? rec.zeroCount : (rec.total - rec.score);
+    const card = document.createElement("div"); card.className = "record-card";
+    card.innerHTML = `<div class="record-card-left"><div class="record-type">📝 ${rec.type}${rec.unit ? "（" + rec.unit + "）" : ""}</div><div class="record-meta">📅 ${rec.finishTime}</div><div class="record-meta">⏱ 耗時：${rec.costTime}｜共 ${rec.total} 題</div><div class="record-meta"><span style="color:#27ae60;">🟢 全對 ${fullCount}</span> ｜ <span style="color:#f39c12;">🟡 半對 ${halfCount}</span> ｜ <span style="color:#e74c3c;">🔴 全錯 ${zeroCount}</span></div></div><div class="record-card-right"><div class="record-percent" style="color:${color}">${percent}%</div><div class="record-percent-label">分數：${rec.score} / ${rec.total}</div><div class="record-enter">點擊複習 →</div></div>`;
+    card.onclick = ()=>openWrongRedo(idx); wrap.appendChild(card);
   });
 }
-document.getElementById("clearAllRecords").onclick = function(){
-  if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return;
-  exerciseRecords=[];
-  localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));
-  renderRecordList();
-};
+document.getElementById("clearAllRecords").onclick = function(){ if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return; exerciseRecords=[]; localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords)); renderRecordList(); };
 function openWrongRedo(idx){
-  if(!guardNavigation()) return;
-  currentWrongRecordIndex = idx;
-  const rec = exerciseRecords[idx];
-  hideAllBox();
-  document.getElementById("wrongRedoPanel").classList.add("show");
-  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
-  const settingDom = document.getElementById("wrongRedoSetting");
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  const resPage = document.getElementById("wrongRedoResultPage");
-  areaDom.innerHTML="";
-  finishBtn.style.display="none";
-  resPage.style.display="none";
-  const isWrite = rec.type === "看同義詞默寫" || rec.type === "默寫刷題練習";
-  const isChoice = rec.type === "拖拽選擇練習";
-  const isGrammar = rec.type === "語法填空";
-  if(isGrammar){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`;
-  }else if(isWrite){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做默寫錯題｜選擇提示</h4><label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label><br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button></div>`;
-  }else if(isChoice){
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`;
-  }else{
-    settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`;
-  }
+  if(!guardNavigation()) return; currentWrongRecordIndex = idx; const rec = exerciseRecords[idx];
+  hideAllBox(); document.getElementById("wrongRedoPanel").classList.add("show"); document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
+  const settingDom = document.getElementById("wrongRedoSetting"), areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"), resPage = document.getElementById("wrongRedoResultPage");
+  areaDom.innerHTML=""; finishBtn.style.display="none"; resPage.style.display="none";
+  const isWrite = rec.type === "看同義詞默寫" || rec.type === "默寫刷題練習", isChoice = rec.type === "拖拽選擇練習", isGrammar = rec.type === "語法填空";
+  if(isGrammar){ settingDom.innerHTML=`<div class="mode-select-group"><h4>重做語法錯題</h4><button class="btn" onclick="startWrongGrammar()">載入錯題開始重做</button></div>`; }
+  else if(isWrite){ settingDom.innerHTML=`<div class="mode-select-group"><h4>重做默寫錯題｜選擇提示</h4><label><input type="checkbox" id="rwShowTargetCn">顯示目標單詞的中文釋義</label><label><input type="checkbox" id="rwShowSynCn">顯示同義詞的中文釋義</label><br><button class="btn" onclick="startWrongWrite()">載入錯題開始重做</button></div>`; }
+  else if(isChoice){ settingDom.innerHTML=`<div class="mode-select-group"><h4>重做拖拽選擇錯題</h4><button class="btn" onclick="startWrongChoice()">載入錯題開始重做</button></div>`; }
+  else { settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`; }
 }
 function startWrongGrammar(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const wrongQ = GRAMMAR_BANK.filter(item => rec.wrongQuestions && rec.wrongQuestions.includes(item.q));
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  areaDom.innerHTML = "";
+  startTimer(); const rec = exerciseRecords[currentWrongRecordIndex]; const wrongQ = GRAMMAR_BANK.filter(item => rec.wrongQuestions && rec.wrongQuestions.includes(item.q));
+  const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"); areaDom.innerHTML = "";
   if(wrongQ.length === 0){ areaDom.innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
-  wrongQ.forEach((item, idx) => {
-    const div = document.createElement("div");
-    div.className = "exercise-item";
-    div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`;
-    areaDom.appendChild(div);
-  });
-  finishBtn.style.display = "block";
-  finishBtn.onclick = function(){
-    let score = 0;
-    const total = wrongQ.length;
-    const resPage = document.getElementById("wrongRedoResultPage");
-    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom => {
-      const inp = dom.querySelector(".user-display");
-      const fb = dom.querySelector(".feedback");
-      const ans = inp.dataset.ans;
-      const ok = inp.value.trim().toLowerCase().replace(/\s+/g, " ") === ans.toLowerCase().replace(/\s+/g, " ");
-      if(ok) score++;
-      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display = "block";
-    stopTimer();
-  };
+  wrongQ.forEach((item, idx) => { const div = document.createElement("div"); div.className = "exercise-item"; div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`; areaDom.appendChild(div); });
+  finishBtn.style.display = "block"; finishBtn.onclick = function(){ let score = 0; const total = wrongQ.length; const resPage = document.getElementById("wrongRedoResultPage"); document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom => { const inp = dom.querySelector(".user-display"), fb = dom.querySelector(".feedback"), ans = inp.dataset.ans; const ok = inp.value.trim().toLowerCase().replace(/\s+/g, " ") === ans.toLowerCase().replace(/\s+/g, " "); if(ok) score++; fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`; }); const percent = Number((score / total * 100).toFixed(2)); resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`; resPage.style.display = "block"; stopTimer(); };
 }
 function startWrongWrite(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const showTargetCn = document.getElementById("rwShowTargetCn") ? document.getElementById("rwShowTargetCn").checked : false;
-  const showSynCn = document.getElementById("rwShowSynCn") ? document.getElementById("rwShowSynCn").checked : false;
-  let wrongWords = [];
-  const list = getWordList();
-  if(rec.wrongEns && rec.wrongEns.length){ wrongWords = rec.wrongEns.map(en => list.find(w=>w.en===en)).filter(Boolean); }
-  else { wrongWords = list.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no)); }
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  areaDom.innerHTML="";
+  startTimer(); const rec = exerciseRecords[currentWrongRecordIndex]; const showTargetCn = document.getElementById("rwShowTargetCn") ? document.getElementById("rwShowTargetCn").checked : false; const showSynCn = document.getElementById("rwShowSynCn") ? document.getElementById("rwShowSynCn").checked : false; let wrongWords = []; const list = getWordList();
+  if(rec.wrongEns && rec.wrongEns.length){ wrongWords = rec.wrongEns.map(en => list.find(w=>w.en===en)).filter(Boolean); } else { wrongWords = list.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no)); }
+  const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"); areaDom.innerHTML="";
   if(wrongWords.length===0){ areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
-  wrongWords.forEach((item,idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item";
-    let hintParts=[item.syn||""];
-    if(showSynCn) hintParts.push(`(${item.synCn||""})`);
-    if(showTargetCn) hintParts.push(`【${item.cn||""}】`);
-    div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`;
-    areaDom.appendChild(div);
-  });
-  finishBtn.style.display="block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongWords.length;
-    const resPage = document.getElementById("wrongRedoResultPage");
-    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
-      const inp = dom.querySelector(".user-display");
-      const fb = dom.querySelector(".feedback");
-      const ans = inp.dataset.ans;
-      const ok = judgeAnswer(inp.value, ans) !== "zero";
-      if(ok) score++;
-      fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`;
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
+  wrongWords.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="exercise-item"; let hintParts=[item.syn||""]; if(showSynCn) hintParts.push(`(${item.synCn||""})`); if(showTargetCn) hintParts.push(`【${item.cn||""}】`); div.innerHTML=`<div class="q-num">${idx+1}. ${hintParts.join(" ")}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`; areaDom.appendChild(div); });
+  finishBtn.style.display="block"; finishBtn.onclick = function(){ let score=0; const total = wrongWords.length; const resPage = document.getElementById("wrongRedoResultPage"); document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{ const inp = dom.querySelector(".user-display"), fb = dom.querySelector(".feedback"), ans = inp.dataset.ans; const ok = judgeAnswer(inp.value, ans) !== "zero"; if(ok) score++; fb.innerHTML = ok ? `<span class="ok">✅${ans}</span>` : `<span class="err">❌答案：${ans}</span>`; }); const percent = Number((score / total * 100).toFixed(2)); resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`; resPage.style.display="block"; stopTimer(); };
 }
 function startWrongCloze(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const bank = getClozeBank();
-  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-  const areaDom = document.getElementById("wrongRedoArea");
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
-  areaDom.innerHTML="";
+  startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank(); const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence)); const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"); areaDom.innerHTML="";
   if(wrongQ.length===0){areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>";stopTimer();return;}
-  wrongQ.forEach((item,idx)=>{
-    const div=document.createElement("div");
-    div.className="exercise-item cloze-item";
-    div.innerHTML=`
-      <div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
-        <span class="q-num">${idx+1}.</span>
-        <span class="cloze-sentence">${item.sentence}</span>
-        <span class="cloze-toggle-icon">▼</span>
-      </div>
-      <div class="q-syn-info">（同義詞提示：${item.syn}）</div>
-      <div class="cloze-detail" style="display:none;">
-        <div class="cloze-toolbar">
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label>
-          <label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label>
-          <button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button>
-        </div>
-        <div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div>
-        <div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div>
-      </div>
-      <input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞">
-      <div class="feedback"></div>`;
-    areaDom.appendChild(div);
-  });
-  finishBtn.style.display="block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongQ.length;
-    const resPage = document.getElementById("wrongRedoResultPage");
-    document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{
-      const inp = dom.querySelector(".user-display");
-      const fb = dom.querySelector(".feedback");
-      const ans = inp.dataset.ans;
-      const level = judgeAnswer(inp.value, ans);
-      if(level === "full") score += 1;
-      else if(level === "half") score += 0.5;
-      if(level === "full") fb.innerHTML = `<span class="ok">✅${ans}</span>`;
-      else if(level === "half") fb.innerHTML = `<span class="half">⚠️ 詞形錯誤：${ans}</span>`;
-      else fb.innerHTML = `<span class="err">❌答案：${ans}</span>`;
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
+  wrongQ.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="exercise-item cloze-item"; div.innerHTML=`<div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}"><span class="q-num">${idx+1}.</span><span class="cloze-sentence">${item.sentence}</span><span class="cloze-toggle-icon">▼</span></div><div class="q-syn-info">（同義詞提示：${item.syn}）</div><div class="cloze-detail" style="display:none;"><div class="cloze-toolbar"><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'keyCn')"> 關鍵詞中文</label><label class="cloze-chip"><input type="checkbox" onchange="toggleClozeCn(this,'sentenceCn')"> 整句中文</label><button class="cloze-speaker" type="button" onclick="speakClozeSentence(this)">🔊 朗讀整句</button></div><div class="key-cn" style="display:none;">關鍵詞中文：${item.cnKey||""}</div><div class="cloze-sentence-cn" style="display:none;">翻譯：${item.cnSentence||""}</div></div><input class="user-display" data-ans="${item.answer}" data-sentence="${item.sentence.replace(/"/g,'&quot;')}" placeholder="填入單詞"><div class="feedback"></div>`; areaDom.appendChild(div); });
+  finishBtn.style.display="block"; finishBtn.onclick = function(){ let score=0; const total = wrongQ.length; const resPage = document.getElementById("wrongRedoResultPage"); document.querySelectorAll("#wrongRedoArea .exercise-item").forEach(dom=>{ const inp = dom.querySelector(".user-display"), fb = dom.querySelector(".feedback"), ans = inp.dataset.ans, level = judgeAnswer(inp.value, ans); if(level === "full") score += 1; else if(level === "half") score += 0.5; if(level === "full") fb.innerHTML = `<span class="ok">✅${ans}</span>`; else if(level === "half") fb.innerHTML = `<span class="half">⚠️ 詞形錯誤：${ans}</span>`; else fb.innerHTML = `<span class="err">❌答案：${ans}</span>`; }); const percent = Number((score / total * 100).toFixed(2)); resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`; resPage.style.display="block"; stopTimer(); };
 }
 function startWrongChoice(){
-  startTimer();
-  const rec = exerciseRecords[currentWrongRecordIndex];
-  const bank = getClozeBank();
-  const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-  const finishBtn = document.getElementById("wrongRedoFinishBtn");
+  startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank(); const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence)); const finishBtn = document.getElementById("wrongRedoFinishBtn");
   if(wrongQ.length===0){ document.getElementById("wrongRedoArea").innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
-  renderChoiceQuestions(wrongQ, "wrongRedoArea");
-  finishBtn.style.display = "block";
-  finishBtn.onclick = function(){
-    let score=0;
-    const total = wrongQ.length;
-    const area = document.getElementById("wrongRedoArea");
-    area.querySelectorAll(".drop-zone").forEach((zone)=>{
-      const ans = zone.dataset.ans;
-      const userAns = zone.dataset.filledWord || "";
-      const level = judgeAnswer(userAns, ans);
-      if(level === "full") score++;
-      else if(level === "half") score += 0.5;
-      zone.classList.remove("zone-ok","zone-half","zone-err");
-      zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err"));
-      if(!userAns) zone.textContent = "（未填）";
-    });
-    const percent = Number((score / total * 100).toFixed(2));
-    const resPage = document.getElementById("wrongRedoResultPage");
-    resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`;
-    resPage.style.display="block";
-    stopTimer();
-  };
+  renderChoiceQuestions(wrongQ, "wrongRedoArea"); finishBtn.style.display = "block";
+  finishBtn.onclick = function(){ let score=0; const total = wrongQ.length; const area = document.getElementById("wrongRedoArea"); area.querySelectorAll(".drop-zone").forEach((zone)=>{ const ans = zone.dataset.ans, userAns = zone.dataset.filledWord || "", level = judgeAnswer(userAns, ans); if(level === "full") score++; else if(level === "half") score += 0.5; zone.classList.remove("zone-ok","zone-half","zone-err"); zone.classList.add(level === "full" ? "zone-ok" : (level === "half" ? "zone-half" : "zone-err")); if(!userAns) zone.textContent = "（未填）"; }); const percent = Number((score / total * 100).toFixed(2)); const resPage = document.getElementById("wrongRedoResultPage"); resPage.innerHTML = `<div class="result-page" style="display:block;"><div class="score-text">重做得分：${score}/${total}（${percent}%）</div></div>`; resPage.style.display="block"; stopTimer(); };
 }
-
-function openReadingRoot(){
-  if(!guardNavigation()) return;
-  hideAllBox();
-  document.getElementById("readingRoot").classList.add("show");
-  document.getElementById("readingPanel").innerHTML = "";
-  document.getElementById("backHomeBtn").innerText = "← 返回首頁";
-}
+function openReadingRoot(){ if(!guardNavigation()) return; hideAllBox(); document.getElementById("readingRoot").classList.add("show"); document.getElementById("readingPanel").innerHTML = ""; document.getElementById("backHomeBtn").innerText = "← 返回首頁"; }
 function openReadingUnit(unitName){
-  if(!guardNavigation()) return;
-  currentReadingUnit = unitName;
-  const p = document.getElementById("readingPanel");
-  p.innerHTML = `
-    <h3 style="color:#2c3e50;margin-bottom:12px;">${unitName}</h3>
-    <button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button>
-    <button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button>
-    <div id="readingSubPanel" style="margin-top:18px;"></div>`;
+  if(!guardNavigation()) return; currentReadingUnit = unitName; const p = document.getElementById("readingPanel");
+  p.innerHTML = `<h3 style="color:#2c3e50;margin-bottom:12px;">${unitName}</h3><button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一（P.7）</button><button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空（P.9）</button><div id="readingSubPanel" style="margin-top:18px;"></div>`;
 }
 function openReadingSub(subName){
-  if(!guardNavigation()) return;
-  currentReadingSub = subName;
-  const sub = READING_UNITS[currentReadingUnit][subName];
-  const p = document.getElementById("readingSubPanel");
+  if(!guardNavigation()) return; currentReadingSub = subName; const sub = READING_UNITS[currentReadingUnit][subName]; const p = document.getElementById("readingSubPanel");
   if(subName === "文章一"){
-    p.innerHTML = `
-      <div class="reading-intro" style="margin-bottom:8px;">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。點同一個詞或點彈窗上的中文，可以關閉彈窗。</div>
-      <div class="split-hint">⬆️ 上方文章區域可獨立上下滑動 ⬇️</div>
-      <div class="reading-split-container">
-        <div class="reading-split-top" id="splitTopBox">
-          <div class="reading-passage" id="passageContent"></div>
-        </div>
-        <div class="reading-split-bottom">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="color:#2c3e50;margin:0;font-size:15px;">📝 答題區</h4>
-            <button class="split-btn" id="togglePassageBtn">📕 隱藏文章</button>
-          </div>
-          <hr style="margin:10px 0; border: none; border-top: 1px dashed #ddd;">
-          <h4 style="color:#2c3e50;margin-bottom:8px;">選擇題（每次抽 5 道）</h4>
-          <button class="btn" id="startReadingChoiceBtn">開始選擇題</button>
-          <div id="readingChoiceArea"></div>
-          <div id="readingChoiceResult" class="result-page"></div>
-          <hr style="margin:16px 0;">
-          <h4 style="color:#2c3e50;margin-bottom:8px;">填空題（每次抽 6 道）</h4>
-          <button class="btn" id="startReadingBlankBtn">開始填空題</button>
-          <div id="readingBlankArea"></div>
-          <div id="readingBlankResult" class="result-page"></div>
-        </div>
-      </div>`;
-    
-    const passageBox = document.getElementById("passageContent");
-    const paras = sub.passage.split(/\n\n+/);
-    let html = "";
-    paras.forEach(par=>{
-      let line = par.replace(/([a-zA-Z\-']+)/g, function(word){
-        const clean = word.toLowerCase().replace(/[^a-z\-]/g,"");
-        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
-        if(cn){
-          return `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${word}</span>`;
-        } else {
-          return `<span class="reading-word">${word}</span>`;
-        }
-      });
-      html += `<p>${line}</p>`;
-    });
+    p.innerHTML = `<div class="reading-intro" style="margin-bottom:8px;">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。點同一個詞或點彈窗上的中文，可以關閉彈窗。</div><div class="split-hint">⬆️ 上方文章區域可獨立上下滑動 ⬇️</div><div class="reading-split-container"><div class="reading-split-top" id="splitTopBox"><div class="reading-passage" id="passageContent"></div></div><div class="reading-split-bottom"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><h4 style="color:#2c3e50;margin:0;font-size:15px;">📝 答題區</h4><button class="split-btn" id="togglePassageBtn">📕 隱藏文章</button></div><hr style="margin:10px 0; border: none; border-top: 1px dashed #ddd;"><h4 style="color:#2c3e50;margin-bottom:8px;">選擇題（每次抽 5 道）</h4><button class="btn" id="startReadingChoiceBtn">開始選擇題</button><div id="readingChoiceArea"></div><div id="readingChoiceResult" class="result-page"></div><hr style="margin:16px 0;"><h4 style="color:#2c3e50;margin-bottom:8px;">填空題（每次抽 6 道）</h4><button class="btn" id="startReadingBlankBtn">開始填空題</button><div id="readingBlankArea"></div><div id="readingBlankResult" class="result-page"></div></div></div>`;
+    const passageBox = document.getElementById("passageContent"); const paras = sub.passage.split(/\n\n+/); let html = "";
+    paras.forEach(par=>{ let line = par.replace(/([a-zA-Z\-']+)/g, function(word){ const clean = word.toLowerCase().replace(/[^a-z\-]/g,""); const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null; if(cn){ return `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${word}</span>`; } else { return `<span class="reading-word">${word}</span>`; } }); html += `<p>${line}</p>`; });
     passageBox.innerHTML = html;
-
-    document.getElementById("togglePassageBtn").onclick = function(){
-      const topBox = document.getElementById("splitTopBox");
-      if(topBox.style.display === "none"){ topBox.style.display = "block"; this.innerText = "📕 隱藏文章"; }
-      else { topBox.style.display = "none"; this.innerText = "📖 顯示文章"; }
-    };
-
-    bindReadingWordClick();
-    document.getElementById("startReadingChoiceBtn").onclick = function(){ startReadingChoice(sub); };
-    document.getElementById("startReadingBlankBtn").onclick = function(){ startReadingBlank(sub); };
-    document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
-  }else{
-    p.innerHTML = `
-      <div class="reading-intro">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。</div>
-      <div style="margin-bottom:12px;"><button class="btn" id="togglePassageBtn">📖 顯示完整對話/段落</button></div>
-      <div id="passageBox" style="display:none;"><div class="reading-passage" id="passageContent"></div></div>
-      <hr style="margin:16px 0;">
-      <h4 style="color:#2c3e50;margin-bottom:8px;">✏️ 語境完形填空（共 9 題）</h4>
-      <button class="btn" id="startReadingClozeBtn">開始練習</button>
-      <div id="readingClozeArea"></div>
-      <div id="readingClozeResult" class="result-page"></div>`;
-    const passageBox = document.getElementById("passageContent");
-    let html = "";
-    sub.paragraphs.forEach(par=>{
-      let text = par.text;
-      const words = text.split(/(\s+|[.,!?;:()"—–])/);
-      let line = "";
-      words.forEach(w=>{
-        const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
-        const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
-        if(cn){
-          line += `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`;
-        } else {
-          line += `<span class="reading-word">${w}</span>`;
-        }
-      });
-      html += `<p>${line}</p>`;
-    });
-    passageBox.innerHTML = html;
-    document.getElementById("togglePassageBtn").onclick = function(){
-      const box = document.getElementById("passageBox");
-      if(box.style.display === "none"){ box.style.display = "block"; this.innerText = "📕 隱藏完整對話/段落"; }
-      else { box.style.display = "none"; this.innerText = "📖 顯示完整對話/段落"; }
-    };
-    bindReadingWordClick();
-    document.getElementById("startReadingClozeBtn").onclick = function(){ startReadingCloze(sub); };
-    document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
-  }
-}
-function bindReadingWordClick(){
-  document.querySelectorAll(".reading-word.has-cn").forEach(el=>{
-    let touchStartX = 0, touchStartY = 0, touchMoved = false;
-    
-    el.addEventListener("touchstart", function(e) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      touchMoved = false;
-    }, { passive: true });
-    
-    el.addEventListener("touchmove", function(e) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartX);
-      const dy = Math.abs(e.touches[0].clientY - touchStartY);
-      if (dx > 10 || dy > 10) touchMoved = true;
-    }, { passive: true });
-    
-    el.addEventListener("touchend", function(e) {
-      if (touchMoved) return;
-      e.preventDefault();
-      handleWordClick(this, e);
-    });
-    
-    el.addEventListener("click", function(e) {
-      if (e.isTrusted && e.pointerType === "touch") return;
-      handleWordClick(this, e);
-    });
-  });
-
-  function handleWordClick(el, e) {
-    e.stopPropagation();
-    const word = el.dataset.word;
-    const cn = el.dataset.cn;
-    const popup = document.getElementById("wordPopup");
-
-    if (popup.dataset.activeWord === word && popup.style.display === "block") {
-      popup.style.display = "none";
-      popup.dataset.activeWord = "";
-      el.classList.remove("active");
-      return;
-    }
-
-    document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
-    el.classList.add("active");
-
-    popup.innerText = word + "：" + cn;
-    popup.style.display = "block";
-    popup.dataset.activeWord = word;
-
-    let x = e.clientX || 0;
-    let y = e.clientY || 0;
-    if (e.touches && e.touches[0]) {
-      x = e.touches[0].clientX;
-      y = e.touches[0].clientY;
-    } else if (e.changedTouches && e.changedTouches[0]) {
-      x = e.changedTouches[0].clientX;
-      y = e.changedTouches[0].clientY;
-    }
-    const popupWidth = 200;
-    let left = x - popupWidth / 2;
-    if (left < 10) left = 10;
-    if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
-
-    popup.style.left = left + "px";
-    popup.style.top = (y + 30) + "px";
-  }
-
-  const popup = document.getElementById("wordPopup");
-  popup.onclick = function() {
-    popup.style.display = "none";
-    popup.dataset.activeWord = "";
-    document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
-  };
-
-  document.onclick = function(e) {
-    if (popup.style.display === "block" && !e.target.classList.contains("reading-word")) {
-      popup.style.display = "none";
-      popup.dataset.activeWord = "";
-      document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
-    }
-  };
-}
-function startReadingChoice(sub){
-  startTimer();
-  const pool = shuffleArray([...sub.choices]).slice(0, 5);
-  window._readingChoicePool = pool;
-  const area = document.getElementById("readingChoiceArea");
-  document.getElementById("readingChoiceResult").style.display = "none";
-  area.innerHTML = "";
-  pool.forEach((item, idx) => {
-    const div = document.createElement("div");
-    div.className = "reading-choice";
-    let opts = "";
-    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}">${letter}. ${item.opts[i]}</span>`; });
-    div.innerHTML = `<div style="font-weight:bold;margin-bottom:8px;">${idx+1}. ${item.q}</div>${opts}`;
-    area.appendChild(div);
-  });
-  area.querySelectorAll(".choice-opt").forEach(opt=>{
-    opt.onclick = function(){
-      const siblings = this.parentElement.querySelectorAll(".choice-opt");
-      siblings.forEach(s=>s.classList.remove("selected"));
-      this.classList.add("selected");
-    };
-  });
-  if(!document.getElementById("submitReadingChoiceBtn")){
-    const btn = document.createElement("button");
-    btn.className = "btn btn-finish";
-    btn.id = "submitReadingChoiceBtn";
-    btn.innerText = "✅提交選擇題";
-    btn.style.marginTop = "12px";
-    btn.onclick = submitReadingChoice;
-    area.appendChild(btn);
-  }else{ document.getElementById("submitReadingChoiceBtn").style.display = "block"; }
-}
-function submitReadingChoice(){
-  const pool = window._readingChoicePool;
-  let score = 0;
-  const wrong = [];
-  document.querySelectorAll("#readingChoiceArea .reading-choice").forEach((div, idx)=>{
-    const item = pool[idx];
-    const selected = div.querySelector(".choice-opt.selected");
-    const userAns = selected ? selected.dataset.letter : "";
-    div.querySelectorAll(".choice-opt").forEach(opt=>{
-      const letter = opt.dataset.letter;
-      if(letter === item.ans) opt.classList.add("correct");
-      else if(letter === userAns) opt.classList.add("wrong");
-    });
-    if(userAns === item.ans) score++; else wrong.push(item.q);
-    const expDiv = document.createElement("div");
-    expDiv.style.fontSize = "13px"; expDiv.style.color = "#666"; expDiv.style.marginTop = "6px";
-    expDiv.innerText = "解析：" + item.exp;
-    div.appendChild(expDiv);
-  });
-  const total = pool.length;
-  const percent = Number((score / total * 100).toFixed(2));
-  const resPage = document.getElementById("readingChoiceResult");
-  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">選擇題：${score}/${total}（${percent}%）</div>`;
-  resPage.style.display = "block";
-  const costMs = Date.now() - exerciseStartTime;
-  const rec = {
-    type: "閱讀選擇題", unit: currentReadingUnit + "｜" + currentReadingSub,
-    finishTime: new Date().toLocaleString(),
-    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
-    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong, percent: percent
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: score, total: total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  stopTimer();
-  document.getElementById("submitReadingChoiceBtn").style.display = "none";
-}
-function startReadingBlank(sub){
-  startTimer();
-  const pool = shuffleArray([...sub.blanks]).slice(0, 6);
-  window._readingBlankPool = pool;
-  const area = document.getElementById("readingBlankArea");
-  document.getElementById("readingBlankResult").style.display = "none";
-  area.innerHTML = "";
-  pool.forEach((item, idx) => {
-    const div = document.createElement("div");
-    div.className = "exercise-item";
-    div.innerHTML = `<div class="q-num">${idx+1}. ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入單詞"><div class="feedback"></div>`;
-    area.appendChild(div);
-  });
-  if(!document.getElementById("submitReadingBlankBtn")){
-    const btn = document.createElement("button");
-    btn.className = "btn btn-finish";
-    btn.id = "submitReadingBlankBtn";
-    btn.innerText = "✅提交填空題";
-    btn.style.marginTop = "12px";
-    btn.onclick = submitReadingBlank;
-    area.appendChild(btn);
-  }else{ document.getElementById("submitReadingBlankBtn").style.display = "block"; }
-}
-function submitReadingBlank(){
-  const pool = window._readingBlankPool;
-  let score = 0;
-  const wrong = [];
-  document.querySelectorAll("#readingBlankArea .exercise-item").forEach((div, idx)=>{
-    const inp = div.querySelector(".user-display");
-    const fb = div.querySelector(".feedback");
-    const item = pool[idx];
-    if(inp.value.trim().toLowerCase() === item.a.toLowerCase()){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.a}</span>`; }
-    else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.a}</span>`; }
-  });
-  const total = pool.length;
-  const percent = Number((score / total * 100).toFixed(2));
-  const resPage = document.getElementById("readingBlankResult");
-  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">填空題：${score}/${total}（${percent}%）</div>`;
-  resPage.style.display = "block";
-  const costMs = Date.now() - exerciseStartTime;
-  const rec = {
-    type: "閱讀填空題", unit: currentReadingUnit + "｜" + currentReadingSub,
-    finishTime: new Date().toLocaleString(),
-    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
-    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong, percent: percent
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: score, total: total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  stopTimer();
-  document.getElementById("submitReadingBlankBtn").style.display = "none";
-}
-function startReadingCloze(sub){
-  startTimer();
-  const area = document.getElementById("readingClozeArea");
-  document.getElementById("readingClozeResult").style.display = "none";
-  area.innerHTML = "";
-  let passageHtml = `<div class="reading-passage">`;
-  sub.paragraphs.forEach(par=>{
-    let text = par.text;
-    const words = text.split(/(\s+|[.,!?;:()"—–])/);
-    let line = "";
-    words.forEach(w=>{
-      const clean = w.toLowerCase().replace(/[^a-z\-]/g,"");
-      const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null;
-      if(cn){
-        line += `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`;
-      } else {
-        line += `<span class="reading-word">${w}</span>`;
-      }
-    });
-    passageHtml += `<p>${line}</p>`;
-  });
-  passageHtml += `</div>`;
-  let itemsHtml = "";
-  sub.items.forEach((item, idx) => {
-    let opts = "";
-    ["A","B","C","D"].forEach((letter, i) => { opts += `<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:8px 14px;margin:4px;border-radius:8px;cursor:pointer;border:1px solid #ddd;background:#fff;transition:all 0.2s;">${letter}. ${item.opts[i]}</span>`; });
-    itemsHtml += `<div class="exercise-item" data-idx="${idx}"><div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div></div>`;
-  });
-  area.innerHTML = passageHtml + `<hr style="margin:16px 0;">` + itemsHtml;
-  bindReadingWordClick();
-  area.querySelectorAll(".choice-opt").forEach(opt=>{
-    opt.onclick = function(){
-      const siblings = this.parentElement.querySelectorAll(".choice-opt");
-      siblings.forEach(s=>{ s.style.background = "#fff"; s.style.fontWeight = ""; s.dataset.selected = ""; });
-      this.style.background = "#e8f0ff"; this.style.fontWeight = "bold"; this.dataset.selected = "true";
-    };
-  });
-  if(!document.getElementById("submitReadingClozeBtn")){
-    const btn = document.createElement("button");
-    btn.className = "btn btn-finish";
-    btn.id = "submitReadingClozeBtn";
-    btn.innerText = "✅提交答案";
-    btn.style.marginTop = "12px";
-    btn.onclick = submitReadingCloze;
-    area.appendChild(btn);
-  }else{ document.getElementById("submitReadingClozeBtn").style.display = "block"; }
-}
-function submitReadingCloze(){
-  const sub = READING_UNITS[currentReadingUnit]["語境完形填空"];
-  let score = 0;
-  const wrong = [];
-  document.querySelectorAll("#readingClozeArea .exercise-item").forEach((div)=>{
-    const idx = Number(div.dataset.idx);
-    const item = sub.items[idx];
-    const opts = div.querySelectorAll(".choice-opt");
-    let userAns = "";
-    opts.forEach(o=>{ if(o.dataset.selected === "true") userAns = o.dataset.letter; });
-    opts.forEach(o=>{
-      const letter = o.dataset.letter;
-      if(letter === item.ans) o.style.background = "#e8f9ee";
-      else if(letter === userAns) o.style.background = "#fdecea";
-    });
-    const fb = div.querySelector(".feedback");
-    if(userAns === item.ans){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.ans}</span>`; }
-    else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.ans}。${item.exp}</span>`; }
-  });
-  const total = sub.items.length;
-  const percent = Number((score / total * 100).toFixed(2));
-  const resPage = document.getElementById("readingClozeResult");
-  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;
-  resPage.style.display = "block";
-  const costMs = Date.now() - exerciseStartTime;
-  const rec = {
-    type: "閱讀語境完形", unit: currentReadingUnit + "｜" + currentReadingSub,
-    finishTime: new Date().toLocaleString(),
-    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
-    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong, percent: percent
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: score, total: total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  stopTimer();
-  document.getElementById("submitReadingClozeBtn").style.display = "none";
-}
-</script>
-</body>
-</html>
+    document.getElementById("togglePassageBtn").onclick = function(){ const topBox = document.getElementById("splitTopBox"); if(topBox.style.display === "none"){ topBox.style.display = "block"; this.innerText = "📕 隱藏文章"; } else { topBox.style.display = "none"; this.innerText = "📖 顯示文章"; } };
+    bindReadingWordClick(); document.getElementById("startReadingChoiceBtn").onclick = function(){ start
