@@ -213,6 +213,16 @@ tr:nth-child(even){background:#f9faff;}
   border-radius: 6px;
   margin-bottom: 8px;
 }
+.split-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: #eef4ff;
+  border: none;
+  border-radius: 6px;
+  color: #667eea;
+  cursor: pointer;
+  font-weight: bold;
+}
 
 /* ===== 閱讀理解其他樣式 ===== */
 .reading-passage{line-height:2;font-size:15px;color:#333;background:#fafbff;padding:20px;border-radius:12px;margin:14px 0;user-select:text;border:1px solid #eef4ff;}
@@ -271,6 +281,9 @@ tr:nth-child(even){background:#f9faff;}
   .home-stat-num{font-size:22px;}
   .box-wrap{padding:16px;border-radius:12px;}
   .reading-passage{padding:14px;}
+  .reading-split-container { height: 72vh; }
+  .reading-split-top { padding: 12px; }
+  .reading-split-bottom { padding: 12px; }
 }
 </style>
 </head>
@@ -319,7 +332,7 @@ tr:nth-child(even){background:#f9faff;}
       <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
       <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀篇章</span></div>
     </div>
-    <div class="tip-box">💡 <strong>新手提示：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角「← 返回首頁」可以隨時回來。</div>
+    <div class="tip-box">💡 <strong>新手提示：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角按鈕可以隨時返回。</div>
     <div id="homeGrid"></div>
   </div>
 
@@ -472,11 +485,25 @@ function stopTimer(){
   timerInterval = null;
   document.getElementById("timerBadge").style.display = "none";
 }
+
+// 核心：退出警告 + 自动保存
 function guardNavigation(){
   if(!isPracticing) return true;
-  const ok = confirm("⚠️ 練習進行中，離開將丟失本次進度。\n確定要離開嗎？");
-  if(ok){ stopTimer(); return true; }
+  const ok = confirm("⚠️ 練習進行中，離開將丟失本次進度。\n\n點擊『確定』：自動保存本次成績並退出\n點擊『取消』：繼續練習");
+  if(ok){ 
+    saveCurrentQuizSilently(); // 自动保存成绩
+    stopTimer(); 
+    return true; 
+  }
   return false;
+}
+function saveCurrentQuizSilently(){
+  try {
+    if (quizType === "write" && window._writeScore) saveWriteRecord(true);
+    else if (quizType === "cloze" && window._clozeScore) saveClozeRecord(true);
+    else if (quizType === "choice" && window._choiceScore) saveChoiceRecord(true);
+    else if (quizType === "grammar" && window._grammarScore) saveGrammarRecord(true);
+  } catch(e) { console.error("Auto-save failed:", e); }
 }
 
 /* ================== 免責聲明 ================== */
@@ -522,40 +549,78 @@ function showNoticeIfAny(){
 })();
 
 /* ================== 通用返回邏輯 ================== */
-function goHomeWithGuard(){
-  if(!guardNavigation()) return;
-  goHome();
+function goHome(){
+  hideAllBox();
+  document.getElementById("homePage").style.display = "block";
+  document.getElementById("moduleView").style.display = "none";
+  document.getElementById("backHomeBtn").style.display = "none";
+  renderHomeGrid();
+  updateHomeStats();
+  setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10);
 }
+
+function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
+function showRoot(id){
+  if(!guardNavigation()) return;
+  if(document.getElementById("homePage").style.display !== "none"){
+    homeScrollY = window.scrollY;
+  }
+  hideAllBox();
+  document.getElementById("homePage").style.display = "none";
+  document.getElementById("moduleView").style.display = "block";
+  document.getElementById("backHomeBtn").style.display = "block";
+  document.getElementById("backHomeBtn").innerText = "← 返回首頁"; // 重置按钮文本
+  if(id === "vocabPool") renderVocabUnits();
+  if(id === "exerciseRoot") renderExerciseUnits();
+  document.getElementById(id).classList.add("show");
+  setTimeout(() => { window.scrollTo(0, 0); }, 10);
+}
+
 function goBack(){
   if(!guardNavigation()) return;
   
+  const backBtn = document.getElementById("backHomeBtn");
+  
+  // 1. 閱讀理解子頁面 -> 返回閱讀理解根目錄
   if (document.getElementById("readingSubPanel").innerHTML.trim() !== "") {
     document.getElementById("readingSubPanel").innerHTML = "";
     openReadingUnit(currentReadingUnit);
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 2. 閱讀理解根目錄 -> 返回首頁
   if (document.getElementById("readingPanel").innerHTML.trim() !== "") {
     document.getElementById("readingPanel").innerHTML = "";
     showRoot('readingRoot');
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 3. 生詞池子頁面 -> 返回生詞池根目錄
   if (document.getElementById("vocabUnit").classList.contains("show")) {
     showRoot('vocabPool');
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 4. 練習題子頁面 -> 返回練習題根目錄
   if (document.getElementById("exerciseUnit").classList.contains("show")) {
     showRoot('exerciseRoot');
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 5. 語法子頁面 -> 返回語法根目錄
   if (document.getElementById("grammarPanel").innerHTML.trim() !== "") {
     document.getElementById("grammarPanel").innerHTML = "";
     showRoot('grammarRoot');
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 6. 錯題重做頁面 -> 返回錯題本根目錄
   if (document.getElementById("wrongRedoPanel").classList.contains("show")) {
     showRoot('wrongBookPanel');
+    backBtn.innerText = "← 返回首頁";
     return;
   }
+  // 7. 模塊根目錄 -> 返回首頁
   goHome();
 }
 
@@ -601,34 +666,7 @@ function updateHomeStats(){
   }catch(e){ console.warn(e); }
 }
 
-function goHome(){
-  hideAllBox();
-  document.getElementById("homePage").style.display = "block";
-  document.getElementById("moduleView").style.display = "none";
-  document.getElementById("backHomeBtn").style.display = "none";
-  renderHomeGrid();
-  updateHomeStats();
-  setTimeout(() => { window.scrollTo(0, homeScrollY); }, 10);
-}
-
-function hideAllBox(){ document.querySelectorAll(".box-wrap").forEach(el=>el.classList.remove("show")); }
-function showRoot(id){
-  if(!guardNavigation()) return;
-  if(document.getElementById("homePage").style.display !== "none"){
-    homeScrollY = window.scrollY;
-  }
-  hideAllBox();
-  document.getElementById("homePage").style.display = "none";
-  document.getElementById("moduleView").style.display = "block";
-  document.getElementById("backHomeBtn").style.display = "block";
-  if(id === "vocabPool") renderVocabUnits();
-  if(id === "exerciseRoot") renderExerciseUnits();
-  document.getElementById(id).classList.add("show");
-  setTimeout(() => { window.scrollTo(0, 0); }, 10);
-}
-function backToMainRoot(){ goHome(); }
-
-/* ========== 拖拽時自動滾屏 ========== */
+/* ========== 拖拽時自動滾屏（鼠标 + 手指） ========== */
 document.addEventListener('dragover', function(e) {
     if (!draggingWordEl) return;
     e.preventDefault(); 
@@ -685,6 +723,7 @@ function openVocabUnit(unit){
   document.getElementById("vocabUnitTitle").innerText = unit + "｜生詞池";
   document.getElementById("cardPanel").innerHTML="";
   document.getElementById("tablePanel").innerHTML="";
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁"; // 子頁面提示
 }
 function speakWord(word){
   speechSynthesis.cancel();
@@ -745,6 +784,7 @@ function openExerciseUnit(unit){
   hideAllBox();
   document.getElementById("exerciseUnit").classList.add("show");
   document.getElementById("exerciseUnitTitle").innerText = unit + "｜練習題";
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁"; // 子頁面提示
   ["writePanel","clozePanel","choicePanel"].forEach(id=>{
     const el = document.getElementById(id);
     el.innerHTML=""; el.style.display="none";
@@ -895,7 +935,7 @@ function showWriteResult(){
   window._writeScore = {score,total,fullCount,halfCount,zeroCount,wrongItems,halfItems};
   stopTimer();
 }
-function saveWriteRecord(){
+function saveWriteRecord(silent = false){
   const s = window._writeScore;
   const costMs = Date.now() - exerciseStartTime;
   const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
@@ -916,7 +956,7 @@ function saveWriteRecord(){
   attemptStats.push({score: s.score, total: s.total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄");
+  if (!silent) alert("✅已保存練習紀錄");
 }
 
 /* ================== 完形填空 ================== */
@@ -1090,7 +1130,7 @@ function showClozeResult(){
   window._clozeScore = {score,total,wrongSentences, fullCount, halfCount, zeroCount};
   stopTimer();
 }
-function saveClozeRecord(){
+function saveClozeRecord(silent = false){
   const s = window._clozeScore;
   const costMs = Date.now() - exerciseStartTime;
   const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
@@ -1107,7 +1147,7 @@ function saveClozeRecord(){
   attemptStats.push({score:s.score, total:s.total, time:Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄");
+  if (!silent) alert("✅已保存練習紀錄");
 }
 
 /* ================== 拖拽選擇 ================== */
@@ -1310,7 +1350,7 @@ function showChoiceResult(){
   window._choiceScore = {score,total,fullCount,halfCount,zeroCount,wrongSentences};
   stopTimer();
 }
-function saveChoiceRecord(){
+function saveChoiceRecord(silent = false){
   const s = window._choiceScore;
   const costMs = Date.now() - exerciseStartTime;
   const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
@@ -1327,7 +1367,7 @@ function saveChoiceRecord(){
   attemptStats.push({score: s.score, total: s.total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄");
+  if (!silent) alert("✅已保存練習紀錄");
 }
 
 /* ================== 語法 ================== */
@@ -1339,8 +1379,9 @@ function openVerbTable(){
   let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">核心 62 個不規則動詞</h3>`;
   html += `<div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`;
   IRREGULAR_VERBS.forEach(v=>{ html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`; });
-  html += `</tbody></table></div><br><button class="sub-btn" onclick="showRoot('grammarRoot')">← 返回語法</button>`;
+  html += `</tbody></table></div>`;
   p.innerHTML = html;
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function openTenseStructure(){
   if(!guardNavigation()) return;
@@ -1355,8 +1396,8 @@ function openTenseStructure(){
   ];
   let html = `<h3 style="color:#2c3e50;margin-bottom:12px;">4 種時態結構</h3>`;
   tenses.forEach(t=>{ html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`; });
-  html += `<button class="sub-btn" onclick="showRoot('grammarRoot')">← 返回語法</button>`;
   p.innerHTML = html;
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function openGrammarQuizRoot(){
   if(!guardNavigation()) return;
@@ -1381,12 +1422,12 @@ function openGrammarQuizRoot(){
       <div class="score-text" id="grammarScoreText"></div>
       <div id="grammarResultList"></div>
       <div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div>
-    </div>
-    <button class="sub-btn" onclick="showRoot('grammarRoot')" style="margin-top:16px;">← 返回語法</button>`;
+    </div>`;
   renderGrammarFilters();
   document.getElementById("grammarStartBtn").onclick = startGrammarQuiz;
   document.getElementById("grammarFinishBtn").onclick = showGrammarResult;
   document.getElementById("saveGrammarResultBtn").onclick = saveGrammarRecord;
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
 }
 function renderGrammarFilters(){
   const wrap = document.getElementById("grammarTopicFilter");
@@ -1453,7 +1494,7 @@ function showGrammarResult(){
   window._grammarScore = {score, total, wrongQuestions};
   stopTimer();
 }
-function saveGrammarRecord(){
+function saveGrammarRecord(silent = false){
   const {score, total, wrongQuestions} = window._grammarScore;
   const costMs = Date.now() - exerciseStartTime;
   const timeStr = `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
@@ -1467,7 +1508,7 @@ function saveGrammarRecord(){
   attemptStats.push({score: score, total: total, time: Date.now()});
   localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
   renderRecordList();
-  alert("✅已保存練習紀錄");
+  if (!silent) alert("✅已保存練習紀錄");
 }
 
 /* ================== 錯題本 ================== */
@@ -1525,6 +1566,7 @@ function openWrongRedo(idx){
   const rec = exerciseRecords[idx];
   hideAllBox();
   document.getElementById("wrongRedoPanel").classList.add("show");
+  document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
   const settingDom = document.getElementById("wrongRedoSetting");
   const areaDom = document.getElementById("wrongRedoArea");
   const finishBtn = document.getElementById("wrongRedoFinishBtn");
@@ -1710,6 +1752,7 @@ function openReadingRoot(){
   hideAllBox();
   document.getElementById("readingRoot").classList.add("show");
   document.getElementById("readingPanel").innerHTML = "";
+  document.getElementById("backHomeBtn").innerText = "← 返回首頁";
 }
 function openReadingUnit(unitName){
   if(!guardNavigation()) return;
@@ -1778,6 +1821,7 @@ function openReadingSub(subName){
     bindReadingWordClick();
     document.getElementById("startReadingChoiceBtn").onclick = function(){ startReadingChoice(sub); };
     document.getElementById("startReadingBlankBtn").onclick = function(){ startReadingBlank(sub); };
+    document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
   }else{
     p.innerHTML = `
       <div class="reading-intro">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。</div>
@@ -1813,6 +1857,7 @@ function openReadingSub(subName){
     };
     bindReadingWordClick();
     document.getElementById("startReadingClozeBtn").onclick = function(){ startReadingCloze(sub); };
+    document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
   }
 }
 function bindReadingWordClick(){
@@ -1832,7 +1877,7 @@ function bindReadingWordClick(){
     }, { passive: true });
     
     el.addEventListener("touchend", function(e) {
-      if (touchMoved) return; // 滑动超过10px，不触发查词
+      if (touchMoved) return;
       e.preventDefault();
       handleWordClick(this, e);
     });
@@ -1881,7 +1926,6 @@ function bindReadingWordClick(){
     popup.style.top = (y + 30) + "px";
   }
 
-  // 點彈窗上的中文也可以關閉
   const popup = document.getElementById("wordPopup");
   popup.onclick = function() {
     popup.style.display = "none";
@@ -1889,7 +1933,6 @@ function bindReadingWordClick(){
     document.querySelectorAll(".reading-word.active").forEach(w => w.classList.remove("active"));
   };
 
-  // 點空白處關閉
   document.onclick = function(e) {
     if (popup.style.display === "block" && !e.target.classList.contains("reading-word")) {
       popup.style.display = "none";
@@ -2073,45 +2116,4 @@ function startReadingCloze(sub){
   }else{ document.getElementById("submitReadingClozeBtn").style.display = "block"; }
 }
 function submitReadingCloze(){
-  const sub = READING_UNITS[currentReadingUnit]["語境完形填空"];
-  let score = 0;
-  const wrong = [];
-  document.querySelectorAll("#readingClozeArea .exercise-item").forEach((div)=>{
-    const idx = Number(div.dataset.idx);
-    const item = sub.items[idx];
-    const opts = div.querySelectorAll(".choice-opt");
-    let userAns = "";
-    opts.forEach(o=>{ if(o.dataset.selected === "true") userAns = o.dataset.letter; });
-    opts.forEach(o=>{
-      const letter = o.dataset.letter;
-      if(letter === item.ans) o.style.background = "#e8f9ee";
-      else if(letter === userAns) o.style.background = "#fdecea";
-    });
-    const fb = div.querySelector(".feedback");
-    if(userAns === item.ans){ score++; fb.innerHTML = `<span class="ok">✅正確：${item.ans}</span>`; }
-    else { wrong.push(item.q); fb.innerHTML = `<span class="err">❌錯誤，答案：${item.ans}。${item.exp}</span>`; }
-  });
-  const total = sub.items.length;
-  const percent = Number((score / total * 100).toFixed(2));
-  const resPage = document.getElementById("readingClozeResult");
-  resPage.innerHTML = `<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;
-  resPage.style.display = "block";
-  const costMs = Date.now() - exerciseStartTime;
-  const rec = {
-    type: "閱讀語境完形", unit: currentReadingUnit + "｜" + currentReadingSub,
-    finishTime: new Date().toLocaleString(),
-    costTime: `${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,
-    score: score, total: total, fullCount: score, halfCount: 0, zeroCount: total - score,
-    wrongQuestions: wrong, percent: percent
-  };
-  exerciseRecords.push(rec);
-  localStorage.setItem("exerciseRecords", JSON.stringify(exerciseRecords));
-  attemptStats.push({score: score, total: total, time: Date.now()});
-  localStorage.setItem("attemptStats", JSON.stringify(attemptStats));
-  renderRecordList();
-  stopTimer();
-  document.getElementById("submitReadingClozeBtn").style.display = "none";
-}
-</script>
-</body>
-</html>
+  const sub = READING_UNITS[currentReadingUnit]["語
