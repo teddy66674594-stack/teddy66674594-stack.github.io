@@ -1,6 +1,6 @@
 // ============================================
 // 完形題庫
-// 目前只有第三單元｜以後加單元：往下加 UNIT 物件即可
+// 目前有第三單元、第五單元
 // ============================================
 
 const CLOZE_UNITS = {
@@ -35,5 +35,27 @@ const CLOZE_UNITS = {
     {sentence:"Visitors can enjoy a wide （______） of experiences, including cycling through scenic routes, visiting Hans Christian Andersen's childhood home, and tasting Danish pastries.", answer:"range", syn:"variety", cnKey:"范围", cnSentence:"遊客可以享受各種各樣的體驗。"},
     {sentence:"If you love history and nature, （______） these amazing places.", answer:"check out", syn:"see", cnKey:"查看", cnSentence:"如果你喜歡歷史和自然，去看看這些令人驚嘆的地方吧。"},
     {sentence:"Finally, to （______） the journey, you can relax by the coast and watch the sunset over the Baltic Sea.", answer:"wrap up", syn:"conclude", cnKey:"结束", cnSentence:"最後，為了結束旅程，你可以在海邊放鬆，看波羅的海上的日落。"}
+  ],
+  "第五單元": [
+    {sentence:"In the field of （______）, Easton LaChappelle is renowned for his innovative hand.", answer:"robotics", syn:"the science of making and using robots", cnKey:"机器人技术", cnSentence:"在机器人技术领域，伊斯頓·拉夏佩爾以其創新的機械手而聞名。"},
+    {sentence:"He created an innovative （______） hand that was far more functional than conventional prosthetics.", answer:"mechanical", syn:"operated by a machine", cnKey:"机械的", cnSentence:"他創造了一種創新的機械手，其功能遠超傳統假肢。"},
+    {sentence:"This device was far more （______） and affordable than conventional prosthetics.", answer:"functional", syn:"practical and useful", cnKey:"功能性的", cnSentence:"這種設備比傳統假肢功能更強大且價格更實惠。"},
+    {sentence:"He helped a 7-year-old girl whose right arm was （______） below the elbow.", answer:"amputated", syn:"cut off a part of the body", cnKey:"截肢", cnSentence:"他幫助了一個右臂肘部以下被截肢的7歲女孩。"},
+    {sentence:"He provided her with a （______） artificial arm that was tailor-made for her.", answer:"customized", syn:"change to suit the needs of the owner", cnKey:"定制的", cnSentence:"他為她提供了一個專門為她量身定做的定制假肢。"},
+    {sentence:"The artificial arm was （______） in both design and cost compared to others.", answer:"superior", syn:"better than average", cnKey:"优越的", cnSentence:"這款假肢在設計和成本上均優於其他產品。"},
+    {sentence:"The new prosthetic arm uses a （______） connection to respond to her brain signals.", answer:"wireless", syn:"using a system of radio signals", cnKey:"无线的", cnSentence:"這款新假肢使用無線連接來響應她的大腦信號。"},
+    {sentence:"Now, he has made the robotic arm's design freely （______） online for anyone to use.", answer:"accessible", syn:"can be reached", cnKey:"可接近的", cnSentence:"現在，他將機械臂的設計免費發佈在網上，供任何人使用。"},
+    {sentence:"This allows anyone to （______） and improve the design.", answer:"adapt", syn:"to change sth", cnKey:"适应，改编", cnSentence:"這使得任何人都可以改編和改進該設計。"},
+    {sentence:"For this reason, he has become an inspiration to many （______） young inventors.", answer:"budding", syn:"beginning to develop", cnKey:"新兴的", cnSentence:"因此，他成為了許多嶄露頭角的年輕發明家的靈感來源。"},
+    {sentence:"Easton LaChappelle created an （______） prosthetic arm in nine months.", answer:"innovative", syn:"using new ideas or methods", cnKey:"创新的", cnSentence:"伊斯頓·拉夏佩爾在九個月內創造了一款創新的假肢。"},
+    {sentence:"Momo had to replace her prosthetic arm when she （______） it.", answer:"outgrew", syn:"to grow bigger than", cnKey:"长大不再适合", cnSentence:"莫莫長大後，不得不更換她的假肢。"},
+    {sentence:"Easton has the drive and vision to （______） his goals independently.", answer:"achieve", syn:"to succeed in finishing sth", cnKey:"实现", cnSentence:"伊斯頓擁有獨立實現目標的動力和遠見。"},
+    {sentence:"Easton worked in （______） with a team at Microsoft during the design stage.", answer:"collaboration", syn:"cooperation", cnKey:"合作", cnSentence:"在設計階段，伊斯頓與微軟團隊進行了合作。"},
+    {sentence:"Unlimited tomorrow has a goal of producing advanced technology at （______） prices.", answer:"affordable", syn:"reasonably priced", cnKey:"负担得起的", cnSentence:"無限明天項目的目標是以可負擔的價格生產先進技術。"},
+    {sentence:"The prosthetic arm looked （______） because Momo could even paint its fingernails.", answer:"realistic", syn:"accepting things as they are in fact", cnKey:"逼真的", cnSentence:"這款假肢看起來非常逼真，莫莫甚至可以給它的指甲塗色。"},
+    {sentence:"The prosthetic arm and the methods used were widely reported as a （______）.", answer:"breakthrough", syn:"an important discovery", cnKey:"突破", cnSentence:"這款假肢及其使用的方法被廣泛報導為一項重大突破。"},
+    {sentence:"While producing the prosthetic arm on a 3D printer, Easton （______） to details.", answer:"paid close attention", syn:"to give careful focus to sth", cnKey:"密切注意", cnSentence:"在用3D打印機製作假肢時，伊斯頓密切關注細節。"},
+    {sentence:"From the young inventors' viewpoint, Easton is their （______）.", answer:"inspiration", syn:"sb that gives you ideas", cnKey:"灵感", cnSentence:"從年輕發明家的角度來看，伊斯頓是他們的靈感來源。"},
+    {sentence:"Congratulations on winning the （______）.", answer:"science fair", syn:"a competitive exhibition of science projects", cnKey:"科学展览会", cnSentence:"祝賀你在科學展覽會上獲獎。"}
   ]
 };
