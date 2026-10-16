@@ -1,6 +1,6 @@
 // ============================================
 // 生詞庫
-// 目前只有第三單元｜以後加單元：往下加 UNIT 物件即可
+// 目前有第三單元、第五單元｜以後加單元：往下加 UNIT 物件即可
 // ============================================
 
 const WORD_UNITS = {
@@ -35,5 +35,27 @@ const WORD_UNITS = {
     {no:28, en:"check out", pos:"phr. v.", syn:"see", synCn:"查看", cn:"查看", memo:"check out something前去參觀、看一看"},
     {no:29, en:"entirely", pos:"adv.", syn:"completely", synCn:"完全地", cn:"完全地", memo:"entire形容詞完整，‑ly副詞後綴"},
     {no:30, en:"date back to", pos:"phr. v.", syn:"originate from", synCn:"起源於", cn:"追溯到", memo:"後接年代、歷史時期"}
+  ],
+  "第五單元": [
+    {no:1, en:"accessible", pos:"adj.", syn:"can be reached", synCn:"可接近的", cn:"可接近的，可使用的", memo:"accessible to sb 對某人來說是可接近的"},
+    {no:2, en:"customized", pos:"adj.", syn:"tailor-made", synCn:"量身定做的", cn:"定制的，定做的", memo:"customize 動詞，customized 形容詞"},
+    {no:3, en:"adapt", pos:"v.", syn:"adjust", synCn:"調整", cn:"适应，改编", memo:"adapt to sth 適應某事"},
+    {no:4, en:"mechanical", pos:"adj.", syn:"automated", synCn:"自動化的", cn:"机械的", memo:"mechanical engineering 機械工程"},
+    {no:5, en:"amputate", pos:"v.", syn:"cut off", synCn:"切除", cn:"截肢", memo:"amputate a limb 截去肢體"},
+    {no:6, en:"superior", pos:"adj.", syn:"better", synCn:"更好的", cn:"优越的，更好的", memo:"be superior to 優於……"},
+    {no:7, en:"budding", pos:"adj.", syn:"emerging", synCn:"新興的", cn:"新兴的，崭露头角的", memo:"budding young artist 嶄露頭角的年輕藝術家"},
+    {no:8, en:"wireless", pos:"adj.", syn:"radio", synCn:"無線電的", cn:"无线的", memo:"wireless connection 無線連接"},
+    {no:9, en:"robotics", pos:"n.", syn:"robot science", synCn:"機器人科學", cn:"机器人技术", memo:"the science of making and using robots"},
+    {no:10, en:"functional", pos:"adj.", syn:"practical", synCn:"實用的", cn:"功能性的，实用的", memo:"functional design 功能性設計"},
+    {no:11, en:"innovative", pos:"adj.", syn:"creative", synCn:"創新的", cn:"创新的，革新的", memo:"innovative ideas 創新的想法"},
+    {no:12, en:"pay close attention", pos:"phr.", syn:"focus on", synCn:"密切關注", cn:"密切注意", memo:"pay close attention to sth"},
+    {no:13, en:"science fair", pos:"n. phr.", syn:"science exhibition", synCn:"科學展覽", cn:"科学展览会", memo:"a competitive exhibition of science projects"},
+    {no:14, en:"realistic", pos:"adj.", syn:"lifelike", synCn:"逼真的", cn:"逼真的，现实的", memo:"realistic expectations 現實的期望"},
+    {no:15, en:"outgrow", pos:"v.", syn:"grow bigger than", synCn:"長得比...快", cn:"长得比...快，因长大而不再适合", memo:"outgrow clothes 長大穿不下衣服"},
+    {no:16, en:"breakthrough", pos:"n.", syn:"discovery", synCn:"重大發現", cn:"重大突破，重要发现", memo:"make a breakthrough 取得突破"},
+    {no:17, en:"achieve", pos:"v.", syn:"accomplish", synCn:"完成", cn:"实现，达到", memo:"achieve a goal 實現目標"},
+    {no:18, en:"affordable", pos:"adj.", syn:"reasonably priced", synCn:"價格合理", cn:"负担得起的，价格合理的", memo:"affordable housing 可負擔的住房"},
+    {no:19, en:"collaboration", pos:"n.", syn:"cooperation", synCn:"合作", cn:"合作，协作", memo:"in collaboration with 與……合作"},
+    {no:20, en:"inspiration", pos:"n.", syn:"motivation", synCn:"靈感", cn:"灵感，启发灵感的人/物", memo:"draw inspiration from 從……中汲取靈感"}
   ]
 };
