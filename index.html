@@ -5,177 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>英語練習系統</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f9;padding:12px;user-select:none;color:#2c3e50;}
-h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:22px;}
-.sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;}
-.warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
-.btn{padding:8px 14px;border:none;border-radius:8px;background:#667eea;color:#fff;cursor:pointer;font-size:14px;transition:opacity 0.2s;}
-.btn:hover{opacity:0.9;}.btn:active{transform:scale(0.96);}
-.btn-finish{background:#27ae60;}.btn-clear-wrong{background:#e74c3c;}.btn-download{background:#4a69bd;}
-.sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:8px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
-.sub-btn:hover{background:#dde2fc;}
-.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:10px;background:#eef4ff;color:#667eea;font-size:15px;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.unit-btn:hover{background:#667eea;color:#fff;transform:translateY(-2px);}
-#disclaimerModal,#noticeModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
-.disc-box,.notice-box{background:#fff;padding:24px;border-radius:16px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
-.disc-buttons,.notice-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
-.disc-text,.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
-.notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
-.notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
-#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;}
-#timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:monospace;z-index:9998;display:none;}
-.tip-box{background:#fff9d6;border-left:4px solid #f39c12;color:#7a5b00;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.7;margin:10px 0;}
-.tip-box strong{color:#e67e22;}
-#homePage{max-width:1000px;margin:0 auto;}
-.home-stat{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:24px 20px;border-radius:20px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
-.home-stat-item{text-align:center;}
-.home-stat-num{font-size:28px;font-weight:bold;display:block;}
-.home-stat-label{font-size:13px;opacity:0.9;margin-top:4px;}
-#homeGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 0 20px;}
-.module-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 12px rgba(0,0,0,0.06);display:flex;flex-direction:column;border:2px solid transparent;cursor:pointer;transition:0.3s;}
-.module-card:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(102,126,234,0.2);}
-.card-icon{font-size:36px;margin-bottom:12px;}
-.card-title{font-size:18px;font-weight:bold;color:#2c3e50;margin-bottom:6px;}
-.card-desc{font-size:13px;color:#888;line-height:1.5;margin-bottom:16px;flex:1;}
-.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.tag{background:#eef4ff;color:#667eea;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:bold;}
-.card-btn{margin-top:auto;align-self:flex-end;background:#667eea;color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;}
-#moduleView{display:none;max-width:900px;margin:0 auto;}
-#backHomeBtn{display:none;margin-bottom:16px;padding:10px 18px;background:#fff;color:#667eea;border:1px solid #dde2fc;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;}
-.box-wrap{margin-bottom:18px;background:#fff;padding:22px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);display:none;}
-.box-wrap.show{display:block;}
-.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px;}
-.word-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #667eea;}
-.word-header{display:flex;gap:6px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;align-items:baseline;flex-wrap:wrap;}
-.word-num{width:24px;height:24px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;}
-.word-en{font-weight:bold;font-size:17px;color:#2c3e50;}
-.speaker{cursor:pointer;color:#667eea;margin-left:4px;}
-.word-pos{font-size:12px;color:#777;font-style:italic;}
-.word-cn{color:#e74c3c;font-weight:bold;margin:8px 0;font-size:15px;}
-.label{color:#667eea;font-weight:bold;}
-.syn{background:#f0f4ff;padding:3px 6px;border-radius:4px;color:#4a69bd;}
-.syn-speaker{cursor:pointer;color:#4a69bd;margin-left:4px;}
-.tip{color:#27ae60;margin-top:6px;font-size:14px;}
-.table-container{margin-top:16px;overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px;}
-th,td{border:1px solid #e0e0e0;padding:10px 8px;word-break:break-word;vertical-align:middle;}
-th{background:#667eea;color:#fff;font-weight:bold;}
-tr:nth-child(even){background:#f9faff;}
-.range-input-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;font-size:14px;}
-.range-input-area input{padding:8px;border:1px solid #ccc;border-radius:6px;font-size:14px;outline:none;}
-.check-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;}
-.mode-select-group{margin:12px 0;padding:16px;background:#f4f7ff;border-radius:12px;font-size:14px;line-height:2;}
-.exercise-item{margin:18px 0;padding:16px;background:#fafbff;border-radius:12px;border:1px solid #eef4ff;}
-.q-num{font-weight:bold;margin-right:4px;font-size:15px;}
-.q-syn-info{font-size:14px;color:#666;margin-bottom:10px;}
-.user-display{width:100%;padding:12px;border:2px solid #dde2fc;border-radius:10px;font-size:16px;background:#fff;margin-bottom:10px;outline:none;user-select:text;}
-.feedback{margin-top:8px;font-size:15px;font-weight:bold;}
-.ok{color:#27ae60;}.half{color:#f39c12;}.err{color:#e74c3c;}
-.result-page{margin-top:20px;padding:20px;background:#f0f8ff;border-radius:12px;display:none;border:1px solid #dde2fc;}
-.result-item{padding:10px;margin:8px 0;border-radius:8px;background:#fff;font-size:14px;}
-.score-text{font-size:20px;font-weight:bold;text-align:center;margin:14px 0;white-space:pre-line;line-height:1.6;}
-.finish-area{margin:20px 0;text-align:center;}
-.lock-tip{background:#ffecec;color:#c0392b;padding:12px;border-radius:10px;margin-bottom:16px;font-weight:bold;font-size:14px;}
-.drag-bank{background:#f4f7ff;padding:16px;border-radius:12px;margin-bottom:20px;border:2px dashed #a9b7e8;}
-.bank-title{font-size:14px;color:#4a69bd;font-weight:bold;margin-bottom:12px;}
-.bank-words{display:flex;flex-wrap:wrap;gap:8px;}
-.drag-word{background:#fff;border:2px solid #667eea;color:#2c3e50;padding:8px 16px;border-radius:20px;cursor:grab;font-size:14px;font-weight:bold;}
-.drag-word.selected{background:#667eea;color:#fff;}
-.drag-word.used{opacity:0.3;cursor:not-allowed;border-style:dashed;}
-.drop-zone{display:inline-block;min-width:100px;padding:4px 14px;border:2px dashed #a9b7e8;border-radius:8px;background:#f8f9fb;color:#999;font-size:14px;cursor:pointer;margin:0 4px;}
-.drop-zone.filled{background:#e8f0ff;border-style:solid;border-color:#667eea;color:#2c3e50;font-weight:bold;}
-.zone-ok{border-color:#27ae60 !important;background:#e8f9ee !important;}
-.zone-half{border-color:#f39c12 !important;background:#fff6e5 !important;}
-.zone-err{border-color:#e74c3c !important;background:#fdecea !important;}
-.drag-status{position:sticky;top:0;z-index:20;background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;font-weight:bold;}
-.cloze-sentence-trigger{cursor:pointer;padding:12px;background:#f8f9fb;border-radius:10px;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
-.cloze-sentence{flex:1;font-weight:bold;line-height:1.6;color:#2c3e50;font-size:15px;}
-.cloze-toggle-icon{color:#667eea;font-size:12px;margin-top:5px;}
-.cloze-detail{padding:12px 14px;background:#fffdf5;border-left:4px solid #f39c12;border-radius:8px;margin-bottom:10px;}
-.cloze-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
-.cloze-chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;padding:4px 12px;border-radius:16px;font-size:13px;cursor:pointer;}
-.cloze-speaker{background:#667eea;color:#fff;border:none;padding:6px 16px;border-radius:16px;font-size:13px;cursor:pointer;}
-.key-cn{color:#555;font-size:14px;}
-.cloze-sentence-cn{margin-top:10px;padding:10px 12px;background:#fff;border-radius:8px;font-size:14px;color:#444;line-height:1.7;border:1px dashed #e0e0e0;}
-.reading-split-container{display:flex;flex-direction:column;height:72vh;min-height:400px;gap:10px;margin-top:10px;border:1px solid #eef4ff;border-radius:12px;overflow:hidden;background:#fff;}
-.reading-split-top{flex:1.2;overflow-y:auto;padding:16px;background:#fafbff;border-bottom:2px dashed #dde2fc;}
-.reading-split-top .reading-passage{background:transparent;padding:0;margin:0;border:none;user-select:text;}
-.reading-split-bottom{flex:1;overflow-y:auto;padding:16px;background:#fff;}
-.reading-split-bottom .exercise-item{margin:10px 0;padding:12px;}
-.split-hint{text-align:center;font-size:12px;color:#999;padding:4px;background:#f4f5f9;border-radius:6px;margin-bottom:8px;}
-.split-btn{font-size:12px;padding:4px 10px;background:#eef4ff;border:none;border-radius:6px;color:#667eea;cursor:pointer;font-weight:bold;}
-.reading-passage{line-height:2;font-size:15px;color:#333;background:#fafbff;padding:20px;border-radius:12px;margin:14px 0;user-select:text;border:1px solid #eef4ff;}
-.reading-passage p{margin-bottom:14px;}
-.reading-word{cursor:pointer;padding:0 3px;border-radius:4px;}
-.reading-word.active{background:#ffe68a!important;font-weight:bold;}
-.reading-word.has-cn{background:#fff3cd;}
-#wordPopup{position:fixed;background:#2c3e50;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:99999;display:none;max-width:220px;text-align:center;cursor:pointer;}
-.reading-choice{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;margin-bottom:12px;font-size:14px;}
-.reading-choice .choice-opt{display:block;padding:8px 12px;margin:6px 0;border-radius:8px;cursor:pointer;}
-.reading-choice .choice-opt.selected{background:#e8f0ff;font-weight:bold;border:1px solid #667eea;}
-.reading-choice .choice-opt.correct{background:#e8f9ee;color:#1e8449;font-weight:bold;}
-.reading-choice .choice-opt.wrong{background:#fdecea;color:#c0392b;font-weight:bold;}
-.reading-intro{background:#fff9d6;border:1px solid #ffe68a;color:#7a5b00;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:14px;font-weight:bold;}
-.tense-card{background:#f8f9fb;border-radius:12px;padding:16px;margin-bottom:10px;border-left:4px solid #667eea;}
-.tense-en{font-weight:bold;color:#2c3e50;font-size:15px;}
-.tense-cn{color:#888;font-size:13px;margin-left:6px;}
-.tense-struct{color:#e74c3c;font-size:14px;margin-top:8px;font-family:monospace;background:#fff;padding:8px;border-radius:6px;border:1px solid #eee;}
-.record-card{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:#fff;border-left:5px solid #667eea;border-radius:12px;margin:12px 0;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.05);}
-.record-card-left{flex:1;min-width:0;}
-.record-type{font-weight:bold;font-size:16px;color:#2c3e50;margin-bottom:6px;}
-.record-meta{font-size:13px;color:#666;margin:3px 0;}
-.record-card-right{text-align:center;min-width:110px;padding-left:14px;border-left:1px dashed #ddd;flex-shrink:0;}
-.record-percent{font-size:28px;font-weight:bold;}
-.record-percent-label{font-size:12px;color:#999;}
-.record-enter{font-size:12px;color:#667eea;margin-top:8px;font-weight:bold;}
-#eyeCareBanner{position:fixed;top:0;left:0;right:0;padding:14px 20px;text-align:center;font-size:15px;font-weight:bold;z-index:99999;transform:translateY(-100%);transition:transform 0.4s;}
-#eyeCareBanner.show{transform:translateY(0);}
-#eyeCareBanner.green{background:#27ae60;color:#fff;}
-#eyeCareBanner.yellow{background:#f39c12;color:#fff;}
-#eyeCareBanner.red{background:#e74c3c;color:#fff;}
-.reading-passage,.reading-word{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent!important;}
-.choice-opt{display:inline-block;padding:10px 16px;margin:6px;border:2px solid #dde2fc;border-radius:8px;cursor:pointer;font-size:15px;background:#fff;}
-.choice-opt.correct{background:#e8f9ee;border-color:#27ae60;color:#1e8449;font-weight:bold;}
-.choice-opt.wrong{background:#fdecea;border-color:#e74c3c;color:#c0392b;font-weight:bold;}
-@media (max-width:600px){#homeGrid{gap:12px;}.module-card{padding:18px;border-radius:14px;}.home-stat{padding:16px;border-radius:16px;}.home-stat-num{font-size:22px;}.box-wrap{padding:16px;border-radius:12px;}.reading-passage{padding:14px;}}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f4f5f9; padding: 15px; color: #2c3e50; }
+    h1 { text-align: center; font-size: 22px; margin-bottom: 5px; }
+    .sub-desc { text-align: center; font-size: 13px; color: #666; margin-bottom: 15px; }
+    
+    /* 顶部统计 */
+    .home-stat { display: flex; justify-content: space-around; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    .home-stat-item { text-align: center; }
+    .home-stat-num { font-size: 24px; font-weight: bold; display: block; }
+    .home-stat-label { font-size: 13px; }
+    
+    /* 卡片网格 */
+    #homeGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+    .module-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #eee; }
+    .card-icon { font-size: 30px; margin-bottom: 10px; }
+    .card-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+    .card-desc { font-size: 13px; color: #888; line-height: 1.5; margin-bottom: 10px; }
+    .card-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+    .tag { background: #f0f4ff; color: #667eea; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+    .card-btn { background: #667eea; color: #fff; border: none; padding: 6px 15px; border-radius: 6px; float: right; cursor: pointer; }
+
+    /* 模块容器 */
+    .module-view { display: none; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .back-btn { background: #eee; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+    .btn { background: #667eea; color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin: 5px 0; font-size: 14px; }
+    .unit-btn { background: #eef4ff; color: #667eea; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 5px; }
+    .sub-btn { background: #f8f9fa; border: 1px solid #ddd; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin: 5px; }
+    
+    /* 题目和输入框 */
+    .exercise-item { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
+    .user-display { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; margin-top: 10px; }
+    .q-num { font-weight: bold; margin-bottom: 5px; }
+    .q-syn-info { font-size: 13px; color: #666; margin-bottom: 5px; }
+    .feedback { margin-top: 5px; font-weight: bold; }
+    .ok { color: #27ae60; }
+    .err { color: #e74c3c; }
+    
+    /* 表格 */
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+    th { background: #f4f5f9; }
 </style>
 </head>
-<body oncontextmenu="return false;">
-<div id="eyeCareBanner"></div>
-<div id="timerBadge">⏱ 00:00</div>
-<div id="wordPopup"></div>
-<button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
-<div id="noticeModal"><div class="notice-box"><div class="notice-title" id="noticeTitle">公告</div><div class="notice-meta" id="noticeMeta"></div><div class="notice-text" id="noticeContent"></div><div class="notice-buttons"><button id="noticeOk" class="btn">知道了</button></div></div></div>
-<div id="disclaimerModal"><div class="disc-box"><h3 style="text-align:center">公告｜免責聲明</h3><div class="disc-text">本英語練習系統為純公益非商用學習工具，完全免費，不收費。<br>本網站使用的部分圖片素材來源於網絡，版權歸原作者所有。使用本網站即代表您已閱讀並同意本聲明。</div><label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意</label><div class="disc-buttons"><button id="discOk" class="btn">同意並進入系統</button></div></div></div>
+<body>
 
-<div id="mainContent" style="display:none;">
-  <h1>英語練習系統</h1>
-  <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
-  <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
-  
-  <div id="homePage">
-    <div class="home-stat">
-      <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
-      <div class="home-stat-item"><span class="home-stat-num" id="statCloze">0</span><span class="home-stat-label">完形句</span></div>
-      <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
-      <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀篇章</span></div>
+<!-- 首页内容（默认显示） -->
+<div id="mainContent">
+    <h1>英語練習系統</h1>
+    <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
+    
+    <div id="homePage">
+        <div class="home-stat">
+            <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
+            <div class="home-stat-item"><span class="home-stat-num" id="statCloze">0</span><span class="home-stat-label">完形句</span></div>
+            <div class="home-stat-item"><span class="home-stat-num" id="statGrammar">0</span><span class="home-stat-label">語法題</span></div>
+            <div class="home-stat-item"><span class="home-stat-num" id="statReading">0</span><span class="home-stat-label">閱讀</span></div>
+        </div>
+        <div id="homeGrid"></div>
     </div>
-    <div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方任意卡片即可進入對應模塊。進去後，點擊左上角按鈕可以隨時返回。</div>
-    <div id="homeGrid"></div>
-  </div>
-  <div id="moduleView">
-    <button id="backHomeBtn" onclick="goBack()">← 返回首頁</button>
-    <div id="vocabPool" class="box-wrap"><h2>📚 生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後可以看單詞卡片或完整表格。</div><p style="margin:10px 0;color:#666;">請選擇單元：</p><div id="vocabUnitButtons"></div></div>
-    <div id="vocabUnit" class="box-wrap"><h2 id="vocabUnitTitle">生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。</div><p style="margin:10px 0;color:#666;">選擇模塊：</p><button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button><button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button><div id="cardPanel" style="margin-top:18px;"></div><div id="tablePanel" style="margin-top:18px;"></div></div>
-    <div id="exerciseRoot" class="box-wrap"><h2>📝 練習題</h2><div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後有三種練習可以選。</div><p style="margin:10px 0;color:#666;">請選擇單元：</p><div id="exerciseUnitButtons"></div></div>
-    <div id="exerciseUnit" class="box-wrap"><h2 id="exerciseUnitTitle">練習題</h2><div class="tip-box">💡 <strong>三種練習的區別：</strong><br>① 看同義詞默寫 ② 完形填空測驗 ③ 拖拽選擇練習</div><p style="margin:10px 0;color:#666;">請選擇練習類型：</p><button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button><button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button><button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button><div id="writePanel" style="margin-top:18px;display:none;"></div><div id="clozePanel" style="margin-top:18px;display:none;"></div><div id="choicePanel" style="margin-top:18px;display:none;"></div></div>
-    <div id="grammarRoot" class="box-wrap"><h2>📖 語法</h2><div class="tip-box">💡 <strong>怎麼做：</strong>建議先看「動詞表」和「時態結構」熟悉語法規則，再去「測驗」做題。</div><p style="margin:10px 0;color:#666;">請選擇模塊：</p><button class="unit-btn" onclick="openVerbTable()">①動詞表</button><button class="unit-btn" onclick="openTenseStructure()">②時態結構</button><button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button><div id="grammarPanel" style="margin-top:18px;"></div></div>
-    <div id="readingRoot" class="box-wrap"><h2>📘 閱讀理解</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。</div><p style="margin:10px 0;color:#666;">請選擇測驗：</p><button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button><div id="readingPanel" style="margin-top:18px;"></div></div>
-    <div id="wrongBookPanel" class="box-wrap"><h2>📒 錯題本</h2><div class="tip-box">💡 <strong>怎麼做：</strong>做完練習並保存成績後，這裡會顯示記錄。</div><p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p><div class="record-list" id="recordList"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;"><button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button></div></div>
-    <div id="wrongRedoPanel" class="box-wrap"><h2>🔁 錯題重做</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方按鈕載入錯題，重新作答。</div><div id="wrongRedoSetting"></div><div id="wrongRedoArea"></div><div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div><div class="result-page" id="wrongRedoResultPage"></div></div>
-  </div>
+
+    <!-- 模块页面容器 -->
+    <div id="moduleView" class="module-view">
+        <button class="back-btn" onclick="goHome()">← 返回首頁</button>
+
+        <!-- 生词池 -->
+        <div id="vocabPool" style="display:none;">
+            <h2>📚 生詞池</h2>
+            <div id="vocabUnitButtons" style="margin-top: 15px;"></div>
+        </div>
+        <div id="vocabUnit" style="display:none;">
+            <h2 id="vocabUnitTitle">單元</h2>
+            <button class="sub-btn" onclick="showVocabCard()">單詞卡片</button>
+            <button class="sub-btn" onclick="showVocabTable()">完整表格</button>
+            <div id="cardPanel" style="margin-top:15px;"></div>
+            <div id="tablePanel" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- 练习 -->
+        <div id="exerciseRoot" style="display:none;">
+            <h2>📝 練習題</h2>
+            <div id="exerciseUnitButtons" style="margin-top: 15px;"></div>
+        </div>
+        <div id="exerciseUnit" style="display:none;">
+            <h2 id="exerciseUnitTitle">練習</h2>
+            <button class="sub-btn" onclick="showWriteExercise()">默寫</button>
+            <button class="sub-btn" onclick="showClozeExercise()">完形填空</button>
+            <button class="sub-btn" onclick="showChoiceExercise()">拖拽選擇</button>
+            <div id="writePanel" style="margin-top:15px; display:none;"></div>
+            <div id="clozePanel" style="margin-top:15px; display:none;"></div>
+            <div id="choicePanel" style="margin-top:15px; display:none;"></div>
+        </div>
+
+        <!-- 语法 -->
+        <div id="grammarRoot" style="display:none;">
+            <h2>📖 語法</h2>
+            <button class="unit-btn" onclick="openVerbTable()">動詞表</button>
+            <button class="unit-btn" onclick="openTenseStructure()">時態結構</button>
+            <button class="unit-btn" onclick="openGrammarQuizRoot()">測驗</button>
+            <div id="grammarPanel" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- 阅读 -->
+        <div id="readingRoot" style="display:none;">
+            <h2>📘 閱讀理解</h2>
+            <button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button>
+            <div id="readingPanel" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- 错题本 -->
+        <div id="wrongBookPanel" style="display:none;">
+            <h2>📒 錯題本</h2>
+            <div id="recordList" style="margin-top: 15px;"></div>
+            <button class="btn" style="background:#e74c3c; margin-top:15px;" onclick="clearAllRecords()">清空紀錄</button>
+        </div>
+        <div id="wrongRedoPanel" style="display:none;">
+            <h2>🔁 錯題重做</h2>
+            <div id="wrongRedoSetting"></div>
+            <div id="wrongRedoArea" style="margin-top:15px;"></div>
+            <button class="btn" id="wrongRedoFinishBtn" style="display:none; margin-top:15px;">查看成績</button>
+            <div id="wrongRedoResultPage" style="margin-top:15px;"></div>
+        </div>
+
+    </div>
 </div>
+
+<!-- 引入数据文件和逻辑文件 -->
 <script src="notice.js"></script>
 <script src="words.js"></script>
 <script src="cloze.js"></script>
