@@ -1,4 +1,3 @@
-try {
 let attemptStats=JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords=JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList=[],quizType="",exerciseStartTime=0,currentWrongRecordIndex=-1,speakToken=0,currentUnitName="",currentReadingUnit="",currentReadingSub="",homeScrollY=0;
@@ -11,6 +10,8 @@ function updateTimerDisplay(){const e=Math.floor((Date.now()-timerStartTime)/100
 function stopTimer(){isPracticing=false;clearInterval(timerInterval);timerInterval=null;document.getElementById("timerBadge").style.display="none";}
 function guardNavigation(){if(!isPracticing)return true;const ok=confirm("⚠️ 練習進行中，離開將丟失本次進度。\n\n點擊『確定』：自動保存本次成績並退出\n點擊『取消』：繼續練習");if(ok){saveCurrentQuizSilently();stopTimer();return true;}return false;}
 function saveCurrentQuizSilently(){try{if(quizType==="write"&&window._writeScore)saveWriteRecord(true);else if(quizType==="cloze"&&window._clozeScore)saveClozeRecord(true);else if(quizType==="choice"&&window._choiceScore)saveChoiceRecord(true);else if(quizType==="grammar"&&window._grammarScore)saveGrammarRecord(true);}catch(e){}}
+document.getElementById("disclaimerModal").style.display="flex";
+document.getElementById("discOk").onclick=function(){if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}document.getElementById("disclaimerModal").style.display="none";document.getElementById("mainContent").style.display="block";document.getElementById("noticeFloatBtn").style.display="block";goHome();renderRecordList();showNoticeIfAny();};
 document.getElementById("noticeOk").onclick=function(){document.getElementById("noticeModal").style.display="none";};
 function showNoticeIfAny(){if(typeof NOTICE!=="undefined"){document.getElementById("noticeTitle").innerText=NOTICE.title||"公告";document.getElementById("noticeMeta").innerText=(NOTICE.version||"")+"｜"+(NOTICE.date||"");document.getElementById("noticeContent").innerHTML=NOTICE.content||"";document.getElementById("noticeModal").style.display="flex";}}
 (function(){const b=document.getElementById("eyeCareBanner");let a=false,c=false,d=false;const st=Date.now();function sh(t,cl){b.innerText=t;b.className="show "+cl;setTimeout(()=>b.classList.remove("show"),6000);}setInterval(function(){const m=Math.floor((Date.now()-st)/60000);if(m>=15&&!a){a=true;sh("👀 已看 15 分鐘，看看遠處放鬆一下眼睛吧～","green");}if(m>=30&&!c){c=true;sh("🚶 已看 30 分鐘，建議站起來活動一下。","yellow");}if(m>=60&&!d){d=true;sh("❤️ 已看 1 小時，該休息了！","red");}},30000);})();
@@ -87,84 +88,3 @@ function startReadingBlank(sub){startTimer();const pool=shuffleArray([...sub.bla
 function submitReadingBlank(){const pool=window._readingBlankPool;let score=0;const wrong=[];document.querySelectorAll("#readingBlankArea .exercise-item").forEach((div,idx)=>{const inp=div.querySelector(".user-display");const fb=div.querySelector(".feedback");const item=pool[idx];if(inp.value.trim().toLowerCase()===item.a.toLowerCase()){score++;fb.innerHTML=`<span class="ok">✅正確：${item.a}</span>`;}else{wrong.push(item.q);fb.innerHTML=`<span class="err">❌錯誤，答案：${item.a}</span>`;}});const total=pool.length,percent=Number((score/total*100).toFixed(2));const resPage=document.getElementById("readingBlankResult");resPage.innerHTML=`<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">填空題：${score}/${total}（${percent}%）</div>`;resPage.style.display="block";const costMs=Date.now()-exerciseStartTime;const rec={type:"閱讀填空題",unit:currentReadingUnit+"｜"+currentReadingSub,finishTime:new Date().toLocaleString(),costTime:`${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,score:score,total:total,fullCount:score,halfCount:0,zeroCount:total-score,wrongQuestions:wrong,percent:percent};exerciseRecords.push(rec);localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));attemptStats.push({score:score,total:total,time:Date.now()});localStorage.setItem("attemptStats",JSON.stringify(attemptStats));renderRecordList();stopTimer();document.getElementById("submitReadingBlankBtn").style.display="none";}
 function startReadingCloze(sub){startTimer();const area=document.getElementById("readingClozeArea");document.getElementById("readingClozeResult").style.display="none";area.innerHTML="";let passageHtml=`<div class="reading-passage">`;sub.paragraphs.forEach(par=>{let text=par.text;const words=text.split(/(\s+|[.,!?;:()"—–])/);let line="";words.forEach(w=>{const clean=w.toLowerCase().replace(/[^a-z\-]/g,"");const cn=(sub.vocab&&sub.vocab[clean])?sub.vocab[clean]:null;if(cn)line+=`<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`;else line+=`<span class="reading-word">${w}</span>`;});passageHtml+=`<p>${line}</p>`;});passageHtml+=`</div>`;let itemsHtml="";sub.items.forEach((item,idx)=>{let opts="";["A","B","C","D"].forEach((letter,i)=>{opts+=`<span class="choice-opt" data-letter="${letter}" data-qidx="${idx}" style="display:inline-block;padding:8px 14px;margin:4px;border-radius:8px;cursor:pointer;border:1px solid #ddd;background:#fff;">${letter}. ${item.opts[i]}</span>`;});itemsHtml+=`<div class="exercise-item" data-idx="${idx}"><div class="q-num">${idx+1}. ${item.q}</div><div style="margin:8px 0;">${opts}</div><div class="feedback"></div></div>`;});area.innerHTML=passageHtml+`<hr style="margin:16px 0;">`+itemsHtml;bindReadingWordClick();area.querySelectorAll(".choice-opt").forEach(opt=>{opt.onclick=function(){const siblings=this.parentElement.querySelectorAll(".choice-opt");siblings.forEach(s=>{s.style.background="#fff";s.style.fontWeight="";s.dataset.selected="";});this.style.background="#e8f0ff";this.style.fontWeight="bold";this.dataset.selected="true";};});if(!document.getElementById("submitReadingClozeBtn")){const btn=document.createElement("button");btn.className="btn btn-finish";btn.id="submitReadingClozeBtn";btn.innerText="✅提交答案";btn.style.marginTop="12px";btn.onclick=submitReadingCloze;area.appendChild(btn);}else{document.getElementById("submitReadingClozeBtn").style.display="block";}}
 function submitReadingCloze(){const sub=READING_UNITS[currentReadingUnit]["語境完形填空"];let score=0;const wrong=[];document.querySelectorAll("#readingClozeArea .exercise-item").forEach((div)=>{const idx=Number(div.dataset.idx);const item=sub.items[idx];const opts=div.querySelectorAll(".choice-opt");let userAns="";opts.forEach(o=>{if(o.dataset.selected==="true")userAns=o.dataset.letter;});opts.forEach(o=>{const letter=o.dataset.letter;if(letter===item.ans)o.style.background="#e8f9ee";else if(letter===userAns)o.style.background="#fdecea";});const fb=div.querySelector(".feedback");if(userAns===item.ans){score++;fb.innerHTML=`<span class="ok">✅正確：${item.ans}</span>`;}else{wrong.push(item.q);fb.innerHTML=`<span class="err">❌錯誤，答案：${item.ans}。${item.exp}</span>`;}});const total=sub.items.length,percent=Number((score/total*100).toFixed(2));const resPage=document.getElementById("readingClozeResult");resPage.innerHTML=`<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;resPage.style.display="block";const costMs=Date.now()-exerciseStartTime;const rec={type:"閱讀語境完形",unit:currentReadingUnit+"｜"+currentReadingSub,finishTime:new Date().toLocaleString(),costTime:`${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,score:score,total:total,fullCount:score,halfCount:0,zeroCount:total-score,wrongQuestions:wrong,percent:percent};exerciseRecords.push(rec);localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));attemptStats.push({score:score,total:total,time:Date.now()});localStorage.setItem("attemptStats",JSON.stringify(attemptStats));renderRecordList();stopTimer();document.getElementById("submitReadingClozeBtn").style.display="none";}
-
-/* ===== WebGL 金属卡片特效 ===== */
-function initMetalCard() {
-  try {
-    const canvas = document.getElementById('metalCanvas');
-    const container = document.getElementById('metalCardInner');
-    if (!canvas || !container) return; 
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: true });
-    if (!gl) { container.classList.add('fallback-bg'); canvas.style.display = 'none'; return; }
-    const vsSource = `#version 300 es
-      in vec2 a_position; out vec2 vUv;
-      void main() { vUv = a_position * 0.5 + 0.5; gl_Position = vec4(a_position, 0.0, 1.0); }`;
-    const fsSource = `#version 300 es
-      precision highp float;
-      in vec2 vUv; out vec4 outColor;
-      uniform sampler2D u_envMap; uniform vec2 u_tilt;
-      float noise(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-      void main() {
-        vec2 p = vUv * 2.0 - 1.0;
-        float edge = max(abs(p.x), abs(p.y));
-        vec2 normalXY = -p * smoothstep(0.8, 1.0, edge) * 0.5;
-        float n = (noise(vUv * 100.0) - 0.5) * 0.02;
-        normalXY += vec2(n, n);
-        normalXY += u_tilt * 1.5;
-        vec3 N = normalize(vec3(normalXY, 1.0));
-        vec3 I = vec3(0.0, 0.0, 1.0);
-        vec3 R = reflect(I, N);
-        float maxRz = max(R.z, 0.2);
-        vec2 q = R.xy / maxRz;
-        vec2 finalUV = clamp(vUv + 0.12 * q, 0.0, 1.0);
-        vec4 envColor = texture(u_envMap, finalUV);
-        float rim = smoothstep(0.9, 1.0, edge);
-        envColor.rgb += vec3(rim * 0.5);
-        outColor = envColor;
-      }`;
-    const createShader = (type, source) => { const s = gl.createShader(type); gl.shaderSource(s, source); gl.compileShader(s); return s; };
-    const program = gl.createProgram();
-    gl.attachShader(program, createShader(gl.VERTEX_SHADER, vsSource));
-    gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fsSource));
-    gl.linkProgram(program); gl.useProgram(program);
-    const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    const posLoc = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-    const envCanvas = document.createElement('canvas'); envCanvas.width = 512; envCanvas.height = 512;
-    const ctx = envCanvas.getContext('2d');
-    ctx.fillStyle = '#2a3b7c'; ctx.fillRect(0, 0, 512, 512);
-    const grad = ctx.createRadialGradient(400, 100, 10, 400, 100, 200);
-    grad.addColorStop(0, '#ffcc80'); grad.addColorStop(1, 'rgba(255,204,128,0)');
-    ctx.fillStyle = grad; ctx.fillRect(0, 0, 512, 512);
-    ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.beginPath(); ctx.roundRect(50, 50, 100, 400, 20); ctx.fill();
-    const blurCanvas = document.createElement('canvas'); blurCanvas.width = 512; blurCanvas.height = 512;
-    const bctx = blurCanvas.getContext('2d');
-    bctx.filter = 'blur(24px, 0px)'; bctx.drawImage(envCanvas, 0, 0);
-    ctx.clearRect(0, 0, 512, 512); ctx.filter = 'blur(0px, 24px) grayscale(100%)'; ctx.drawImage(blurCanvas, 0, 0);
-    const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, envCanvas);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.uniform1i(gl.getUniformLocation(program, "u_envMap"), 0);
-    const tiltLoc = gl.getUniformLocation(program, "u_tilt");
-    let dpr = window.devicePixelRatio || 1;
-    const resize = () => { const ndpr = window.devicePixelRatio || 1; if(canvas.width !== 320*ndpr || dpr !== ndpr){ dpr = ndpr; canvas.width = 320*dpr; canvas.height = 500*dpr; gl.viewport(0,0,canvas.width,canvas.height); } };
-    resize();
-    let cx=0, cy=0, tx=0, ty=0, vx=0, vy=0;
-    const animate = () => { const ax = (tx-cx)*120 - vx*16; const ay = (ty-cy)*120 - vy*16; vx+=ax*0.016; vy+=ay*0.016; cx+=vx*0.016; cy+=vy*0.016; container.style.transform = `rotateX(${cy}deg) rotateY(${cx}deg)`; gl.uniform2f(tiltLoc, cx*0.05, -cy*0.05); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP,0,4); requestAnimationFrame(animate); };
-    animate();
-    container.addEventListener('mousemove', (e) => { const rect = container.getBoundingClientRect(); tx = ((e.clientX - rect.left) / rect.width - 0.5) * 24; ty = -((e.clientY - rect.top) / rect.height - 0.5) * 24; });
-    container.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
-  } catch(e) { console.error(e); }
-}
-initMetalCard();
-
-} catch(err) {
-  console.error("全局捕获错误:", err);
-  // 即使报错，也强制显示主页，绝不白屏
-  document.getElementById("mainContent").style.display="block";
-}
