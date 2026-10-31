@@ -310,8 +310,8 @@ const GRAMMAR_BANK = [
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"She ___ (read) the book for a week before she finished it.", a:"had been reading", hint:"過去的過去", exp:"在讀完之前，她已經讀了一週。"},
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"The machine ___ (make) noise for days before it broke.", a:"had been making", hint:"過去的過去", exp:"在壞掉之前，它已經響了好幾天。"},
   {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"I ___ (look) for a job for months before I found this one.", a:"had been looking", hint:"過去的過去", exp:"在找到這份工作之前，我已經找了好幾個月。"},
-  {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"She ___ (suffer) from headaches for weeks before she saw a doctor.", a:"had been suffering", hint:"過去的過去", exp:"在看醫生之前，她已經頭痛了好幾週。"}
-];
+  {topic:"現在完成進行時", topicEn:"Present Perfect Continuous", q:"She ___ (suffer) from headaches for weeks before she saw a doctor.", a:"had been suffering", hint:"過去的過去", exp:"在看醫生之前，她已經頭痛了好幾週。"},
+  
   // ===== 過去完成時 (Past Perfect) =====
   // --- 高一 100 題 ---
   {topic:"過去完成時", topicEn:"Past Perfect", q:"When I arrived at the party, Paul ___ already ___ (go) home.", a:"had gone", hint:"過去的過去", exp:"保羅回家在莎拉到達之前。"},
