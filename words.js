@@ -54,7 +54,8 @@ const WORD_UNITS = {
     {no:15, en:"outgrow", pos:"v.", syn:"to grow bigger than", synCn:"因长大而不合穿", cn:"因长大而不合穿", memo:"outgrow clothes 长大穿不下衣服"},
     {no:16, en:"breakthrough", pos:"n.", syn:"an important discovery", synCn:"突破", cn:"突破", memo:"make a breakthrough 取得突破"},
     {no:17, en:"achieve", pos:"v.", syn:"to succeed in finishing sth", synCn:"实现", cn:"实现", memo:"achieve a goal 实现目标"},
-    {no:18, en:"affordable", pos:"adj.", syn:"reasonably priced", synCn:"价格合理", cn:"价格合理", memo:"affordable housing 可负担的住房"},
+    {no:18, en:"affordable", pos:"adj.", syn:"reasonably priced", cn:"价格合理", synCn:"价格合理", memo:"affordable housing 可负担的住房"},
     {no:19, en:"collaboration", pos:"n.", syn:"cooperation", synCn:"合作", cn:"合作", memo:"in collaboration with 与……合作"},
     {no:20, en:"inspiration", pos:"n.", syn:"sb that gives you ideas", synCn:"灵感", cn:"灵感", memo:"draw inspiration from 从……中汲取灵感"}
   ]
+};
