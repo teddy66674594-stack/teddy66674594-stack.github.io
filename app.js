@@ -1,5 +1,5 @@
-let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
+let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let currentQuizList = [], quizType = "", exerciseStartTime = 0, currentWrongRecordIndex = -1, speakToken = 0;
 let currentUnitName = "", currentReadingUnit = "", currentReadingSub = "", homeScrollY = 0;
 
@@ -11,6 +11,7 @@ function normalizePunctuation(str) {
     return String(str).replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, "-").replace(/[\u2018-\u201B\u2032\uFF07]/g, "'").replace(/[\u201C-\u201F\u2033\uFF02]/g, '"').replace(/[\u00A0\u2000-\u200B\u3000]/g, " ").replace(/[\u2026]/g, "...").replace(/\s+/g, " ").trim().toLowerCase();
 }
 
+// 计时器与导航锁
 let isPracticing = false, timerInterval = null, timerStartTime = 0;
 function startTimer() { isPracticing = true; timerStartTime = Date.now(); exerciseStartTime = timerStartTime; document.getElementById("timerBadge").style.display = "block"; updateTimerDisplay(); clearInterval(timerInterval); timerInterval = setInterval(updateTimerDisplay, 1000); }
 function updateTimerDisplay() { const e = Math.floor((Date.now() - timerStartTime) / 1000); const m = String(Math.floor(e / 60)).padStart(2, "0"); const s = String(e % 60).padStart(2, "0"); document.getElementById("timerBadge").innerText = `⏱ ${m}:${s}`; }
@@ -31,7 +32,6 @@ function saveCurrentQuizSilently() {
     } catch(e) {}
 }
 
-// 初始化与免责声明
 document.getElementById("disclaimerModal").style.display = "flex";
 document.getElementById("discOk").onclick = function() {
     if(!document.getElementById("agreeCheck").checked) { alert("請勾選我已閱讀並同意以上條款"); return; }
@@ -52,7 +52,6 @@ function showNoticeIfAny() {
     }
 }
 
-// 护眼提醒
 (function() {
     const b = document.getElementById("eyeCareBanner"); let a=false, c=false, d=false; const st = Date.now();
     const sh = (t, cl) => { b.innerText = t; b.className = "show " + cl; setTimeout(()=>b.classList.remove("show"), 6000); };
@@ -64,8 +63,9 @@ function showNoticeIfAny() {
     }, 30000);
 })();
 
+// 核心修复：彻底使用 style.display 控制显隐，防止行内样式覆盖
 function goHome() {
-    hideAllBox();
+    document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none");
     document.getElementById("homePage").style.display = "block";
     document.getElementById("moduleView").style.display = "none";
     document.getElementById("backHomeBtn").style.display = "none";
@@ -73,19 +73,19 @@ function goHome() {
     setTimeout(() => window.scrollTo(0, homeScrollY), 10);
 }
 
-function hideAllBox() { document.querySelectorAll(".box-wrap").forEach(el => el.classList.remove("show")); }
-
 function showRoot(id) {
     if(!guardNavigation()) return;
     if(document.getElementById("homePage").style.display !== "none") { homeScrollY = window.scrollY; }
-    hideAllBox();
+    document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none");
     document.getElementById("homePage").style.display = "none";
     document.getElementById("moduleView").style.display = "block";
     document.getElementById("backHomeBtn").style.display = "block";
     document.getElementById("backHomeBtn").innerText = "← 返回首頁";
+    
     if(id === "vocabPool") renderVocabUnits();
     if(id === "exerciseRoot") renderExerciseUnits();
-    document.getElementById(id).classList.add("show");
+    
+    document.getElementById(id).style.display = "block";
     setTimeout(() => window.scrollTo(0, 0), 10);
 }
 
@@ -94,12 +94,12 @@ function goBack() {
     const backBtn = document.getElementById("backHomeBtn");
     const rSub = document.getElementById("readingSubPanel"), rPan = document.getElementById("readingPanel"), vUnit = document.getElementById("vocabUnit"), eUnit = document.getElementById("exerciseUnit"), gPan = document.getElementById("grammarPanel"), gRoot = document.getElementById("grammarRoot"), rRoot = document.getElementById("readingRoot"), wRedo = document.getElementById("wrongRedoPanel");
     
-    if(rSub && rSub.innerHTML.trim() !== "" && rRoot && rRoot.classList.contains("show")) { rSub.innerHTML=""; openReadingUnit(currentReadingUnit); backBtn.innerText="← 返回首頁"; return; }
-    if(rPan && rPan.innerHTML.trim() !== "" && rRoot && rRoot.classList.contains("show")) { rPan.innerHTML=""; showRoot("readingRoot"); backBtn.innerText="← 返回首頁"; return; }
-    if(vUnit && vUnit.classList.contains("show")) { showRoot("vocabPool"); backBtn.innerText="← 返回首頁"; return; }
-    if(eUnit && eUnit.classList.contains("show")) { showRoot("exerciseRoot"); backBtn.innerText="← 返回首頁"; return; }
-    if(gPan && gPan.innerHTML.trim() !== "" && gRoot && gRoot.classList.contains("show")) { gPan.innerHTML=""; showRoot("grammarRoot"); backBtn.innerText="← 返回首頁"; return; }
-    if(wRedo && wRedo.classList.contains("show")) { showRoot("wrongBookPanel"); backBtn.innerText="← 返回首頁"; return; }
+    if(rSub && rSub.innerHTML.trim() !== "" && rRoot && rRoot.style.display === "block") { rSub.innerHTML=""; openReadingUnit(currentReadingUnit); backBtn.innerText="← 返回首頁"; return; }
+    if(rPan && rPan.innerHTML.trim() !== "" && rRoot && rRoot.style.display === "block") { rPan.innerHTML=""; showRoot("readingRoot"); backBtn.innerText="← 返回首頁"; return; }
+    if(vUnit && vUnit.style.display === "block") { showRoot("vocabPool"); backBtn.innerText="← 返回首頁"; return; }
+    if(eUnit && eUnit.style.display === "block") { showRoot("exerciseRoot"); backBtn.innerText="← 返回首頁"; return; }
+    if(gPan && gPan.innerHTML.trim() !== "" && gRoot && gRoot.style.display === "block") { gPan.innerHTML=""; showRoot("grammarRoot"); backBtn.innerText="← 返回首頁"; return; }
+    if(wRedo && wRedo.style.display === "block") { showRoot("wrongBookPanel"); backBtn.innerText="← 返回首頁"; return; }
     
     goHome();
 }
@@ -107,16 +107,16 @@ function goBack() {
 function renderHomeGrid() {
     const grid = document.getElementById("homeGrid"); if(!grid) return;
     const cards = [
-        { icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽，同義詞發音，可下載 CSV", tags:["發音","表格","下載"], target:"vocabPool" },
-        { icon:"📝", title:"練習題", desc:"默寫、完形填空、拖拽選擇，三種題型", tags:["默寫","完形","拖拽"], target:"exerciseRoot" },
-        { icon:"📖", title:"語法", desc:"動詞表 + 時態結構 + 測驗", tags:["動詞表","時態","選擇題"], target:"grammarRoot" },
-        { icon:"📘", title:"閱讀理解", desc:"文章閱讀 + 語境完形，點擊查詞", tags:["閱讀","查詞","測驗"], target:"readingRoot" },
-        { icon:"📒", title:"錯題本", desc:"保存每次成績，可重做錯題", tags:["記錄","重做","複習"], target:"wrongBookPanel" }
+        { icon:"📚", title:"生詞池", desc:"卡片 + 表格瀏覽", target:"vocabPool" },
+        { icon:"📝", title:"練習題", desc:"默寫、完形、拖拽", target:"exerciseRoot" },
+        { icon:"📖", title:"語法", desc:"動詞表 + 測驗", target:"grammarRoot" },
+        { icon:"📘", title:"閱讀理解", desc:"閱讀 + 查詞", target:"readingRoot" },
+        { icon:"📒", title:"錯題本", desc:"保存成績與重做", target:"wrongBookPanel" }
     ];
     grid.innerHTML = "";
     cards.forEach(c => {
         const card = document.createElement("div"); card.className = "module-card";
-        card.innerHTML = `<div class="card-icon">${c.icon}</div><div class="card-title">${c.title}</div><div class="card-desc">${c.desc}</div><div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><button class="card-btn">進入 →</button>`;
+        card.innerHTML = `<div class="card-icon">${c.icon}</div><div class="card-title">${c.title}</div><div class="card-desc">${c.desc}</div><button class="card-btn">進入 →</button>`;
         card.onclick = () => { if(c.target === "wrongBookPanel") openWrongBook(); else showRoot(c.target); };
         grid.appendChild(card);
     });
@@ -143,7 +143,9 @@ function renderVocabUnits() {
 }
 function openVocabUnit(u) {
     if(!guardNavigation()) return;
-    currentUnitName = u; hideAllBox(); document.getElementById("vocabUnit").classList.add("show");
+    currentUnitName = u; 
+    document.getElementById("vocabPool").style.display="none";
+    document.getElementById("vocabUnit").style.display="block";
     document.getElementById("vocabUnitTitle").innerText = u + "｜生詞池";
     document.getElementById("cardPanel").innerHTML = ""; document.getElementById("tablePanel").innerHTML = "";
     document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
@@ -162,7 +164,7 @@ function showVocabCard() {
 function showVocabTable() {
     const wrap = document.getElementById("tablePanel"); document.getElementById("cardPanel").innerHTML = "";
     const list = getWordList();
-    wrap.innerHTML = `<div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格（用於溫習）</button></div><div class="table-container"><table><thead><tr><th>序號</th><th>單詞</th><th>詞性</th><th>同義詞</th><th>中文</th></tr></thead><tbody></tbody></table></div>`;
+    wrap.innerHTML = `<div style="margin-bottom:10px;"><button class="btn btn-download" id="downloadWordTableBtn">📥 下載表格</button></div><div class="table-container"><table><thead><tr><th>序號</th><th>單詞</th><th>詞性</th><th>同義詞</th><th>中文</th></tr></thead><tbody></tbody></table></div>`;
     const tb = wrap.querySelector("tbody");
     list.forEach(w => { const tr = document.createElement("tr"); tr.innerHTML = `<td>${w.no}</td><td>${w.en}</td><td>${w.pos||""}</td><td>${w.syn||""}</td><td>${w.cn||""}</td>`; tb.appendChild(tr); });
     document.getElementById("downloadWordTableBtn").onclick = function(){
@@ -182,7 +184,9 @@ function renderExerciseUnits() {
 }
 function openExerciseUnit(u) {
     if(!guardNavigation()) return;
-    currentUnitName = u; hideAllBox(); document.getElementById("exerciseUnit").classList.add("show");
+    currentUnitName = u; 
+    document.getElementById("exerciseRoot").style.display = "none";
+    document.getElementById("exerciseUnit").style.display = "block";
     document.getElementById("exerciseUnitTitle").innerText = u + "｜練習題";
     document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
     ["writePanel","clozePanel","choicePanel"].forEach(id => { const el = document.getElementById(id); el.innerHTML = ""; el.style.display = "none"; });
@@ -253,7 +257,7 @@ function speakClozeSentence(btn) { const item = btn.closest(".cloze-item"), sent
 function showClozeExercise() {
     const p=document.getElementById("clozePanel"); document.getElementById("writePanel").style.display="none"; document.getElementById("choicePanel").style.display="none"; p.style.display="block";
     const bank=getClozeBank(),total=bank.length;
-    p.innerHTML=`<div class="exercise-box"><div class="tip-box">💡 <strong>怎麼做：</strong>輸入範圍和抽題數量，選擇提示模式。</div><div class="lock-tip">⚠️ 本篇章句子為生字池的例句，並非正式考題。</div><div class="range-input-area"><span>範圍（共 ${total} 題）：</span><input type="text" id="clozeRangeText" placeholder="例如1-10"><span>抽題數量：</span><input type="number" id="clozePickCount" min="1" value="10"><button class="btn" id="startClozeExercise">開始完形測驗</button></div><div class="mode-select-group"><div>選擇提示模式：</div><label style="display:block;"><input type="radio" name="clozeMode" value="initial" checked>模式1：全部給首字母提示</label><label style="display:block;"><input type="radio" name="clozeMode" value="syn">模式2：全部給同義詞提示</label><label style="display:block;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label></div><div id="clozeExerciseArea"></div><div class="finish-area"><button class="btn btn-finish" id="clozeFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div><div class="result-page" id="clozeResultPage"><h2 style="text-align:center">📝完形測驗成績</h2><div class="score-text" id="clozeScoreText"></div><div id="clozeResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveClozeResultBtn">保存本次成績至紀錄+錯題本</button></div></div></div>`;
+    p.innerHTML=`<div class="exercise-box"><div class="tip-box">💡 <strong>怎麼做：</strong>輸入範圍和抽題數量，選擇提示模式。</div><div class="lock-tip">⚠️ 本篇章句子為生字池的例句，並非正式考題。</div><div class="range-input-area"><span>範圍（共 ${total} 題）：</span><input type="text" id="clozeRangeText" placeholder="例如1-10"><span>抽題數量：</span><input type="number" id="clozePickCount" min="1" value="10"><button class="btn" id="startClozeExercise">開始完形測驗</button></div><div class="mode-select-group"><div>選擇提示模式：</div><label style="display:block;"><input type="radio" name="clozeMode" value="initial" checked>模式1：首字母提示</label><label style="display:block;"><input type="radio" name="clozeMode" value="syn">模式2：同義詞提示</label><label style="display:block;"><input type="radio" name="clozeMode" value="none">模式3：完全無提示</label></div><div id="clozeExerciseArea"></div><div class="finish-area"><button class="btn btn-finish" id="clozeFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div><div class="result-page" id="clozeResultPage"><h2 style="text-align:center">📝完形測驗成績</h2><div class="score-text" id="clozeScoreText"></div><div id="clozeResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveClozeResultBtn">保存本次成績至紀錄+錯題本</button></div></div></div>`;
     document.getElementById("startClozeExercise").onclick=startClozeQuiz; document.getElementById("clozeFinishBtn").onclick=showClozeResult; document.getElementById("saveClozeResultBtn").onclick=saveClozeRecord;
 }
 function startClozeQuiz() {
@@ -370,11 +374,10 @@ function saveChoiceRecord(silent=false) {
 }
 
 // 语法
-function openVerbTable() { if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel"); let html = `<h3>核心 62 個不規則動詞</h3><div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`; IRREGULAR_VERBS.forEach(v => { html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`; }); html += `</tbody></table></div>`; p.innerHTML = html; document.getElementById("backHomeBtn").innerText="← 返回上一頁"; }
-function openTenseStructure() { if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel"); const tenses = [{en:"Present Perfect", cn:"現在完成時", struct:"have/has + 過去分詞"},{en:"Present Perfect Continuous", cn:"現在完成進行時", struct:"have/has + been + 現在分詞"},{en:"Past Perfect", cn:"過去完成時", struct:"had + 過去分詞"},{en:"Past Perfect Continuous", cn:"過去完成進行時", struct:"had + been + 現在分詞"}]; let html = `<h3>4 種時態結構</h3>`; tenses.forEach(t => { html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`; }); p.innerHTML = html; document.getElementById("backHomeBtn").innerText="← 返回上一頁"; }
-
+function openVerbTable() { if(!guardNavigation()) return; document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none"); document.getElementById("grammarRoot").style.display = "block"; const p = document.getElementById("grammarPanel"); let html = `<h3>核心 62 個不規則動詞</h3><div class="table-container"><table><thead><tr><th>原形</th><th>過去式</th><th>過去分詞</th><th>中文</th></tr></thead><tbody>`; IRREGULAR_VERBS.forEach(v => { html += `<tr><td>${v.base}</td><td>${v.past}</td><td>${v.pp}</td><td>${v.cn}</td></tr>`; }); html += `</tbody></table></div>`; p.innerHTML = html; document.getElementById("backHomeBtn").innerText="← 返回上一頁"; }
+function openTenseStructure() { if(!guardNavigation()) return; document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none"); document.getElementById("grammarRoot").style.display = "block"; const p = document.getElementById("grammarPanel"); const tenses = [{en:"Present Perfect", cn:"現在完成時", struct:"have/has + 過去分詞"},{en:"Present Perfect Continuous", cn:"現在完成進行時", struct:"have/has + been + 現在分詞"},{en:"Past Perfect", cn:"過去完成時", struct:"had + 過去分詞"},{en:"Past Perfect Continuous", cn:"過去完成進行時", struct:"had + been + 現在分詞"}]; let html = `<h3>4 種時態結構</h3>`; tenses.forEach(t => { html += `<div class="tense-card"><div><span class="tense-en">${t.en}</span><span class="tense-cn">（${t.cn}）</span></div><div class="tense-struct">${t.struct}</div></div>`; }); p.innerHTML = html; document.getElementById("backHomeBtn").innerText="← 返回上一頁"; }
 function openGrammarQuizRoot() {
-    if(!guardNavigation()) return; hideAllBox(); document.getElementById("grammarRoot").classList.add("show"); const p = document.getElementById("grammarPanel");
+    if(!guardNavigation()) return; document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none"); document.getElementById("grammarRoot").style.display = "block"; const p = document.getElementById("grammarPanel");
     const totalCount = (typeof GRAMMAR_BANK !== "undefined") ? GRAMMAR_BANK.length : 0;
     p.innerHTML = `<h3>語法測驗 <span style="font-size:14px;color:#888;">（共 ${totalCount} 題）</span></h3><div class="tip-box">💡 <strong>怎麼做：</strong>選擇模式，設定抽題數量，選擇時態，點「開始練習」。</div><div class="mode-select-group"><div>選擇模式：</div><label style="display:block;margin:6px 0;"><input type="radio" name="grammarMode" value="fill" checked>模式1：填空</label><label style="display:block;margin:6px 0;"><input type="radio" name="grammarMode" value="choice">模式2：選擇題（4選1）</label></div><p>選擇要練的時態：</p><div id="grammarTopicFilter" style="margin-bottom:12px;"></div><div class="range-input-area"><span>抽題數量：</span><input type="number" id="grammarPickCount" min="1" placeholder="留空 = 20 題"><button class="btn" id="grammarStartBtn">開始練習</button></div><div id="grammarExerciseArea"></div><div class="finish-area"><button class="btn btn-finish" id="grammarFinishBtn" style="display:none;">✅全部作答完畢，查看成績</button></div><div class="result-page" id="grammarResultPage"><h2 style="text-align:center">📝語法成績</h2><div class="score-text" id="grammarScoreText"></div><div id="grammarResultList"></div><div style="margin-top:12px;text-align:center"><button class="btn" id="saveGrammarResultBtn">保存本次成績至紀錄+錯題本</button></div></div>`;
     renderGrammarFilters();
@@ -384,47 +387,30 @@ function openGrammarQuizRoot() {
 function renderGrammarFilters() {
     const wrap = document.getElementById("grammarTopicFilter"); if(!wrap) return; wrap.innerHTML = "";
     const topics = [{topic:"現在完成時", topicEn:"Present Perfect"},{topic:"現在完成進行時", topicEn:"Present Perfect Continuous"},{topic:"過去完成時", topicEn:"Past Perfect"},{topic:"過去完成進行時", topicEn:"Past Perfect Continuous"}];
-    topics.forEach(t => {
-        const div = document.createElement("label"); div.style.cssText="display:flex;align-items:center;padding:10px;margin-bottom:5px;background:#f4f7ff;border-radius:8px;cursor:pointer;font-size:14px;";
-        div.innerHTML = `<input type="checkbox" class="grammar-topic-cb" value="${t.topic}" checked style="margin-right:10px;"><span style="font-weight:bold;">${t.topic}</span><span style="color:#888;font-size:12px;margin-left:5px;">(${t.topicEn})</span>`;
-        wrap.appendChild(div);
-    });
+    topics.forEach(t => { const div = document.createElement("label"); div.style.cssText="display:flex;align-items:center;padding:10px;margin-bottom:5px;background:#f4f7ff;border-radius:8px;cursor:pointer;font-size:14px;"; div.innerHTML = `<input type="checkbox" class="grammar-topic-cb" value="${t.topic}" checked style="margin-right:10px;"><span style="font-weight:bold;">${t.topic}</span><span style="color:#888;font-size:12px;margin-left:5px;">(${t.topicEn})</span>`; wrap.appendChild(div); });
 }
 function startGrammarQuiz() {
     startTimer();
     const selTopics = Array.from(document.querySelectorAll(".grammar-topic-cb:checked")).map(cb=>cb.value);
     if(selTopics.length===0){ alert("請至少勾選一個時態"); stopTimer(); return; }
     if(typeof GRAMMAR_BANK==="undefined"||GRAMMAR_BANK.length===0){ alert("題庫未加載！"); stopTimer(); return; }
-    
     const pool = GRAMMAR_BANK.filter(item => selTopics.includes(item.topic));
     if(pool.length===0){ alert("沒有符合條件的題目"); stopTimer(); return; }
-    
     let pickNum = Number(document.getElementById("grammarPickCount").value);
     if(!pickNum||pickNum<1) pickNum=20;
     if(pickNum>pool.length) pickNum=pool.length;
-    
-    currentQuizList = shuffleArray([...pool]).slice(0,pickNum);
-    const allBank = GRAMMAR_BANK;
-    quizType = "grammar";
+    currentQuizList = shuffleArray([...pool]).slice(0,pickNum); const allBank = GRAMMAR_BANK; quizType = "grammar";
     const mode = document.querySelector('input[name="grammarMode"]:checked').value;
     const area = document.getElementById("grammarExerciseArea"), finishBtn = document.getElementById("grammarFinishBtn");
-    
     document.getElementById("grammarResultPage").style.display="none"; finishBtn.style.display="none"; area.innerHTML="";
-    
     try {
         currentQuizList.forEach((item, idx) => {
             const div = document.createElement("div"); div.className = "exercise-item";
-            if(mode === "fill") {
-                div.innerHTML = `<div class="q-num">${idx+1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`;
-            } else {
+            if(mode === "fill") { div.innerHTML = `<div class="q-num">${idx+1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`; }
+            else {
                 const opts = [item.a]; let attempts = 0;
-                while(opts.length<4 && attempts<300) {
-                    const randItem = allBank[Math.floor(Math.random()*allBank.length)];
-                    if(randItem && randItem.a && randItem.a !== item.a && !opts.includes(randItem.a)) { opts.push(randItem.a); }
-                    attempts++;
-                }
+                while(opts.length<4 && attempts<300) { const randItem = allBank[Math.floor(Math.random()*allBank.length)]; if(randItem && randItem.a && randItem.a !== item.a && !opts.includes(randItem.a)) { opts.push(randItem.a); } attempts++; }
                 while(opts.length<4){ opts.push("___"); }
-                
                 const shuffledOpts = shuffleArray(opts); let optsHtml = "";
                 shuffledOpts.forEach((opt, i) => { optsHtml += `<span class="choice-opt" data-val="${opt.replace(/"/g,'&quot;')}" onclick="selectGrammarChoice(this)">${String.fromCharCode(65+i)}. ${opt}</span>`; });
                 div.dataset.realAns = item.a;
@@ -433,22 +419,14 @@ function startGrammarQuiz() {
             area.appendChild(div);
         });
         finishBtn.style.display="block";
-    } catch(error) {
-        console.error("生成題目出錯：", error);
-        alert("加載題目時出錯，請按 F12 查看控制台。");
-        stopTimer();
-    }
+    } catch(error) { console.error(error); alert("生成題目出錯，請刷新重試"); stopTimer(); }
 }
 function selectGrammarChoice(el) {
     const parent = el.parentElement; if(parent.dataset.answered==="true") return; parent.dataset.answered="true";
     const realAns = el.closest(".exercise-item").dataset.realAns; const feedback = parent.nextElementSibling;
     if(el.dataset.val === realAns) { el.classList.add("correct"); feedback.innerHTML=`<span class="ok">✅正確</span>`; }
-    else {
-        el.classList.add("wrong"); feedback.innerHTML=`<span class="err">❌錯誤，正確答案：${realAns}</span>`;
-        parent.querySelectorAll(".choice-opt").forEach(opt=>{ if(opt.dataset.val === realAns) opt.classList.add("correct"); });
-    }
-    const nextItem = parent.closest(".exercise-item").nextElementSibling;
-    if(nextItem) { setTimeout(()=>{ nextItem.scrollIntoView({behavior:"smooth",block:"center"}); }, 500); }
+    else { el.classList.add("wrong"); feedback.innerHTML=`<span class="err">❌錯誤，正確答案：${realAns}</span>`; parent.querySelectorAll(".choice-opt").forEach(opt=>{ if(opt.dataset.val === realAns) opt.classList.add("correct"); }); }
+    const nextItem = parent.closest(".exercise-item").nextElementSibling; if(nextItem) { setTimeout(()=>{ nextItem.scrollIntoView({behavior:"smooth",block:"center"}); }, 500); }
 }
 function showGrammarResult() {
     let score=0, wrongQuestions=[];
@@ -460,8 +438,7 @@ function showGrammarResult() {
             const input=dom.querySelector(".user-display"); userAns=input.value.trim().toLowerCase().replace(/\s+/g," ");
             const isCorrect = userAns === realAns.toLowerCase().replace(/\s+/g," ");
             if(isCorrect) score++; else wrongQuestions.push(currentQuizList[idx].q);
-            const feedback=dom.querySelector(".feedback");
-            feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${realAns}</span>` : `<span class="err">❌錯誤，答案：${realAns}</span><br><span style="color:#666;font-size:13px;">${currentQuizList[idx].exp}</span>`;
+            const feedback=dom.querySelector(".feedback"); feedback.innerHTML = isCorrect ? `<span class="ok">✅正確：${realAns}</span>` : `<span class="err">❌錯誤，答案：${realAns}</span><br><span style="color:#666;font-size:13px;">${currentQuizList[idx].exp}</span>`;
             resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${isCorrect?"✅":"❌"} ${realAns}，你的答案：${userAns||"（未作答）"}</div>`;
         } else {
             const selected=dom.querySelector(".choice-opt.correct, .choice-opt.wrong"); if(selected) userAns=selected.dataset.val;
@@ -470,9 +447,7 @@ function showGrammarResult() {
             resultListDom.innerHTML += `<div class="result-item">${idx+1}. ${isCorrect?"✅":"❌"} ${realAns}，你選的：${userAns||"（未作答）"}</div>`;
         }
     });
-    const percent=Number((score/total*100).toFixed(2));
-    document.getElementById("grammarScoreText").innerText=`得分：${score}/${total}（${percent}%）`;
-    document.getElementById("grammarResultPage").style.display="block"; window._grammarScore={score,total,wrongQuestions}; stopTimer();
+    const percent=Number((score/total*100).toFixed(2)); document.getElementById("grammarScoreText").innerText=`得分：${score}/${total}（${percent}%）`; document.getElementById("grammarResultPage").style.display="block"; window._grammarScore={score,total,wrongQuestions}; stopTimer();
 }
 function saveGrammarRecord(silent=false) {
     const {score,total,wrongQuestions}=window._grammarScore, costMs=Date.now()-exerciseStartTime, timeStr=`${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`;
@@ -486,7 +461,7 @@ function saveGrammarRecord(silent=false) {
 function openWrongBook() { showRoot("wrongBookPanel"); renderRecordList(); }
 function renderRecordList() {
     const wrap = document.getElementById("recordList"); wrap.innerHTML="";
-    if(exerciseRecords.length===0) { wrap.innerHTML="<p style='font-size:14px;color:#888;text-align:center;padding:24px;'>尚無練習紀錄，完成練習後這裡會顯示紀錄</p>"; return; }
+    if(exerciseRecords.length===0) { wrap.innerHTML="<p style='text-align:center;padding:24px;'>尚無練習紀錄</p>"; return; }
     exerciseRecords.slice().reverse().forEach((rec,revIdx)=>{
         const idx = exerciseRecords.length - 1 - revIdx, percent = rec.percent; let color = "#27ae60";
         if(percent < 60) color = "#e74c3c"; else if(percent < 85) color = "#f39c12";
@@ -496,11 +471,12 @@ function renderRecordList() {
         card.onclick = ()=>openWrongRedo(idx); wrap.appendChild(card);
     });
 }
-document.getElementById("clearAllRecords").onclick = function() { if(!confirm("確定要清空全部練習紀錄？此操作不可恢復！")) return; exerciseRecords=[]; localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords)); renderRecordList(); };
+document.getElementById("clearAllRecords").onclick = function() { if(!confirm("確定要清空全部練習紀錄？")) return; exerciseRecords=[]; localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords)); renderRecordList(); };
 
 function openWrongRedo(idx) {
     if(!guardNavigation()) return; currentWrongRecordIndex = idx; const rec = exerciseRecords[idx];
-    hideAllBox(); document.getElementById("wrongRedoPanel").classList.add("show"); document.getElementById("backHomeBtn").innerText="← 返回上一頁";
+    document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none");
+    document.getElementById("wrongRedoPanel").style.display = "block"; document.getElementById("backHomeBtn").innerText="← 返回上一頁";
     const settingDom = document.getElementById("wrongRedoSetting"), areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"), resPage = document.getElementById("wrongRedoResultPage");
     areaDom.innerHTML=""; finishBtn.style.display="none"; resPage.style.display="none";
     const isWrite = rec.type === "看同義詞默寫", isChoice = rec.type === "拖拽選擇練習", isGrammar = rec.type === "語法填空";
@@ -510,10 +486,9 @@ function openWrongRedo(idx) {
     else { settingDom.innerHTML=`<div class="mode-select-group"><h4>重做完形錯題</h4><button class="btn" onclick="startWrongCloze()">載入錯題開始重做</button></div>`; }
 }
 function startWrongGrammar() {
-    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex];
-    const wrongQ = GRAMMAR_BANK.filter(item => rec.wrongQuestions && rec.wrongQuestions.includes(item.q));
-    const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn");
-    areaDom.innerHTML = ""; if(wrongQ.length === 0) { areaDom.innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex]; const wrongQ = GRAMMAR_BANK.filter(item => rec.wrongQuestions && rec.wrongQuestions.includes(item.q));
+    const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"); areaDom.innerHTML = "";
+    if(wrongQ.length === 0) { areaDom.innerHTML = "<p>沒有錯題</p>"; stopTimer(); return; }
     wrongQ.forEach((item, idx) => { const div = document.createElement("div"); div.className = "exercise-item"; div.innerHTML = `<div class="q-num">${idx + 1}. [${item.topic}] ${item.q}</div><div class="q-syn-info">提示：${item.hint}</div><input class="user-display" data-ans="${item.a}" placeholder="填入正確形式"><div class="feedback"></div>`; areaDom.appendChild(div); });
     finishBtn.style.display = "block"; finishBtn.onclick = function() {
         let score = 0; const total = wrongQ.length; const resPage = document.getElementById("wrongRedoResultPage");
@@ -525,7 +500,7 @@ function startWrongWrite() {
     startTimer(); const rec = exerciseRecords[currentWrongRecordIndex]; let wrongWords = []; const list = getWordList();
     if(rec.wrongEns && rec.wrongEns.length) { wrongWords = rec.wrongEns.map(en => list.find(w=>w.en===en)).filter(Boolean); } else { wrongWords = list.filter(w=>rec.wrongNos && rec.wrongNos.includes(w.no)); }
     const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn");
-    areaDom.innerHTML=""; if(wrongWords.length===0) { areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+    areaDom.innerHTML=""; if(wrongWords.length===0) { areaDom.innerHTML="<p>沒有錯題</p>"; stopTimer(); return; }
     wrongWords.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="exercise-item"; div.innerHTML=`<div class="q-num">${idx+1}. ${item.syn||""}</div><input class="user-display" data-ans="${item.en}" placeholder="請輸入英文單詞"><div class="feedback"></div>`; areaDom.appendChild(div); });
     finishBtn.style.display="block"; finishBtn.onclick = function() {
         let score=0; const total = wrongWords.length; const resPage = document.getElementById("wrongRedoResultPage");
@@ -534,10 +509,9 @@ function startWrongWrite() {
     };
 }
 function startWrongCloze() {
-    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank();
-    const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-    const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn");
-    areaDom.innerHTML=""; if(wrongQ.length===0) { areaDom.innerHTML="<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank(); const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+    const areaDom = document.getElementById("wrongRedoArea"), finishBtn = document.getElementById("wrongRedoFinishBtn"); areaDom.innerHTML="";
+    if(wrongQ.length===0) { areaDom.innerHTML="<p>沒有錯題</p>"; stopTimer(); return; }
     wrongQ.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="exercise-item cloze-item"; div.innerHTML=`<div class="cloze-sentence-trigger" onclick="toggleClozeDetail(this)" data-sentence="${item.sentence.replace(/"/g,'&quot;')}"><span class="q-num">${idx+1}.</span><span class="cloze-sentence">${item.sentence}</span></div><div class="q-syn-info">（同義詞提示：${item.syn}）</div><input class="user-display" data-ans="${item.answer}" placeholder="填入單詞"><div class="feedback"></div>`; areaDom.appendChild(div); });
     finishBtn.style.display="block"; finishBtn.onclick = function() {
         let score=0; const total = wrongQ.length; const resPage = document.getElementById("wrongRedoResultPage");
@@ -546,10 +520,8 @@ function startWrongCloze() {
     };
 }
 function startWrongChoice() {
-    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank();
-    const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
-    const finishBtn = document.getElementById("wrongRedoFinishBtn");
-    if(wrongQ.length===0) { document.getElementById("wrongRedoArea").innerHTML = "<p>本次練習沒有可重做的錯題</p>"; stopTimer(); return; }
+    startTimer(); const rec = exerciseRecords[currentWrongRecordIndex], bank = getClozeBank(); const wrongQ = bank.filter(it=>rec.wrongSentences && rec.wrongSentences.includes(it.sentence));
+    const finishBtn = document.getElementById("wrongRedoFinishBtn"); if(wrongQ.length===0) { document.getElementById("wrongRedoArea").innerHTML = "<p>沒有錯題</p>"; stopTimer(); return; }
     renderChoiceQuestions(wrongQ, "wrongRedoArea"); finishBtn.style.display = "block";
     finishBtn.onclick = function() {
         let score=0; const total = wrongQ.length; const area = document.getElementById("wrongRedoArea");
@@ -559,7 +531,7 @@ function startWrongChoice() {
 }
 
 // 阅读
-function openReadingRoot() { if(!guardNavigation()) return; hideAllBox(); document.getElementById("readingRoot").classList.add("show"); document.getElementById("readingPanel").innerHTML = ""; document.getElementById("backHomeBtn").innerText = "← 返回首頁"; }
+function openReadingRoot() { if(!guardNavigation()) return; document.querySelectorAll(".box-wrap").forEach(el => el.style.display = "none"); document.getElementById("readingRoot").style.display = "block"; document.getElementById("readingPanel").innerHTML = ""; document.getElementById("backHomeBtn").innerText = "← 返回首頁"; }
 function openReadingUnit(unitName) {
     if(!guardNavigation()) return; currentReadingUnit = unitName; const p = document.getElementById("readingPanel");
     p.innerHTML = `<h3>${unitName}</h3><button class="unit-btn" onclick="openReadingSub('文章一')">📄 文章一</button><button class="unit-btn" onclick="openReadingSub('語境完形填空')">📄 語境完形填空</button><div id="readingSubPanel" style="margin-top:18px;"></div>`;
@@ -567,14 +539,14 @@ function openReadingUnit(unitName) {
 function openReadingSub(subName) {
     if(!guardNavigation()) return; currentReadingSub = subName; const sub = READING_UNITS[currentReadingUnit][subName]; const p = document.getElementById("readingSubPanel");
     if(subName === "文章一") {
-        p.innerHTML = `<div class="reading-intro">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。</div><div class="reading-split-container"><div class="reading-split-top" id="splitTopBox"><div class="reading-passage" id="passageContent"></div></div><div class="reading-split-bottom"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h4 style="margin:0;font-size:15px;">📝 答題區</h4><button class="split-btn" id="togglePassageBtn">📕 隱藏文章</button></div><hr style="margin:10px 0;border:none;border-top:1px dashed #ddd;"><h4 style="margin-bottom:8px;">選擇題（抽 5 道）</h4><button class="btn" id="startReadingChoiceBtn">開始選擇題</button><div id="readingChoiceArea"></div><div id="readingChoiceResult" class="result-page"></div><hr style="margin:16px 0;"><h4 style="margin-bottom:8px;">填空題（抽 6 道）</h4><button class="btn" id="startReadingBlankBtn">開始填空題</button><div id="readingBlankArea"></div><div id="readingBlankResult" class="result-page"></div></div></div>`;
+        p.innerHTML = `<div class="reading-intro">💡 點擊單詞查看中文意思。</div><div class="reading-split-container"><div class="reading-split-top" id="splitTopBox"><div class="reading-passage" id="passageContent"></div></div><div class="reading-split-bottom"><div style="display:flex;justify-content:space-between;margin-bottom:10px;"><h4 style="margin:0;font-size:15px;">📝 答題區</h4><button class="split-btn" id="togglePassageBtn">📕 隱藏文章</button></div><h4 style="margin-bottom:8px;">選擇題（抽 5 道）</h4><button class="btn" id="startReadingChoiceBtn">開始選擇題</button><div id="readingChoiceArea"></div><div id="readingChoiceResult" class="result-page"></div><hr style="margin:16px 0;"><h4 style="margin-bottom:8px;">填空題（抽 6 道）</h4><button class="btn" id="startReadingBlankBtn">開始填空題</button><div id="readingBlankArea"></div><div id="readingBlankResult" class="result-page"></div></div></div>`;
         const passageBox = document.getElementById("passageContent"); const paras = sub.passage.split(/\n\n+/); let html = "";
         paras.forEach(par=>{ let line = par.replace(/([a-zA-Z\-']+)/g, function(word){ const clean = word.toLowerCase().replace(/[^a-z\-]/g,""); const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null; if(cn){ return `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${word}</span>`; } else { return `<span class="reading-word">${word}</span>`; } }); html += `<p>${line}</p>`; });
         passageBox.innerHTML = html;
         document.getElementById("togglePassageBtn").onclick = function(){ const topBox = document.getElementById("splitTopBox"); if(topBox.style.display === "none"){ topBox.style.display = "block"; this.innerText = "📕 隱藏文章"; } else { topBox.style.display = "none"; this.innerText = "📖 顯示文章"; } };
         bindReadingWordClick(); document.getElementById("startReadingChoiceBtn").onclick = function(){ startReadingChoice(sub); }; document.getElementById("startReadingBlankBtn").onclick = function(){ startReadingBlank(sub); }; document.getElementById("backHomeBtn").innerText = "← 返回上一頁";
     } else {
-        p.innerHTML = `<div class="reading-intro">💡 點擊文章裡有 <span style="background:#fff3cd;padding:0 4px;">黃色背景</span> 的單詞，可以查看中文意思。</div><div style="margin-bottom:12px;"><button class="btn" id="togglePassageBtn">📖 顯示完整對話/段落</button></div><div id="passageBox" style="display:none;"><div class="reading-passage" id="passageContent"></div></div><hr style="margin:16px 0;"><h4 style="margin-bottom:8px;">✏️ 語境完形填空（共 9 題）</h4><button class="btn" id="startReadingClozeBtn">開始練習</button><div id="readingClozeArea"></div><div id="readingClozeResult" class="result-page"></div>`;
+        p.innerHTML = `<div class="reading-intro">💡 點擊單詞查看中文意思。</div><div style="margin-bottom:12px;"><button class="btn" id="togglePassageBtn">📖 顯示完整對話/段落</button></div><div id="passageBox" style="display:none;"><div class="reading-passage" id="passageContent"></div></div><hr style="margin:16px 0;"><h4 style="margin-bottom:8px;">✏️ 語境完形填空（共 9 題）</h4><button class="btn" id="startReadingClozeBtn">開始練習</button><div id="readingClozeArea"></div><div id="readingClozeResult" class="result-page"></div>`;
         const passageBox = document.getElementById("passageContent"); let html = "";
         sub.paragraphs.forEach(par=>{ let text = par.text; const words = text.split(/(\s+|[.,!?;:()"—–])/); let line = ""; words.forEach(w=>{ const clean = w.toLowerCase().replace(/[^a-z\-]/g,""); const cn = (sub.vocab && sub.vocab[clean]) ? sub.vocab[clean] : null; if(cn){ line += `<span class="reading-word has-cn" data-word="${clean}" data-cn="${cn}">${w}</span>`; } else { line += `<span class="reading-word">${w}</span>`; } }); html += `<p>${line}</p>`; });
         passageBox.innerHTML = html;
