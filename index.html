@@ -10,17 +10,20 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f9;p
 h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:22px;}
 .sub-desc{text-align:center;font-size:13px;color:#666;margin-bottom:8px;}
 .warn-notice{text-align:center;color:#c0392b;font-weight:bold;font-size:14px;margin-bottom:20px;}
-.btn{padding:8px 14px;border:none;border-radius:8px;background:#667eea;color:#fff;cursor:pointer;font-size:14px;}
+.btn{padding:8px 14px;border:none;border-radius:8px;background:#667eea;color:#fff;cursor:pointer;font-size:14px;transition:opacity 0.2s;}
+.btn:hover{opacity:0.9;}.btn:active{transform:scale(0.96);}
 .btn-finish{background:#27ae60;}.btn-clear-wrong{background:#e74c3c;}.btn-download{background:#4a69bd;}
 .sub-btn{padding:8px 14px;margin:4px 4px 4px 0;border:none;border-radius:8px;background:#eef4ff;color:#2c3e50;cursor:pointer;font-size:14px;}
-.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:10px;background:#eef4ff;color:#667eea;font-size:15px;font-weight:bold;cursor:pointer;}
-#noticeModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
-.notice-box{background:#fff;padding:24px;border-radius:16px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
-.notice-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
-.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
+.sub-btn:hover{background:#dde2fc;}
+.unit-btn{padding:10px 18px;margin:6px 6px 6px 0;border:none;border-radius:10px;background:#eef4ff;color:#667eea;font-size:15px;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.unit-btn:hover{background:#667eea;color:#fff;transform:translateY(-2px);}
+#disclaimerModal,#noticeModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:10000;}
+.disc-box,.notice-box{background:#fff;padding:24px;border-radius:16px;width:92%;max-width:500px;max-height:82vh;overflow-y:auto;}
+.disc-buttons,.notice-buttons{display:flex;gap:12px;margin-top:20px;justify-content:flex-end;}
+.disc-text,.notice-text{line-height:1.7;font-size:14px;color:#444;margin:12px 0;}
 .notice-title{color:#2c3e50;font-size:18px;margin-bottom:6px;}
 .notice-meta{color:#999;font-size:12px;margin-bottom:12px;}
-#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;font-weight:bold;}
+#noticeFloatBtn{position:fixed;top:14px;right:14px;z-index:9997;background:#e67e22;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;display:none;font-weight:bold;}
 #timerBadge{position:fixed;top:14px;right:14px;background:#e74c3c;color:#fff;padding:8px 16px;border-radius:22px;font-size:16px;font-weight:bold;font-family:monospace;z-index:9998;display:none;}
 .tip-box{background:#fff9d6;border-left:4px solid #f39c12;color:#7a5b00;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.7;margin:10px 0;}
 .tip-box strong{color:#e67e22;}
@@ -135,14 +138,6 @@ tr:nth-child(even){background:#f9faff;}
 .choice-opt{display:inline-block;padding:10px 16px;margin:6px;border:2px solid #dde2fc;border-radius:8px;cursor:pointer;font-size:15px;background:#fff;}
 .choice-opt.correct{background:#e8f9ee;border-color:#27ae60;color:#1e8449;font-weight:bold;}
 .choice-opt.wrong{background:#fdecea;border-color:#e74c3c;color:#c0392b;font-weight:bold;}
-.card-container{display:flex;justify-content:center;align-items:center;padding:20px 0 40px;perspective:1000px;}
-.metal-card{position:relative;width:320px;height:500px;border-radius:24px;overflow:hidden;will-change:transform;transform-style:preserve-3d;box-shadow:0 20px 40px rgba(0,0,0,0.4),inset 0 0 0 1px rgba(255,255,255,0.1);transition:transform 0.1s ease-out;}
-.webgl-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
-.fallback-bg{background:linear-gradient(135deg,#2a3b7c 0%,#8892b0 40%,#ffffff 70%,#2a3b7c 100%);}
-.highlight-border{position:absolute;inset:0;border-radius:24px;z-index:2;pointer-events:none;box-shadow:inset 2px 2px 5px rgba(255,255,255,0.6),inset -2px -2px 5px rgba(0,0,0,0.5);}
-.card-content{position:absolute;inset:0;z-index:3;padding:32px;display:flex;flex-direction:column;pointer-events:none;}
-.card-title{color:#fff;font-size:24px;font-weight:700;letter-spacing:2px;text-shadow:1px 1px 3px rgba(0,0,0,0.8);margin:0;}
-.card-number{color:#e2e8f0;font-size:20px;font-family:'Courier New',Courier,monospace;letter-spacing:4px;margin-top:auto;text-shadow:1px 1px 2px rgba(0,0,0,0.8);}
 @media (max-width:600px){#homeGrid{gap:12px;}.module-card{padding:18px;border-radius:14px;}.home-stat{padding:16px;border-radius:16px;}.home-stat-num{font-size:22px;}.box-wrap{padding:16px;border-radius:12px;}.reading-passage{padding:14px;}}
 </style>
 </head>
@@ -152,24 +147,13 @@ tr:nth-child(even){background:#f9faff;}
 <div id="wordPopup"></div>
 <button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
 <div id="noticeModal"><div class="notice-box"><div class="notice-title" id="noticeTitle">公告</div><div class="notice-meta" id="noticeMeta"></div><div class="notice-text" id="noticeContent"></div><div class="notice-buttons"><button id="noticeOk" class="btn">知道了</button></div></div></div>
+<div id="disclaimerModal"><div class="disc-box"><h3 style="text-align:center">公告｜免責聲明</h3><div class="disc-text">本英語練習系統為純公益非商用學習工具，完全免費，不收費。<br>本網站使用的部分圖片素材來源於網絡，版權歸原作者所有。使用本網站即代表您已閱讀並同意本聲明。</div><label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意</label><div class="disc-buttons"><button id="discOk" class="btn">同意並進入系統</button></div></div></div>
 
-<!-- 移除免责声明弹窗，强制主内容可见！ -->
-<div id="mainContent">
+<div id="mainContent" style="display:none;">
   <h1>英語練習系統</h1>
   <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
   <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
   
-  <div class="card-container" id="metalCardContainer">
-    <div class="metal-card" id="metalCardInner">
-      <canvas id="metalCanvas" class="webgl-canvas"></canvas>
-      <div class="highlight-border"></div>
-      <div class="card-content">
-        <h2 class="card-title">反射通行证</h2>
-        <p class="card-number">0001 2345 6789</p>
-      </div>
-    </div>
-  </div>
-
   <div id="homePage">
     <div class="home-stat">
       <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
