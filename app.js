@@ -1,5 +1,15 @@
-let exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
-let attemptStats = JSON.parse(localStorage.getItem("attemptStats")||"[]");
+// 安全读取本地缓存，防止历史脏数据导致整个网页白屏崩溃
+let exerciseRecords = [];
+let attemptStats = [];
+try {
+    exerciseRecords = JSON.parse(localStorage.getItem("exerciseRecords")) || [];
+    if (!Array.isArray(exerciseRecords)) exerciseRecords = [];
+} catch(e) { exerciseRecords = []; }
+try {
+    attemptStats = JSON.parse(localStorage.getItem("attemptStats")) || [];
+    if (!Array.isArray(attemptStats)) attemptStats = [];
+} catch(e) { attemptStats = []; }
+
 let currentQuizList = [], quizType = "", exerciseStartTime = 0, currentWrongRecordIndex = -1, speakToken = 0;
 let currentUnitName = "", currentReadingUnit = "", currentReadingSub = "", homeScrollY = 0;
 
