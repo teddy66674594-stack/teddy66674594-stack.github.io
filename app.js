@@ -1,3 +1,4 @@
+try {
 let attemptStats=JSON.parse(localStorage.getItem("attemptStats")||"[]");
 let exerciseRecords=JSON.parse(localStorage.getItem("exerciseRecords")||"[]");
 let currentQuizList=[],quizType="",exerciseStartTime=0,currentWrongRecordIndex=-1,speakToken=0,currentUnitName="",currentReadingUnit="",currentReadingSub="",homeScrollY=0;
@@ -10,8 +11,6 @@ function updateTimerDisplay(){const e=Math.floor((Date.now()-timerStartTime)/100
 function stopTimer(){isPracticing=false;clearInterval(timerInterval);timerInterval=null;document.getElementById("timerBadge").style.display="none";}
 function guardNavigation(){if(!isPracticing)return true;const ok=confirm("⚠️ 練習進行中，離開將丟失本次進度。\n\n點擊『確定』：自動保存本次成績並退出\n點擊『取消』：繼續練習");if(ok){saveCurrentQuizSilently();stopTimer();return true;}return false;}
 function saveCurrentQuizSilently(){try{if(quizType==="write"&&window._writeScore)saveWriteRecord(true);else if(quizType==="cloze"&&window._clozeScore)saveClozeRecord(true);else if(quizType==="choice"&&window._choiceScore)saveChoiceRecord(true);else if(quizType==="grammar"&&window._grammarScore)saveGrammarRecord(true);}catch(e){}}
-document.getElementById("disclaimerModal").style.display="flex";
-document.getElementById("discOk").onclick=function(){if(!document.getElementById("agreeCheck").checked){alert("請勾選我已閱讀並同意以上條款");return;}document.getElementById("disclaimerModal").style.display="none";document.getElementById("mainContent").style.display="block";document.getElementById("noticeFloatBtn").style.display="block";goHome();renderRecordList();showNoticeIfAny();};
 document.getElementById("noticeOk").onclick=function(){document.getElementById("noticeModal").style.display="none";};
 function showNoticeIfAny(){if(typeof NOTICE!=="undefined"){document.getElementById("noticeTitle").innerText=NOTICE.title||"公告";document.getElementById("noticeMeta").innerText=(NOTICE.version||"")+"｜"+(NOTICE.date||"");document.getElementById("noticeContent").innerHTML=NOTICE.content||"";document.getElementById("noticeModal").style.display="flex";}}
 (function(){const b=document.getElementById("eyeCareBanner");let a=false,c=false,d=false;const st=Date.now();function sh(t,cl){b.innerText=t;b.className="show "+cl;setTimeout(()=>b.classList.remove("show"),6000);}setInterval(function(){const m=Math.floor((Date.now()-st)/60000);if(m>=15&&!a){a=true;sh("👀 已看 15 分鐘，看看遠處放鬆一下眼睛吧～","green");}if(m>=30&&!c){c=true;sh("🚶 已看 30 分鐘，建議站起來活動一下。","yellow");}if(m>=60&&!d){d=true;sh("❤️ 已看 1 小時，該休息了！","red");}},30000);})();
@@ -90,7 +89,7 @@ function startReadingCloze(sub){startTimer();const area=document.getElementById(
 function submitReadingCloze(){const sub=READING_UNITS[currentReadingUnit]["語境完形填空"];let score=0;const wrong=[];document.querySelectorAll("#readingClozeArea .exercise-item").forEach((div)=>{const idx=Number(div.dataset.idx);const item=sub.items[idx];const opts=div.querySelectorAll(".choice-opt");let userAns="";opts.forEach(o=>{if(o.dataset.selected==="true")userAns=o.dataset.letter;});opts.forEach(o=>{const letter=o.dataset.letter;if(letter===item.ans)o.style.background="#e8f9ee";else if(letter===userAns)o.style.background="#fdecea";});const fb=div.querySelector(".feedback");if(userAns===item.ans){score++;fb.innerHTML=`<span class="ok">✅正確：${item.ans}</span>`;}else{wrong.push(item.q);fb.innerHTML=`<span class="err">❌錯誤，答案：${item.ans}。${item.exp}</span>`;}});const total=sub.items.length,percent=Number((score/total*100).toFixed(2));const resPage=document.getElementById("readingClozeResult");resPage.innerHTML=`<div style="font-size:18px;font-weight:bold;text-align:center;margin:12px 0;">語境完形：${score}/${total}（${percent}%）</div>`;resPage.style.display="block";const costMs=Date.now()-exerciseStartTime;const rec={type:"閱讀語境完形",unit:currentReadingUnit+"｜"+currentReadingSub,finishTime:new Date().toLocaleString(),costTime:`${Math.floor(costMs/60000)}分${Math.floor((costMs%60000)/1000)}秒`,score:score,total:total,fullCount:score,halfCount:0,zeroCount:total-score,wrongQuestions:wrong,percent:percent};exerciseRecords.push(rec);localStorage.setItem("exerciseRecords",JSON.stringify(exerciseRecords));attemptStats.push({score:score,total:total,time:Date.now()});localStorage.setItem("attemptStats",JSON.stringify(attemptStats));renderRecordList();stopTimer();document.getElementById("submitReadingClozeBtn").style.display="none";}
 
 /* ===== WebGL 金属卡片特效 ===== */
-(function initMetalCard() {
+function initMetalCard() {
   try {
     const canvas = document.getElementById('metalCanvas');
     const container = document.getElementById('metalCardInner');
@@ -161,4 +160,11 @@ function submitReadingCloze(){const sub=READING_UNITS[currentReadingUnit]["語�
     container.addEventListener('mousemove', (e) => { const rect = container.getBoundingClientRect(); tx = ((e.clientX - rect.left) / rect.width - 0.5) * 24; ty = -((e.clientY - rect.top) / rect.height - 0.5) * 24; });
     container.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
   } catch(e) { console.error(e); }
-})();
+}
+initMetalCard();
+
+} catch(err) {
+  console.error("全局捕获错误:", err);
+  // 即使报错，也强制显示主页，绝不白屏
+  document.getElementById("mainContent").style.display="block";
+}
