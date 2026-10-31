@@ -151,7 +151,7 @@ tr:nth-child(even){background:#f9faff;}
 .choice-opt:hover{background:#f0f4ff;}
 .choice-opt.correct{background:#e8f9ee;border-color:#27ae60;color:#1e8449;font-weight:bold;}
 .choice-opt.wrong{background:#fdecea;border-color:#e74c3c;color:#c0392b;font-weight:bold;}
-.card-container{display:flex;justify-content:center;align-items:center;padding:40px 0;perspective:1000px;}
+.card-container{display:flex;justify-content:center;align-items:center;padding:20px 0 40px;perspective:1000px;}
 .metal-card{position:relative;width:320px;height:500px;border-radius:24px;overflow:hidden;will-change:transform;transform-style:preserve-3d;box-shadow:0 20px 40px rgba(0,0,0,0.4),inset 0 0 0 1px rgba(255,255,255,0.1);transition:transform 0.1s ease-out;}
 .webgl-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
 .fallback-bg{background:linear-gradient(135deg,#2a3b7c 0%,#8892b0 40%,#ffffff 70%,#2a3b7c 100%);}
@@ -168,11 +168,12 @@ tr:nth-child(even){background:#f9faff;}
 <div id="wordPopup"></div>
 <button id="noticeFloatBtn" onclick="showNoticeIfAny()">📢 公告</button>
 <div id="noticeModal"><div class="notice-box"><div class="notice-title" id="noticeTitle">公告</div><div class="notice-meta" id="noticeMeta"></div><div class="notice-text" id="noticeContent"></div><div class="notice-buttons"><button id="noticeOk" class="btn">知道了</button></div></div></div>
-<div id="disclaimerModal"><div class="disc-box"><h3 style="text-align:center">公告｜免責聲明</h3><div class="disc-text">本英語練習系統為純公益非商用學習工具，完全免費，不收取任何費用，僅可供個人英語自學練習使用，嚴禁商用轉載、二次售賣。<br><br>本網站使用的部分圖片素材來源於網絡，僅供個人學習與交流使用，非商業用途，版權歸原作者所有。如有侵權，請聯繫刪除。<br><br>網站所有學習內容僅作教學參考，不承擔使用本系統所衍生的任何責任。使用本網站即代表您已閱讀並同意本聲明。</div><label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意以上條款</label><div class="disc-buttons"><button id="discOk" class="btn">同意並進入系統</button></div></div></div>
+<div id="disclaimerModal"><div class="disc-box"><h3 style="text-align:center">公告｜免責聲明</h3><div class="disc-text">本英語練習系統為純公益非商用學習工具，完全免費，不收費。<br>本網站使用的部分圖片素材來源於網絡，版權歸原作者所有。使用本網站即代表您已閱讀並同意本聲明。</div><label style="display:block;margin:8px 0;"><input type="checkbox" id="agreeCheck"> 我已閱讀並同意</label><div class="disc-buttons"><button id="discOk" class="btn">同意並進入系統</button></div></div></div>
 <div id="mainContent" style="display:none;">
   <h1>英語練習系統</h1>
   <div class="sub-desc">生詞池、練習題、語法、閱讀理解、錯題本</div>
   <div class="warn-notice">⚠️未經創作者同意，請勿轉發給他人</div>
+  
   <div class="card-container" id="metalCardContainer">
     <div class="metal-card" id="metalCardInner">
       <canvas id="metalCanvas" class="webgl-canvas"></canvas>
@@ -183,6 +184,7 @@ tr:nth-child(even){background:#f9faff;}
       </div>
     </div>
   </div>
+
   <div id="homePage">
     <div class="home-stat">
       <div class="home-stat-item"><span class="home-stat-num" id="statWords">0</span><span class="home-stat-label">生詞</span></div>
@@ -195,14 +197,14 @@ tr:nth-child(even){background:#f9faff;}
   </div>
   <div id="moduleView">
     <button id="backHomeBtn" onclick="goBack()">← 返回首頁</button>
-    <div id="vocabPool" class="box-wrap"><h2>📚 生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後可以看單詞卡片或完整表格，表格可以下載成 CSV 檔案。</div><p style="margin:10px 0;color:#666;">請選擇單元：</p><div id="vocabUnitButtons"></div></div>
-    <div id="vocabUnit" class="box-wrap"><h2 id="vocabUnitTitle">生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。點🔊可以聽發音。</div><p style="margin:10px 0;color:#666;">選擇模塊：</p><button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button><button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button><div id="cardPanel" style="margin-top:18px;"></div><div id="tablePanel" style="margin-top:18px;"></div></div>
+    <div id="vocabPool" class="box-wrap"><h2>📚 生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後可以看單詞卡片或完整表格。</div><p style="margin:10px 0;color:#666;">請選擇單元：</p><div id="vocabUnitButtons"></div></div>
+    <div id="vocabUnit" class="box-wrap"><h2 id="vocabUnitTitle">生詞池</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「卡片瀏覽」看單詞卡片，點「表格瀏覽」看全部單詞並下載。</div><p style="margin:10px 0;color:#666;">選擇模塊：</p><button class="sub-btn" onclick="showVocabCard()">①單詞卡片瀏覽</button><button class="sub-btn" onclick="showVocabTable()">②完整表格瀏覽</button><div id="cardPanel" style="margin-top:18px;"></div><div id="tablePanel" style="margin-top:18px;"></div></div>
     <div id="exerciseRoot" class="box-wrap"><h2>📝 練習題</h2><div class="tip-box">💡 <strong>怎麼做：</strong>先選一個單元，進去後有三種練習可以選。</div><p style="margin:10px 0;color:#666;">請選擇單元：</p><div id="exerciseUnitButtons"></div></div>
-    <div id="exerciseUnit" class="box-wrap"><h2 id="exerciseUnitTitle">練習題</h2><div class="tip-box">💡 <strong>三種練習的區別：</strong><br>① 看同義詞默寫：看同義詞，自己拼寫英文單詞。<br>② 完形填空測驗：看句子，填入缺少的單詞。<br>③ 拖拽選擇練習：把單詞拖到對應的空格上。</div><p style="margin:10px 0;color:#666;">請選擇練習類型：</p><button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button><button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button><button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button><div id="writePanel" style="margin-top:18px;display:none;"></div><div id="clozePanel" style="margin-top:18px;display:none;"></div><div id="choicePanel" style="margin-top:18px;display:none;"></div></div>
+    <div id="exerciseUnit" class="box-wrap"><h2 id="exerciseUnitTitle">練習題</h2><div class="tip-box">💡 <strong>三種練習的區別：</strong><br>① 看同義詞默寫 ② 完形填空測驗 ③ 拖拽選擇練習</div><p style="margin:10px 0;color:#666;">請選擇練習類型：</p><button class="sub-btn" onclick="showWriteExercise()">①看同義詞默寫</button><button class="sub-btn" onclick="showClozeExercise()">②完形填空測驗</button><button class="sub-btn" onclick="showChoiceExercise()">③拖拽選擇練習</button><div id="writePanel" style="margin-top:18px;display:none;"></div><div id="clozePanel" style="margin-top:18px;display:none;"></div><div id="choicePanel" style="margin-top:18px;display:none;"></div></div>
     <div id="grammarRoot" class="box-wrap"><h2>📖 語法</h2><div class="tip-box">💡 <strong>怎麼做：</strong>建議先看「動詞表」和「時態結構」熟悉語法規則，再去「測驗」做題。</div><p style="margin:10px 0;color:#666;">請選擇模塊：</p><button class="unit-btn" onclick="openVerbTable()">①動詞表</button><button class="unit-btn" onclick="openTenseStructure()">②時態結構</button><button class="unit-btn" onclick="openGrammarQuizRoot()">③測驗</button><div id="grammarPanel" style="margin-top:18px;"></div></div>
-    <div id="readingRoot" class="box-wrap"><h2>📘 閱讀理解</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。點擊文章裡有黃色背景的單詞可以查中文意思。</div><p style="margin:10px 0;color:#666;">請選擇測驗：</p><button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button><div id="readingPanel" style="margin-top:18px;"></div></div>
-    <div id="wrongBookPanel" class="box-wrap"><h2>📒 錯題本</h2><div class="tip-box">💡 <strong>怎麼做：</strong>做完練習並保存成績後，這裡會顯示記錄。點擊記錄可以重做錯題。點「清空全部」可以清除所有紀錄。</div><p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p><div class="record-list" id="recordList"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;"><button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button></div></div>
-    <div id="wrongRedoPanel" class="box-wrap"><h2>🔁 錯題重做</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方按鈕載入錯題，重新作答。作答完畢後會顯示重做得分。</div><div id="wrongRedoSetting"></div><div id="wrongRedoArea"></div><div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div><div class="result-page" id="wrongRedoResultPage"></div></div>
+    <div id="readingRoot" class="box-wrap"><h2>📘 閱讀理解</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點「大測一」進去後，文章在上方、題目在下方，可以分別上下滑動。</div><p style="margin:10px 0;color:#666;">請選擇測驗：</p><button class="unit-btn" onclick="openReadingUnit('大測一')">大測一</button><div id="readingPanel" style="margin-top:18px;"></div></div>
+    <div id="wrongBookPanel" class="box-wrap"><h2>📒 錯題本</h2><div class="tip-box">💡 <strong>怎麼做：</strong>做完練習並保存成績後，這裡會顯示記錄。</div><p style="margin:8px 0;font-size:14px;color:#666;">點擊下方紀錄進入對應錯題重做</p><div class="record-list" id="recordList"></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;"><button class="btn btn-clear-wrong" id="clearAllRecords">清空全部練習紀錄</button></div></div>
+    <div id="wrongRedoPanel" class="box-wrap"><h2>🔁 錯題重做</h2><div class="tip-box">💡 <strong>怎麼做：</strong>點擊下方按鈕載入錯題，重新作答。</div><div id="wrongRedoSetting"></div><div id="wrongRedoArea"></div><div class="finish-area"><button class="btn btn-finish" id="wrongRedoFinishBtn" style="display:none;">✅作答完畢查看成績</button></div><div class="result-page" id="wrongRedoResultPage"></div></div>
   </div>
 </div>
 <script src="notice.js"></script>
